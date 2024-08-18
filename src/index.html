@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hello World!</title>
+  </head>
+  <body>
+    <script>
+      (async () => {
+        console.log(window.electron.store.set("ok", 1));
+
+        console.log(await window.electron.store.get("ok"));
+      })();
+    </script>
+  </body>
+</html>
