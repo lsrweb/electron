@@ -7,6 +7,6 @@ export interface ElectronStoreApi {
 
 declare global {
   interface Window {
-    electron:  ElectronStoreApi;
+    electron: ElectronStoreApi;
   }
 }

@@ -28,16 +28,16 @@ const createWindow = (): void => {
 app.on("ready", createWindow);
 
 app.whenReady().then(() => {
-  const STORE_PATH = app.getPath("userData");
-
-  console.log(STORE_PATH);
-
   // init
   ipcMain.handle("store-get", async (event, key) => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     return storeInit.get(key);
   });
 
   ipcMain.handle("store-set", async (event, key, value) => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     return storeInit.set(key, value);
   });
 });
