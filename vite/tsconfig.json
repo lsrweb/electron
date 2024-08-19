@@ -13,6 +13,7 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
 
+    "verbatimModuleSyntax":false
   },
   "include": [
     "auto-imports.d.ts",
@@ -20,5 +21,6 @@
     "**/*.d.ts",
     "**/*.ts",
     "src/render_/**/*.vue",
+    "src/**/*.ts"
   ]
 }
