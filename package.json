@@ -50,6 +50,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@heroicons/vue": "^2.1.5",
     "electron-squirrel-startup": "^1.0.1",
     "element-plus": "^2.8.0",
     "pinia": "^2.2.2",
