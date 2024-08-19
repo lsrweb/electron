@@ -1,11 +1,11 @@
 <template>
-  <el-config-provider>
+  <el-config-provider :locale="zhCn">
     <RouterView />
   </el-config-provider>
 </template>
 
 <script setup>
-const ok = ref(1);
+import zhCn from "element-plus/dist/locale/zh-cn.mjs";
 </script>
 
 <style lang="scss" scoped>

@@ -1,5 +1,4 @@
 {
-  "extends": "@vue/tsconfig/tsconfig.dom.json",
   "compilerOptions": {
     "target": "ESNext",
     "module": "commonjs",
@@ -13,7 +12,11 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
 
-    "verbatimModuleSyntax":false
+    "verbatimModuleSyntax": false,
+    "paths": {
+      "@/*": ["src/*"],
+      "@r/*": ["src/render_/*"]
+    }
   },
   "include": [
     "auto-imports.d.ts",
@@ -21,6 +24,8 @@
     "**/*.d.ts",
     "**/*.ts",
     "src/render_/**/*.vue",
-    "src/**/*.ts"
+    "src/**/*.ts",
+    "src/**/*.js",
+    "src/**/*.vue"
   ]
 }
