@@ -11,8 +11,7 @@
     "outDir": "dist",
     "moduleResolution": "node",
     "resolveJsonModule": true,
-
-    "verbatimModuleSyntax": false,
+    
     "paths": {
       "@/*": ["src/*"],
       "@r/*": ["src/render_/*"]
