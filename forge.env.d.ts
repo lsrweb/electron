@@ -20,12 +20,16 @@ declare global {
     VITE_DEV_SERVER_URL: `${string}_VITE_DEV_SERVER_URL`;
     VITE_NAME: `${string}_VITE_NAME`;
   }
+
+  declare module 'vite' {
+    interface ConfigEnv<K extends keyof VitePluginConfig = keyof VitePluginConfig> {
+      root: string;
+      forgeConfig: VitePluginConfig;
+      forgeConfigSelf: VitePluginConfig[K][number];
+    }
+  }
+  
 }
 
-declare module 'vite' {
-  interface ConfigEnv<K extends keyof VitePluginConfig = keyof VitePluginConfig> {
-    root: string;
-    forgeConfig: VitePluginConfig;
-    forgeConfigSelf: VitePluginConfig[K][number];
-  }
-}
+
+

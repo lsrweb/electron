@@ -7,24 +7,37 @@
     "esModuleInterop": true,
     "noImplicitAny": true,
     "sourceMap": true,
-    "baseUrl": ".",
     "outDir": "dist",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     
+    "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
       "@r/*": ["src/render_/*"]
-    }
+    },
+    "types": ["element-plus/global","node"]
   },
   "include": [
     "auto-imports.d.ts",
     "components.d.ts",
-    "**/*.d.ts",
-    "**/*.ts",
-    "src/render_/**/*.vue",
+    "src/render_/**/*.ts",
     "src/**/*.ts",
+    "src/**/*.d.ts",
+    "src/**/*.vue",
     "src/**/*.js",
-    "src/**/*.vue"
+    "./**/*.d.ts",
+    "./**/*.ts",
+  ],
+  // 排除
+  "exclude": [
+    "node_modules",
+    "dist",
+    "public",
+    "tests",
+    "tsconfig.json",
+    "tsconfig.build.json",
+    "tsconfig.test.json",
   ]
 }
+ 

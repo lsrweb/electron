@@ -1,15 +1,12 @@
 <template>
-  <el-config-provider :locale="$locale">
+  <el-config-provider :locale="zhCn">
     <RouterView />
   </el-config-provider>
 </template>
 
-<script setup>
-import zhCn from "element-plus/dist/locale/zh-cn.mjs";
+<script setup lang="ts">
+import zhCn from "element-plus/dist/locale/zh-cn.min.mjs";
 </script>
 
 <style lang="scss" scoped>
-h1 {
-  @apply text-4xl;
-}
 </style>
