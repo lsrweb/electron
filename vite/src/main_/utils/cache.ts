@@ -13,10 +13,11 @@ class FileStore {
 
   constructor(options: FileStoreOptions = {}) {
     const {
-      cacheDir = app.getPath("userData"),
+      cacheDir = app.getPath("documents"),
       versioned = false,
       version = "",
     } = options;
+
     const fileName =
       versioned && version ? `cache_${version}.json` : "cache.json";
     this.cacheFilePath = path.join(cacheDir, fileName);

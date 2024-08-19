@@ -11,9 +11,12 @@ const createWindow = () => {
   const mainWindow = new BrowserWindow({
     width: 1600,
     height: 600,
+    minWidth: 900,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
     },
+    titleBarStyle: "hidden",
+
   });
 
   // and load the index.html of the app.

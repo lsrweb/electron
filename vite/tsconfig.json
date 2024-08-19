@@ -1,4 +1,5 @@
 {
+  "extends": "@vue/tsconfig/tsconfig.dom.json",
   "compilerOptions": {
     "target": "ESNext",
     "module": "commonjs",
@@ -10,6 +11,14 @@
     "baseUrl": ".",
     "outDir": "dist",
     "moduleResolution": "node",
-    "resolveJsonModule": true
-  }
+    "resolveJsonModule": true,
+
+  },
+  "include": [
+    "auto-imports.d.ts",
+    "components.d.ts",
+    "**/*.d.ts",
+    "**/*.ts",
+    "src/render_/**/*.vue",
+  ]
 }
