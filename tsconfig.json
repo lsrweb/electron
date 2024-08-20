@@ -27,6 +27,7 @@
     "src/**/*.d.ts",
     "src/**/*.jsx",
     "src/**/*.vue",
+    "src/global.d.ts",
     "./**/*.d.ts"
   ],
   // 排除

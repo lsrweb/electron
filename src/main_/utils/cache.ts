@@ -46,6 +46,7 @@ class FileStore {
 
   public getCache(key: string): any {
     const cache = this.readCache();
+    if (!cache[key]) return new Error("Key not found");
     return cache[key];
   }
 

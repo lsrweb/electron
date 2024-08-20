@@ -1,14 +1,16 @@
 import { app, BrowserWindow } from "electron";
 import path from "path";
 import FileStore from "./main_/utils/cache";
+import { registerMainHanlders } from "./main_/controller";
 
 if (require("electron-squirrel-startup")) {
   app.quit();
 }
+let mainWindow: BrowserWindow;
 
 const createWindow = () => {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 1600,
     height: 600,
     minWidth: 900,
@@ -32,7 +34,9 @@ const createWindow = () => {
 
 app.on("ready", createWindow);
 
-app.whenReady().then(async () => {});
+app.whenReady().then(async () => {
+  registerMainHanlders(mainWindow);
+});
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
