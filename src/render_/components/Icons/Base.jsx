@@ -2,15 +2,26 @@ import { BaseIconProps } from "./BaseIconProps";
 
 export default defineComponent({
   name: "BaseIcon",
-  // 组件提供一个插槽，用于接收图标的内容,该组件的作用是将图标的内容渲染到页面上,并修改默认图标的大小
   props: BaseIconProps,
-  setup(props, { slots }) {
+  emits: ["click"],
+  setup(props, { slots, emit }) {
     return () => (
       <div
         style={{
           color: props.color,
+          backgroundColor: props.bgColor,
+          width: props.size,
         }}
-        class={`size-${props.size}`}
+        class={[
+          `text-[${props.size}]`,
+          `p-1`,
+          `rounded-[${props.borderRadius}]`,
+        ]}
+        // 使用 Vue 的 .stop 修饰符来阻止事件冒泡
+        onClick={(event) => {
+          event.stopPropagation();
+          emit("click");
+        }}
       >
         {slots.default?.(props)}
       </div>

@@ -2,7 +2,6 @@
   <div class="layout">
     <div class="layout__header">
       <layout-header />
-      <BlowUp></BlowUp>
     </div>
     <div class="layout__content">
       <router-view />
@@ -14,15 +13,12 @@
 </template>
 
 <script setup lang="ts">
-import BlowUp from "../components/Icons/BlowUp";
 import LayoutHeader from "./layout-header.vue";
 </script>
 
 <style scoped lang="scss">
 .layout {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
+  @apply flex flex-col p-2;
   .layout__header {
     flex: 0 0 auto;
   }

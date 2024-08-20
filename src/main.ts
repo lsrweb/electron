@@ -32,13 +32,7 @@ const createWindow = () => {
 
 app.on("ready", createWindow);
 
-app.whenReady().then(async () => {
-  const store = new FileStore();
-  store.setCache("key", [
-    { name: "John", age: 30 },
-    { name: "Jane", age: 25 },
-  ]);
-});
+app.whenReady().then(async () => {});
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
