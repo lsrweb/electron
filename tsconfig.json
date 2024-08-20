@@ -31,5 +31,5 @@
     "./**/*.d.ts"
   ],
   // 排除
-  "exclude": ["node_modules", "dist", "public", "tests"]
+  "exclude": ["node_modules", "dist", "public", "tests", ".vite"]
 }

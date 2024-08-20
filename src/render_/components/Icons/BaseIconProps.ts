@@ -4,6 +4,14 @@ export const BaseIconProps = {
     type: String,
     default: "28px",
   },
+  textSize: {
+    type: String,
+    default: "text-[14px]",
+  },
+  textAlign: {
+    type: String,
+    default: "text-center",
+  },
   color: {
     type: String,
     default: "currentColor",
@@ -14,6 +22,6 @@ export const BaseIconProps = {
   },
   borderRadius: {
     type: String,
-    default: "8px",
+    default: "rounded-sm",
   },
 };

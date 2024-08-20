@@ -25,6 +25,7 @@ import LayoutHeader from "./layout-header.vue";
   .layout__content {
     flex: 1 1 auto;
     overflow: auto;
+    @apply mt-2;
   }
   .layout__footer {
     flex: 0 0 auto;

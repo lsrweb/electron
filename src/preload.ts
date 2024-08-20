@@ -21,3 +21,17 @@ contextBridge.exposeInMainWorld("electron", {
     ),
   },
 });
+
+contextBridge.exposeInMainWorld("system", {
+  // 最大化窗口
+  maximize: ipcRenderer.invoke.bind(ipcRenderer, "ScreenController:maximize"),
+  // 取消最大化
+  unmaximize: ipcRenderer.invoke.bind(
+    ipcRenderer,
+    "ScreenController:unmaximize"
+  ),
+  // 最小化窗口
+  minimize: ipcRenderer.invoke.bind(ipcRenderer, "ScreenController:minimize"),
+  // 关闭窗口
+  close: ipcRenderer.invoke.bind(ipcRenderer, "ScreenController:close"),
+});

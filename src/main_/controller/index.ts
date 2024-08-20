@@ -2,6 +2,7 @@ import { ipcMain } from "electron";
 import type { BrowserWindow } from "electron";
 import { IpcMainBaseController } from "./base";
 import { StoreController } from "./storeControll";
+import { ScreenController } from "./screen";
 
 export const enumControllerMethods = <T extends IpcMainBaseController>(
   clsInstance: T
@@ -31,8 +32,10 @@ export const enumControllerMethods = <T extends IpcMainBaseController>(
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const registerMainHanlders = (mainWindow: BrowserWindow) => {
   const store = new StoreController();
+  const screen = new ScreenController(mainWindow);
 
   enumControllerMethods(store);
+  enumControllerMethods(screen);
 
   const controllers = {
     store,

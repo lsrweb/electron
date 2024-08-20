@@ -21,5 +21,12 @@ declare global {
         importConfig: (config: string) => Promise<void>;
       };
     };
+
+    system: {
+      maximize: () => Promise<void>;
+      unmaximize: () => Promise<void>;
+      minimize: () => Promise<void>;
+      close: () => Promise<void>;
+    };
   }
 }

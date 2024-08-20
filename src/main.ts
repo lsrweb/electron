@@ -1,6 +1,6 @@
+import { createTray } from "./main_/core/Tray";
 import { app, BrowserWindow } from "electron";
 import path from "path";
-import FileStore from "./main_/utils/cache";
 import { registerMainHanlders } from "./main_/controller";
 
 if (require("electron-squirrel-startup")) {
@@ -18,6 +18,7 @@ const createWindow = () => {
       preload: path.join(__dirname, "preload.js"),
     },
     titleBarStyle: "hidden",
+    icon: path.join(__dirname, "../../images/icon.png"),
   });
 
   // and load the index.html of the app.
@@ -25,7 +26,7 @@ const createWindow = () => {
     mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
   } else {
     mainWindow.loadFile(
-      path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`)
+      path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`),
     );
   }
 
@@ -35,6 +36,10 @@ const createWindow = () => {
 app.on("ready", createWindow);
 
 app.whenReady().then(async () => {
+  // 注册托盘图标
+  createTray(mainWindow);
+
+  // 注册事件暴露程序
   registerMainHanlders(mainWindow);
 });
 

@@ -5,11 +5,9 @@ import { pluginExposeRenderer } from "./vite.base.config";
 import vue from "@vitejs/plugin-vue";
 import vueJsx from "@vitejs/plugin-vue-jsx";
 
-
 import AutoImport from "unplugin-auto-import/vite";
 import Components from "unplugin-vue-components/vite";
 import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
-
 
 const pathResolve = (dir: string) => {
   return resolve(__dirname, ".", dir);
@@ -18,7 +16,7 @@ const pathResolve = (dir: string) => {
 export default defineConfig((env) => {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  const forgeEnv = env as ConfigEnv<'render'>;
+  const forgeEnv = env as ConfigEnv<"render">;
   const { root, mode, forgeConfigSelf } = forgeEnv;
   const name = forgeConfigSelf.name ?? "";
 
@@ -51,12 +49,16 @@ export default defineConfig((env) => {
         imports: ["vue", "vue-router"],
         resolvers: [ElementPlusResolver()],
         // 生成eslint规则
-        eslintrc:  {
-          enabled: true
-        }
+        eslintrc: {
+          enabled: true,
+        },
       }),
       Components({
-        resolvers: [ElementPlusResolver()],
+        resolvers: [
+          ElementPlusResolver({
+            importStyle: "sass",
+          }),
+        ],
       }),
     ],
     resolve: {

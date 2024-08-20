@@ -13,11 +13,13 @@ export default defineComponent({
           width: props.size,
         }}
         class={[
-          `text-[${props.size}]`,
+          props.textSize,
+          props.textAlign,
           `p-1`,
-          `rounded-[${props.borderRadius}]`,
+          props.borderRadius,
+          "hover:!bg-[#42b983] hover:!text-white",
+          "cursor-pointer",
         ]}
-        // 使用 Vue 的 .stop 修饰符来阻止事件冒泡
         onClick={(event) => {
           event.stopPropagation();
           emit("click");
