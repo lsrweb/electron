@@ -10,6 +10,7 @@
     "outDir": "dist",
     "moduleResolution": "node",
     "resolveJsonModule": true,
+    "jsx": "preserve",
     
     "baseUrl": ".",
     "paths": {
@@ -27,6 +28,7 @@
     "src/**/*.vue",
     "src/**/*.js",
     "./**/*.d.ts",
+    "./**/*.jsx",
     "./**/*.ts",
   ],
   // 排除

@@ -3,6 +3,8 @@ import type { ConfigEnv, UserConfig } from "vite";
 import { defineConfig } from "vite";
 import { pluginExposeRenderer } from "./vite.base.config";
 import vue from "@vitejs/plugin-vue";
+import vueJsx from "@vitejs/plugin-vue-jsx";
+
 
 import AutoImport from "unplugin-auto-import/vite";
 import Components from "unplugin-vue-components/vite";
@@ -44,9 +46,14 @@ export default defineConfig((env) => {
     plugins: [
       pluginExposeRenderer(name),
       vue(),
+      vueJsx(),
       AutoImport({
         imports: ["vue", "vue-router"],
         resolvers: [ElementPlusResolver()],
+        // 生成eslint规则
+        eslintrc:  {
+          enabled: true
+        }
       }),
       Components({
         resolvers: [ElementPlusResolver()],
