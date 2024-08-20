@@ -1,1 +1,1 @@
-declare module 'element-plus/dist/locale/zh-cn.min.mjs';
+declare module "element-plus/dist/locale/zh-cn.min.mjs";

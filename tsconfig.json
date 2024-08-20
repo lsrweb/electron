@@ -11,35 +11,24 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "jsx": "preserve",
-    
+
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
       "@r/*": ["src/render_/*"]
     },
-    "types": ["element-plus/global","node"]
+    "types": ["element-plus/global"]
   },
   "include": [
     "auto-imports.d.ts",
     "components.d.ts",
-    "src/render_/**/*.ts",
+    "forge.env.d.ts",
     "src/**/*.ts",
     "src/**/*.d.ts",
+    "src/**/*.jsx",
     "src/**/*.vue",
-    "src/**/*.js",
-    "./**/*.d.ts",
-    "./**/*.jsx",
-    "./**/*.ts",
+    "./**/*.d.ts"
   ],
   // 排除
-  "exclude": [
-    "node_modules",
-    "dist",
-    "public",
-    "tests",
-    "tsconfig.json",
-    "tsconfig.build.json",
-    "tsconfig.test.json",
-  ]
+  "exclude": ["node_modules", "dist", "public", "tests"]
 }
- 
