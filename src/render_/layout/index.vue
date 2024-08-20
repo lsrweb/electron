@@ -6,9 +6,6 @@
     <div class="layout__content">
       <router-view />
     </div>
-    <div class="layout__footer">
-      <Footer />
-    </div>
   </div>
 </template>
 

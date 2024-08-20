@@ -6,11 +6,17 @@
       <MiniDesk class="mr-2" @click="miniApp" />
 
       <!--  所有版本-->
-      <BaseIcon size="90px" class="mr-2" @click="getAllVersion"
-        >所有版本</BaseIcon
-      >
-      <BaseIcon size="60px" class="mr-2" @click="getAllProgram">项目</BaseIcon>
-      <BaseIcon size="60px" class="mr-2" @click="getAllGroup">分组</BaseIcon>
+      <router-link to="version" class="mr-2" active-class="active-theme-color">
+        <BaseIcon size="90px" bg-color="" @click="getAllVersion">
+          所有版本
+        </BaseIcon>
+      </router-link>
+      <router-link to="program" class="mr-2">
+        <BaseIcon size="60px" @click="getAllProgram">项目</BaseIcon>
+      </router-link>
+      <router-link to="group" class="mr-2">
+        <BaseIcon size="60px" @click="getAllGroup">分组</BaseIcon>
+      </router-link>
     </div>
   </div>
 </template>
@@ -44,8 +50,17 @@ function getAllGroup() {}
 
 <style scoped lang="scss">
 .layout-header {
+  -webkit-app-region: drag;
+  -webkit-user-select: none;
   .header__btns {
-    @apply flex;
+    @apply flex w-max;
+    -webkit-app-region: no-drag;
+    -webkit-user-select: auto;
   }
+}
+
+.active-theme-color {
+  background-color: #42b983;
+  color: #fff;
 }
 </style>

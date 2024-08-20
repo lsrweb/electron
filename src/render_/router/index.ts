@@ -1,24 +1,39 @@
-import { createRouter, createMemoryHistory } from "vue-router";
+import {
+  createRouter,
+  createMemoryHistory,
+  createWebHashHistory,
+} from "vue-router";
 import layout from "@r/layout/index.vue";
 const router = createRouter({
-  history: createMemoryHistory(),
+  history: createWebHashHistory(),
   routes: [
     {
       path: "/",
       name: "dash",
       component: layout,
-      redirect: "/home",
+      redirect: "/version",
       children: [
-        { 
-          path: "/home",
+        {
+          path: "/version",
           name: "home",
-          component: () => import("@r/pages/index.vue"),
-        }
-      ]
-      
+          component: () => import("@r/pages/version.vue"),
+        },
+        {
+          path: "/program",
+          name: "program",
+          component: () => import("@r/pages/program.vue"),
+        },
+        {
+          path: "/group",
+          name: "group",
+          component: () => import("@r/pages/group.vue"),
+        },
+      ],
     },
   ],
+  scrollBehavior(to, from, savedPosition) {
+    return { top: 0 };
+  },
 });
 
 export default router;
- 
