@@ -3,9 +3,6 @@
 @tailwind utilities;
 
 body,html {
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-    background: linear-gradient(90deg, #F0EDED 30%, #793448 30%, #F0EDED 30%);
 }
 #app {
     .layout {
