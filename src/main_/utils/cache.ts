@@ -9,7 +9,8 @@ interface FileStoreOptions {
 }
 
 class FileStore {
-  private cacheFilePath: string;
+  private cacheDir: string;
+  private defaultFileName: string;
 
   constructor(options: FileStoreOptions = {}) {
     const {
@@ -18,51 +19,58 @@ class FileStore {
       version = "",
     } = options;
 
-    const fileName =
+    this.cacheDir = cacheDir;
+    this.defaultFileName =
       versioned && version ? `cache_${version}.json` : "cache.json";
-    this.cacheFilePath = path.join(cacheDir, fileName);
 
-    if (!fs.existsSync(this.cacheFilePath)) {
-      fs.writeFileSync(this.cacheFilePath, JSON.stringify({}));
+    const cacheFilePath = this.getCacheFilePath();
+    if (!fs.existsSync(cacheFilePath)) {
+      fs.writeFileSync(cacheFilePath, JSON.stringify({}));
     }
 
-    console.log(`Cache file path: ${this.cacheFilePath}`);
+    console.log(`Cache file path: ${cacheFilePath}`);
   }
 
-  private readCache(): Record<string, any> {
-    const data = fs.readFileSync(this.cacheFilePath, "utf-8");
+  private getCacheFilePath(fileName?: string): string {
+    return path.join(this.cacheDir, fileName || this.defaultFileName);
+  }
+
+  private readCache(fileName?: string): Record<string, any> {
+    const cacheFilePath = this.getCacheFilePath(fileName);
+    const data = fs.readFileSync(cacheFilePath, "utf-8");
     return JSON.parse(data);
   }
 
-  private writeCache(data: Record<string, any>): void {
-    fs.writeFileSync(this.cacheFilePath, JSON.stringify(data, null, 2));
+  private writeCache(data: Record<string, any>, fileName?: string): void {
+    const cacheFilePath = this.getCacheFilePath(fileName);
+    fs.writeFileSync(cacheFilePath, JSON.stringify(data, null, 2));
   }
 
-  public setCache(key: string, value: any): void {
-    const cache = this.readCache();
+  public setCache(key: string, value: any, fileName?: string): void {
+    const cache = this.readCache(fileName);
     cache[key] = value;
-    this.writeCache(cache);
+    this.writeCache(cache, fileName);
   }
 
-  public getCache(key: string): any {
-    const cache = this.readCache();
+  public getCache(key: string, fileName?: string): any {
+    const cache = this.readCache(fileName);
     if (!cache[key]) return new Error("Key not found");
     return cache[key];
   }
 
-  public clearCache(key: string): void {
-    const cache = this.readCache();
+  public clearCache(key: string, fileName?: string): void {
+    const cache = this.readCache(fileName);
     delete cache[key];
-    this.writeCache(cache);
+    this.writeCache(cache, fileName);
   }
 
-  public hasCache(key: string): boolean {
-    const cache = this.readCache();
+  public hasCache(key: string, fileName?: string): boolean {
+    const cache = this.readCache(fileName);
     return Object.prototype.hasOwnProperty.call(cache, key);
   }
 
-  public clearAllCache(): void {
-    this.writeCache({});
+  public clearAllCache(fileName?: string): void {
+    this.writeCache({}, fileName);
   }
 
   public exportConfig(): void {
@@ -72,7 +80,6 @@ class FileStore {
       defaultPath: path.join(app.getPath("documents"), "config.json"),
       filters: [{ name: "JSON 文件", extensions: ["json"] }],
     });
-
     if (filePath) {
       fs.writeFileSync(filePath, JSON.stringify(cache, null, 2));
     }
@@ -85,6 +92,19 @@ class FileStore {
       this.writeCache(importedCache);
     } else {
       throw new Error("文件不存在");
+    }
+  }
+
+  public initializeConfig(
+    fileName: string,
+    initialConfig: Record<string, any>
+  ): void {
+    const cacheFilePath = this.getCacheFilePath(fileName);
+    if (!fs.existsSync(cacheFilePath)) {
+      fs.writeFileSync(cacheFilePath, JSON.stringify(initialConfig, null, 2));
+      console.log(`Initialized config file: ${cacheFilePath}`);
+    } else {
+      console.log(`Config file already exists: ${cacheFilePath}`);
     }
   }
 }
