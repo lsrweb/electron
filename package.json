@@ -21,6 +21,7 @@
     "@electron-forge/plugin-fuses": "^7.4.0",
     "@electron-forge/plugin-vite": "^7.4.0",
     "@electron/fuses": "^1.8.0",
+    "@iconify/vue": "^4.1.2",
     "@types/node": "^22.4.1",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
@@ -52,10 +53,13 @@
   "license": "MIT",
   "dependencies": {
     "@heroicons/vue": "^2.1.5",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
     "electron-squirrel-startup": "^1.0.1",
     "element-plus": "^2.8.0",
     "pinia": "^2.2.2",
     "sass": "^1.77.8",
+    "tailwind-merge": "^2.5.2",
     "vue": "^3.4.38",
     "vue-router": "^4.4.3"
   }

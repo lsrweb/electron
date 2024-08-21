@@ -7,7 +7,9 @@
 <script setup lang="ts">
 import zhCn from "element-plus/dist/locale/zh-cn.min.mjs";
 
-onMounted(async () => {});
+onMounted(async () => {
+  // 初始化文件配置
+});
 </script>
 
 <style lang="scss" scoped></style>

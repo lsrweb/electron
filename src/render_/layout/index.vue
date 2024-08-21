@@ -15,14 +15,14 @@ import LayoutHeader from "./layout-header.vue";
 
 <style scoped lang="scss">
 .layout {
-  @apply flex flex-col p-2;
+  @apply flex flex-col;
   .layout__header {
     flex: 0 0 auto;
   }
   .layout__content {
     flex: 1 1 auto;
     overflow: auto;
-    @apply mt-2;
+    @apply p-2;
   }
   .layout__footer {
     flex: 0 0 auto;

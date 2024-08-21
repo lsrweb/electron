@@ -18,14 +18,21 @@
         <BaseIcon size="60px" @click="getAllGroup">分组</BaseIcon>
       </router-link>
     </div>
+
+    <!-- setting -->
+    <div>
+      <Settings @click="showSettings" />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import Button from "@r/components/Button.vue";
 import BaseIcon from "@r/components/Icons/Base";
 import Close from "../components/Icons/Close";
 import MiniDesk from "../components/Icons/MiniDesk";
 import { ElMessage, ElMessageBox } from "element-plus";
+import Settings from "../components/Icons/Settings";
 
 function closeApp() {
   ElMessageBox.confirm("确定要退出吗？", "提示", {
@@ -46,16 +53,15 @@ function getAllVersion() {}
 function getAllProgram() {}
 
 function getAllGroup() {}
+
+function showSettings() {}
 </script>
 
 <style scoped lang="scss">
 .layout-header {
-  -webkit-app-region: drag;
-  -webkit-user-select: none;
+  @apply flex items-center justify-between p-2;
   .header__btns {
     @apply flex w-max;
-    -webkit-app-region: no-drag;
-    -webkit-user-select: auto;
   }
 }
 

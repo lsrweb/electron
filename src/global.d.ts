@@ -1,3 +1,5 @@
+export {}; // Make this a module
+
 declare module "element-plus/dist/locale/zh-cn.min.mjs";
 
 type ResponseChannel = {

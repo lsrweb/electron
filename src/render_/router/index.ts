@@ -16,17 +16,17 @@ const router = createRouter({
         {
           path: "/version",
           name: "home",
-          component: () => import("@r/pages/version.vue"),
+          component: () => import("@r/pages/version/version.vue"),
         },
         {
           path: "/program",
           name: "program",
-          component: () => import("@r/pages/program.vue"),
+          component: () => import("@r/pages/program/program.vue"),
         },
         {
           path: "/group",
           name: "group",
-          component: () => import("@r/pages/group.vue"),
+          component: () => import("@r/pages/group/group.vue"),
         },
       ],
     },

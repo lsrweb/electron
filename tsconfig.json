@@ -17,18 +17,17 @@
       "@/*": ["src/*"],
       "@r/*": ["src/render_/*"]
     },
-    "types": ["element-plus/global"]
+    "types": ["element-plus/global", "node", "vite/client"]
   },
   "include": [
     "auto-imports.d.ts",
     "components.d.ts",
     "forge.env.d.ts",
-    "src/**/*.ts",
     "src/**/*.d.ts",
+    "src/**/*.ts",
     "src/**/*.jsx",
-    "src/**/*.vue",
-    "src/global.d.ts",
-    "./**/*.d.ts"
+    "src/**/*.tsx",
+    "src/**/*.vue"
   ],
   // 排除
   "exclude": ["node_modules", "dist", "public", "tests", ".vite"]
