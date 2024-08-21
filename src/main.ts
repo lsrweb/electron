@@ -2,6 +2,7 @@ import { createTray } from "./main_/core/Tray";
 import { app, BrowserWindow } from "electron";
 import path from "path";
 import { registerMainHanlders } from "./main_/controller";
+import { APPDIR } from "./main_/constants";
 
 if (require("electron-squirrel-startup")) {
   app.quit();
@@ -41,6 +42,9 @@ app.whenReady().then(async () => {
 
   // 注册事件暴露程序
   registerMainHanlders(mainWindow);
+
+  //
+  console.log(APPDIR);
 });
 
 app.on("window-all-closed", () => {

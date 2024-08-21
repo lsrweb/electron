@@ -1,7 +1,7 @@
 import { join } from "node:path";
 import { app } from "electron";
 
-export const HOME = app.getPath("home");
+export const HOME = app.getPath("documents");
 
 export const APPDIR = join(HOME, ".unipack"),
   INSTALL_DIR = join(APPDIR, "versions"),
