@@ -27,9 +27,7 @@
       <ElFormItem label="java 路径" prop="javaVersion">
         <ElInput v-model="form.javaVersion" placeholder="请输入java路径" />
       </ElFormItem>
-      <ElFormItem>
-        <Button type="primary" @click.stop="saveSetting">保存</Button>
-      </ElFormItem>
+      <Button type="primary" @click.stop="saveSetting">保存</Button>
     </ElForm>
   </ElDrawer>
 </template>
@@ -68,11 +66,9 @@ const dialogVisible = computed({
 const settingsForm = ref(null);
 
 function saveSetting() {
-  settingsForm.value.validate((valid: boolean) => {
+  settingsForm.value.validate(async (valid: boolean) => {
     if (valid) {
-      IpcMainMess.send("RenderSettingController:setGlobalSetting", form.value);
-    } else {
-      return false;
+      await IpcMainMess.sendSync("renderSetting.setGlobalSetting", form.value);
     }
   });
 }

@@ -21,7 +21,7 @@
 
     <!-- setting -->
     <div>
-      <Settings @click="showSettings" />
+      <Settings @click="dialogVisible = true" />
     </div>
 
     <!-- 右侧设置弹窗 -->
@@ -30,7 +30,6 @@
 </template>
 
 <script setup lang="ts">
-import Button from "@r/components/Button.vue";
 import BaseIcon from "@r/components/Icons/Base";
 import Close from "../components/Icons/Close";
 import MiniDesk from "../components/Icons/MiniDesk";
@@ -60,9 +59,6 @@ function getAllGroup() {}
 
 //
 const dialogVisible = ref(false);
-function showSettings() {
-  dialogVisible.value = true;
-}
 
 //
 const form = reactive({
@@ -70,9 +66,6 @@ const form = reactive({
   configPath: "",
   javaVersion: "",
 });
-const settingsForm = ref(null);
-
-function saveSetting() {}
 </script>
 
 <style scoped lang="scss">

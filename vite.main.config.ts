@@ -9,6 +9,8 @@ import {
 
 // https://vitejs.dev/config
 export default defineConfig((env) => {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   const forgeEnv = env as ConfigEnv<"build">;
   const { forgeConfigSelf } = forgeEnv;
   const define = getBuildDefine(forgeEnv);
@@ -28,6 +30,9 @@ export default defineConfig((env) => {
     resolve: {
       // Load the Node.js entry.
       mainFields: ["module", "jsnext:main", "jsnext"],
+      alias: {
+        "@": "/src",
+      },
     },
   };
 

@@ -94,7 +94,7 @@ class FileStore {
 
   public initializeConfig(
     fileName: string,
-    initialConfig: Record<string, any>
+    initialConfig: Record<string, any>,
   ): void {
     const cacheFilePath = this.getCacheFilePath(fileName);
     if (!fs.existsSync(cacheFilePath)) {
