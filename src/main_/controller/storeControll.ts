@@ -25,16 +25,4 @@ export class StoreController extends IpcMainBaseController {
   has(event: IpcMainEvent, params: string) {
     return this.fileSystem.hasCache(params);
   }
-
-  clearAll(event: IpcMainEvent) {
-    this.fileSystem.clearAllCache();
-  }
-
-  exportConfig(event: IpcMainEvent) {
-    this.fileSystem.exportConfig();
-  }
-
-  importConfig(event: IpcMainEvent, params: string) {
-    this.fileSystem.importConfig(params);
-  }
 }

@@ -23,6 +23,9 @@
     <div>
       <Settings @click="showSettings" />
     </div>
+
+    <!-- 右侧设置弹窗 -->
+    <Popup v-model:dialogVisible="dialogVisible" :form="form"></Popup>
   </div>
 </template>
 
@@ -33,6 +36,7 @@ import Close from "../components/Icons/Close";
 import MiniDesk from "../components/Icons/MiniDesk";
 import { ElMessage, ElMessageBox } from "element-plus";
 import Settings from "../components/Icons/Settings";
+import Popup from "./components/Popup.vue";
 
 function closeApp() {
   ElMessageBox.confirm("确定要退出吗？", "提示", {
@@ -54,7 +58,21 @@ function getAllProgram() {}
 
 function getAllGroup() {}
 
-function showSettings() {}
+//
+const dialogVisible = ref(false);
+function showSettings() {
+  dialogVisible.value = true;
+}
+
+//
+const form = reactive({
+  versionPath: "",
+  configPath: "",
+  javaVersion: "",
+});
+const settingsForm = ref(null);
+
+function saveSetting() {}
 </script>
 
 <style scoped lang="scss">

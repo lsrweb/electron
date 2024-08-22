@@ -18,7 +18,11 @@ declare global {
         has: (key: string) => Promise<boolean>;
         clearAll: () => Promise<void>;
         exportConfig: () => Promise<void>;
-        importConfig: (config: string) => Promise<void>;
+        importConfig: (filePath: string) => Promise<void>; // Updated method signature
+        initializeConfig: (
+          fileName: string,
+          initialConfig: Record<string, any>
+        ) => Promise<void>; // Added new method
       };
     };
 
@@ -27,6 +31,10 @@ declare global {
       unmaximize: () => Promise<void>;
       minimize: () => Promise<void>;
       close: () => Promise<void>;
+    };
+
+    renderSetting: {
+      setGlobalSetting: (setting: any) => Promise<boolean>;
     };
   }
 }

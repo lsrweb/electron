@@ -35,3 +35,11 @@ contextBridge.exposeInMainWorld("system", {
   // 关闭窗口
   close: ipcRenderer.invoke.bind(ipcRenderer, "ScreenController:close"),
 });
+
+contextBridge.exposeInMainWorld("renderSetting", {
+  // 设置全局配置文件
+  setGlobalSetting: ipcRenderer.invoke.bind(
+    ipcRenderer,
+    "RenderSettingController:setGlobalSetting"
+  ),
+});

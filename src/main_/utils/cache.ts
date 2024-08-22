@@ -1,6 +1,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import { app, dialog } from "electron";
+import { APPDIR } from "../constants";
 
 interface FileStoreOptions {
   cacheDir?: string;
@@ -13,15 +14,11 @@ class FileStore {
   private defaultFileName: string;
 
   constructor(options: FileStoreOptions = {}) {
-    const {
-      cacheDir = app.getPath("documents"),
-      versioned = false,
-      version = "",
-    } = options;
+    const { cacheDir = APPDIR, versioned = false, version = "" } = options;
 
     this.cacheDir = cacheDir;
     this.defaultFileName =
-      versioned && version ? `cache_${version}.json` : "cache.json";
+      versioned && version ? `cache_${version}.json` : "settings.json";
 
     const cacheFilePath = this.getCacheFilePath();
     if (!fs.existsSync(cacheFilePath)) {

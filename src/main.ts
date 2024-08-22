@@ -3,6 +3,7 @@ import { app, BrowserWindow } from "electron";
 import path from "path";
 import { registerMainHanlders } from "./main_/controller";
 import { APPDIR } from "./main_/constants";
+import { checkFolderExist } from "./main_/utils/folder";
 
 if (require("electron-squirrel-startup")) {
   app.quit();
@@ -37,14 +38,14 @@ const createWindow = () => {
 app.on("ready", createWindow);
 
 app.whenReady().then(async () => {
+  // 初始化配置文件的文件夹
+  checkFolderExist(APPDIR);
+
   // 注册托盘图标
   createTray(mainWindow);
 
   // 注册事件暴露程序
   registerMainHanlders(mainWindow);
-
-  //
-  console.log(APPDIR);
 });
 
 app.on("window-all-closed", () => {

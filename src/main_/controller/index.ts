@@ -3,6 +3,7 @@ import type { BrowserWindow } from "electron";
 import { IpcMainBaseController } from "./base";
 import { StoreController } from "./storeControll";
 import { ScreenController } from "./screen";
+import { RenderSettingController } from "./RenderController/setting";
 
 export const enumControllerMethods = <T extends IpcMainBaseController>(
   clsInstance: T
@@ -33,9 +34,13 @@ export const enumControllerMethods = <T extends IpcMainBaseController>(
 export const registerMainHanlders = (mainWindow: BrowserWindow) => {
   const store = new StoreController();
   const screen = new ScreenController(mainWindow);
+  const renderSetting = new RenderSettingController();
 
   enumControllerMethods(store);
   enumControllerMethods(screen);
+
+  // 渲染端控制器
+  enumControllerMethods(renderSetting);
 
   const controllers = {
     store,
