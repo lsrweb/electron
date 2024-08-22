@@ -8,4 +8,18 @@ export class StoreController extends IpcMainBaseController {
   constructor() {
     super("StoreController");
   }
+
+  /**
+   * getData
+   */
+  public getData() {
+    console.log("getData");
+  }
+
+  /**
+   * setData
+   */
+  public setData() {
+    console.log("setData");
+  }
 }

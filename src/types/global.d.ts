@@ -10,32 +10,13 @@ type InvokeParams = {
 
 declare global {
   interface Window {
-    electron: {
-      storage: {
-        get: (key: string) => Promise<any>;
-        set: (key: string, value: any) => Promise<void>;
-        clear: (key: string) => Promise<void>;
-        has: (key: string) => Promise<boolean>;
-        clearAll: () => Promise<void>;
-        exportConfig: () => Promise<void>;
-        importConfig: (filePath: string) => Promise<void>; // Updated method signature
-        initializeConfig: (
-          fileName: string,
-          initialConfig: Record<string, any>
-        ) => Promise<void>; // Added new method
-      };
+    cache: {
+      getData: () => Promise<any>;
     };
 
-    system: {
-      maximize: () => Promise<void>;
-      unmaximize: () => Promise<void>;
-      minimize: () => Promise<void>;
-      close: () => Promise<void>;
-    };
+    system: {};
 
-    renderSetting: {
-      setGlobalSetting: (setting: any) => Promise<boolean>;
-    };
+    renderSetting: {};
   }
 }
 
