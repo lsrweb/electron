@@ -7,14 +7,27 @@ import { VitePlugin } from "@electron-forge/plugin-vite";
 import { FusesPlugin } from "@electron-forge/plugin-fuses";
 import { FuseV1Options, FuseVersion } from "@electron/fuses";
 
+import { join, resolve } from "path";
+
 const config: ForgeConfig = {
   packagerConfig: {
     asar: true,
-    icon: "./images/icons",
+    icon: "./images/icon.ico",
+    overwrite: true,
   },
   rebuildConfig: {},
   makers: [
-    new MakerSquirrel({}),
+    new MakerSquirrel({
+      noMsi: true,
+      authors: "LLLSR",
+      description: "A simple electron app",
+      name: "electron-vite-vue",
+      iconUrl: resolve(join(__dirname, "images", "icon.ico")),
+      setupExe: "electron-vite-vue.exe",
+      setupIcon: resolve(join(__dirname, "images", "icon.ico")),
+      copyright: "LLLSR",
+      usePackageJson: true,
+    }),
     new MakerZIP({}, ["darwin"]),
     new MakerRpm({}),
     new MakerDeb({}),

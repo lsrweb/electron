@@ -20,7 +20,7 @@ class IpcMainMess {
    * @returns {any} - The result of the method call, if successful.
    * @throws Will throw an error if the method is not found or is not a function.
    */
-  private chainCall(path: string, ...args: any[]) {
+  private chainCall(path: string, ...args: any[]): any {
     try {
       const parts = path.split(".");
       let method = window as any;
