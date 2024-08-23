@@ -10,6 +10,7 @@
     <!-- 配置文件存储目录 -->
     <!-- java 版本 -->
     <ElForm
+      v-model="form"
       :model="form"
       :rules="formRules"
       ref="settingsForm"

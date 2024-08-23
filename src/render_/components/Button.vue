@@ -45,7 +45,7 @@ withDefaults(
     size: "md",
     animate: false,
     disabled: false,
-  },
+  }
 );
 </script>
 
@@ -58,9 +58,10 @@ withDefaults(
           variant,
           size,
           animate,
-        }),
+        })
       )
     "
+    type="button"
   >
     <slot />
   </button>

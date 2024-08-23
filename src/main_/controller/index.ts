@@ -6,7 +6,7 @@ import { ScreenController } from "./ScreenController";
 import { StoreController } from "./StoreController";
 
 export const enumControllerMethods = <T extends IpcMainBaseController>(
-  clsInstance: T,
+  clsInstance: T
 ) => {
   // eslint-disable-next-line no-unused-vars
   const result: { [key: string]: (...args: unknown[]) => any } =
@@ -30,7 +30,7 @@ export const enumControllerMethods = <T extends IpcMainBaseController>(
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const registerMainHandlers = (mainWindow: BrowserWindow) => {
-  const store = new StoreController();
+  const store = new StoreController(mainWindow);
   const screen = new ScreenController(mainWindow);
   const renderSetting = new RenderSettingController();
 

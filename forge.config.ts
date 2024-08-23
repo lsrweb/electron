@@ -28,7 +28,7 @@ const config: ForgeConfig = {
       copyright: "LLLSR",
       usePackageJson: true,
     }),
-    new MakerZIP({}, ["darwin"]),
+    new MakerZIP({}, ["darwin", "linux", "win32"]),
     new MakerRpm({}),
     new MakerDeb({}),
   ],
