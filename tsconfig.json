@@ -17,7 +17,7 @@
       "@/*": ["src/*"],
       "@r/*": ["src/render_/*"]
     },
-    "types": ["element-plus/global", "node", "vite/client"]
+    "typeRoots": ["./src/types"]
   },
   "include": [
     "auto-imports.d.ts",

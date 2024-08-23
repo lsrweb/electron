@@ -21,7 +21,7 @@ class FeedBack {
     };
     if (!this.window) return;
 
-    app["ws"].emit("message", toJson(resultMessage));
+    app.ws.emit("message", toJson(resultMessage));
   }
 
   /**

@@ -7,8 +7,6 @@ import { checkFolderExist } from "./main_/utils/folder";
 
 import { Server } from "socket.io";
 import http from "http";
-import { toJson } from "./render_/utils";
-import FeedBack from "./main_/utils/feedback";
 
 // 创建 WebSocket 服务
 // 创建 HTTP 服务器
@@ -83,9 +81,7 @@ app.whenReady().then(() => {
     mainWindow.webContents.send("main-process-loaded");
   });
 
-  // eslint-disable-next-line
-  // @ts-ignore
-  app["ws"] = io;
+  app.ws = io;
   // eslint-disable-next-line
   // @ts-ignore
   app["mainWindow"] = mainWindow;
