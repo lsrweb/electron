@@ -7,6 +7,7 @@ import { checkFolderExist } from "./main_/utils/folder";
 
 import { Server } from "socket.io";
 import http from "http";
+import type { CustomApp } from "./types/electron-app";
 
 // 创建 WebSocket 服务
 // 创建 HTTP 服务器
@@ -70,6 +71,10 @@ const createWindow = () => {
 app.whenReady().then(() => {
   createWindow();
 
+  // 给app指定类型 CustomApp
+  (app as CustomApp).ws = io;
+  (app as CustomApp).mainWindow = mainWindow;
+
   registerMainHandlers(mainWindow);
   // 初始化配置文件的文件夹
   checkFolderExist(APPDIR);
@@ -80,11 +85,6 @@ app.whenReady().then(() => {
   mainWindow.webContents.on("did-finish-load", () => {
     mainWindow.webContents.send("main-process-loaded");
   });
-
-  app.ws = io;
-  // eslint-disable-next-line
-  // @ts-ignore
-  app["mainWindow"] = mainWindow;
 });
 
 app.on("window-all-closed", () => {
@@ -98,3 +98,7 @@ app.on("activate", () => {
     createWindow();
   }
 });
+
+process.on("uncaughtException", (error) => {});
+
+process.on("unhandledRejection", (error) => {});

@@ -9,6 +9,7 @@ import * as path from "path";
 import { app, dialog, type BrowserWindow } from "electron";
 import { APPDIR } from "../constants";
 import { feedBack } from "./feedback";
+import type { CustomApp } from "@/types/electron-app";
 
 class FileStore {
   private window: BrowserWindow;

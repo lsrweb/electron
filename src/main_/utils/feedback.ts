@@ -1,4 +1,5 @@
 import { toJson } from "@/render_/utils";
+import type { CustomApp } from "@/types/electron-app";
 import { app, type BrowserWindow } from "electron";
 import type { Socket } from "socket.io";
 
@@ -20,8 +21,7 @@ class FeedBack {
       message,
     };
     if (!this.window) return;
-
-    app.ws.emit("message", toJson(resultMessage));
+    (app as CustomApp).ws.emit("feedBack:message", toJson(resultMessage));
   }
 
   /**
@@ -34,7 +34,7 @@ class FeedBack {
       message,
     };
     if (!this.window) return;
-    this.window.webContents.send("feedback:error", resultMessage);
+    (app as CustomApp).ws.emit("feedBack:message", toJson(resultMessage));
   }
 
   /**
@@ -47,7 +47,7 @@ class FeedBack {
       message,
     };
     if (!this.window) return;
-    this.window.webContents.send("feedback:warning", resultMessage);
+    (app as CustomApp).ws.emit("feedBack:message", toJson(resultMessage));
   }
 
   /**
@@ -60,9 +60,9 @@ class FeedBack {
       message,
     };
     if (!this.window) return;
-    this.window.webContents.send("feedback:info", resultMessage);
+    (app as CustomApp).ws.emit("feedBack:message", toJson(resultMessage));
   }
 }
 
-export const feedBack = new FeedBack(app["mainWindow"]);
+export const feedBack = new FeedBack((app as CustomApp).mainWindow);
 export default FeedBack;

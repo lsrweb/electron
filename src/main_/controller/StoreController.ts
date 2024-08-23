@@ -1,7 +1,8 @@
 import { app, type BrowserWindow, type IpcMainEvent } from "electron";
 import FileStore from "../utils/cache";
 import { IpcMainBaseController } from "./base";
-import { APPDIR, SETTING_JSONFILE } from "../constants";
+import { SETTING_JSONFILE } from "../constants";
+import type { CustomApp } from "@/types/electron-app";
 
 export class StoreController extends IpcMainBaseController {
   fileSystem: FileStore;
