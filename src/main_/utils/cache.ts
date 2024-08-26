@@ -4,6 +4,8 @@ import {
   writeFileSync,
   readFileSync,
   existsSync,
+  readdirSync,
+  statSync,
 } from "fs-extra";
 import * as path from "path";
 import { app, dialog, type BrowserWindow } from "electron";
@@ -141,6 +143,47 @@ class FileStore {
       dialog.showErrorBox("错误", "清除所有缓存失败");
     }
   }
+
+  // 读取传入指定绝对路径下指定层数文件夹名称树
+  public readDirTree(
+    dir: string,
+    depth: number,
+    flatten: boolean = false
+  ): Record<string, any> | string[] {
+    const result: Record<string, any> = {};
+    const dirName = path.basename(dir);
+    result[dirName] = {};
+
+    if (depth === 0) return flatten ? [] : result;
+
+    const items = readdirSync(dir);
+    const flatResult: string[] = [];
+
+    items.forEach((item: string) => {
+      const itemPath = path.join(dir, item);
+      if (statSync(itemPath).isDirectory()) {
+        if (depth > 0) {
+          const subTree = this.readDirTree(itemPath, depth - 1, flatten);
+          if (flatten && Array.isArray(subTree)) {
+            flatResult.push(...subTree);
+          } else {
+            result[dirName][item] = subTree;
+          }
+        }
+        if (flatten) {
+          flatResult.push(itemPath);
+        }
+      }
+    });
+
+    return flatten ? flatResult : result;
+  }
 }
+
+// 测试 readDirTree
+const fileStore = new FileStore();
+const result = fileStore.readDirTree("E:\\Android_uni_app_build", 1, true);
+
+console.log(result);
 
 export default FileStore;
