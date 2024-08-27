@@ -1,7 +1,12 @@
-- Vite 项目：
+由于 uniapp 离线打包每次都要打开 Android studio,很麻烦
+由于公司内 uniapp 的项目太多,管理打理起来不方便,很麻烦,所以我需要本地记录 uniapp 项目的 uniappid,uniappcloud 秘钥,包名等信息
+由于密钥库文件生成太过麻烦,于是我打算弄一个可视化界面脚本生成不同的测试密钥库,并且进行统一管理
+由于,等我想想
+
+// 以下内容都是 Github copilot 写的..
 
 ```markdown
-# Vite Electron 项目
+# Vite Electron uniapp 离线打包桌面程序
 
 这是一个基于 Electron 和 Vite 的桌面应用程序项目。
 
