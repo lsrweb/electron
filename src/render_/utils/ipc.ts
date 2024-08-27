@@ -46,7 +46,7 @@ class IpcMainMess {
    * 向主进程发送消息,并等待主进程返回结果
    * 传入方法字符串路径,从window上进行调用
    */
-  sendSync(channel: string, data: any) {
+  sendSync(channel: string, data?: any) {
     try {
       return this.chainCall(channel, this.formatData(data));
     } catch (err) {

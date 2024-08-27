@@ -2,7 +2,6 @@ import { app, type BrowserWindow, type IpcMainEvent } from "electron";
 import FileStore from "../utils/cache";
 import { IpcMainBaseController } from "./base";
 import { SETTING_JSONFILE } from "../constants";
-import type { CustomApp } from "@/types/electron-app";
 
 export class StoreController extends IpcMainBaseController {
   fileSystem: FileStore;
@@ -16,18 +15,24 @@ export class StoreController extends IpcMainBaseController {
     this.window = windowCtx;
 
     // 初始化配置文件
-    this.fileSystem.initializeFile(SETTING_JSONFILE, {});
+    this.fileSystem.initializeFile(SETTING_JSONFILE, {
+      theme: "light",
+    });
   }
 
   /**
    * getData
    */
-  public getCacheJsonFile() {}
+  public getCacheJsonFile() {
+    return this.fileSystem.readCache(SETTING_JSONFILE);
+  }
 
   /**
    * setData
    */
-  public setCacheJsonFile(event: IpcMainEvent, data: any) {}
+  public setCacheJsonFile(event: IpcMainEvent, data: any) {
+    this.fileSystem.initializeFile(SETTING_JSONFILE, data);
+  }
 
   /**
    * init

@@ -53,6 +53,7 @@ const createWindow = () => {
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       sandbox: false,
+      spellcheck: false,
     },
     titleBarStyle: "hidden",
     icon: path.join(__dirname, "../../images/icon.png"),
