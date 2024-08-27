@@ -46,6 +46,7 @@
 <script setup lang="ts">
 import Button from "@r/components/Button.vue";
 import IpcMainMess from "@r/utils/ipc";
+import { ElNotification } from "element-plus";
 
 const props = defineProps<{
   dialogVisible: boolean;
@@ -91,7 +92,15 @@ const settingsForm = ref(null);
 function saveSetting() {
   settingsForm.value.validate(async (valid: boolean) => {
     if (valid) {
-      await IpcMainMess.sendSync("renderSetting.setGlobalSetting", form.value);
+      await IpcMainMess.sendSync("cache.setData", form.value);
+      await nextTick();
+      ElNotification({
+        title: "成功",
+        message: "保存成功",
+        type: "success",
+        position: "bottom-right",
+      });
+      dialogVisible.value = false;
     }
   });
 }

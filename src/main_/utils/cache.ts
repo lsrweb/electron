@@ -48,6 +48,18 @@ class FileStore {
           });
         } else writeFileSync(cacheFilePath, JSON.stringify(initialData));
       }
+      // 如果存在,且文件内容不为空,则将新旧数据合并,写入文件
+      else {
+        const cacheData = readJSONSync(cacheFilePath);
+        const newData = { ...cacheData, ...initialData };
+
+        if (cacheFilePath.includes(".json")) {
+          writeJSONSync(cacheFilePath, newData, {
+            spaces: 2,
+            EOL: "\r\n",
+          });
+        } else writeFileSync(cacheFilePath, JSON.stringify(newData));
+      }
     } catch (error) {
       feedBack.error("缓存初始化失败", this.window);
     }

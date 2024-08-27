@@ -8,6 +8,7 @@ import Components from "unplugin-vue-components/vite";
 import type { ConfigEnv, UserConfig } from "vite";
 import { defineConfig } from "vite";
 import { pluginExposeRenderer } from "./vite.base.config";
+import ElementPlus from "unplugin-element-plus/vite";
 
 const pathResolve = (dir: string) => {
   return resolve(__dirname, ".", dir);
@@ -45,6 +46,7 @@ export default defineConfig((env) => {
       pluginExposeRenderer(name),
       vue(),
       vueJsx(),
+      ElementPlus({}),
       AutoImport({
         imports: ["vue", "vue-router"],
         resolvers: [ElementPlusResolver()],
