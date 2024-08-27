@@ -57,10 +57,9 @@ const props = defineProps<{
 }>();
 
 onMounted(async () => {
-  IpcMainMess.sendSync("cache.setData", {
-    versionPath: "C:/Users/zheng/Desktop/1",
-    configPath: "C:/Users/zheng/Desktop/2",
-    javaVersion: "C:/Users/zheng/Desktop/3",
+  IpcMainMess.sendSync("cache.setJsonKey", {
+    key: "versionPath",
+    value: "C:/Users/zheng/Desktop/123",
   });
 
   // 初始化之前先读取已有配置

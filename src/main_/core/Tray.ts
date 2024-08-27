@@ -24,6 +24,10 @@ const createTray = (mainWindow: BrowserWindow) => {
 
   tray.setToolTip("My Electron App");
   tray.setContextMenu(contextMenu);
+
+  tray.on("click", () => {
+    mainWindow.show();
+  });
 };
 
 export { createTray };

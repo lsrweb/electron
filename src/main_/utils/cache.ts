@@ -40,12 +40,14 @@ class FileStore {
       }
 
       // 如果文件路径不存在,则进行初始化
-      if (cacheFilePath.includes(".json"))
-        writeJSONSync(cacheFilePath, initialData, {
-          spaces: 2,
-          EOL: "\r\n",
-        });
-      else writeFileSync(cacheFilePath, JSON.stringify(initialData));
+      if (!existsSync(cacheFilePath)) {
+        if (cacheFilePath.includes(".json")) {
+          writeJSONSync(cacheFilePath, initialData, {
+            spaces: 2,
+            EOL: "\r\n",
+          });
+        } else writeFileSync(cacheFilePath, JSON.stringify(initialData));
+      }
     } catch (error) {
       feedBack.error("缓存初始化失败", this.window);
     }
@@ -88,7 +90,7 @@ class FileStore {
       if (cacheFilePath.includes(".json")) return readJSONSync(cacheFilePath);
       return readFileSync(cacheFilePath, "utf-8");
     } catch (error) {
-      dialog.showErrorBox("错误", "读取缓存失败");
+      dialog.showErrorBox("错误", error);
     }
   }
 
@@ -106,11 +108,18 @@ class FileStore {
 
   public setCache(key: string, value: any, fileName?: string): void {
     try {
-      const cacheData = JSON.parse(this.readCache(fileName));
-      cacheData[key] = value;
-      this.writeCache(cacheData, fileName);
+      if (!fileName) return;
+
+      if (fileName.includes(".json")) {
+        const cacheData = readJSONSync(this.getCacheFilePath(fileName));
+        if (cacheData[key] === value || !key || !value) return;
+        cacheData[key] = value;
+        Object.assign(cacheData, { [key]: value });
+
+        this.writeCache(cacheData, fileName);
+      }
     } catch (error) {
-      dialog.showErrorBox("错误", "设置缓存失败");
+      dialog.showErrorBox("错误", error);
     }
   }
 

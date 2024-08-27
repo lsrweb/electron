@@ -9,8 +9,8 @@ contextBridge.exposeInMainWorld("cache", {
   getJsonKey: (key: string) =>
     ipcRenderer.invoke("StoreController:getJsonKey", key),
   // 设置JSON指定key
-  setJsonKey: (key: string, value: any) =>
-    ipcRenderer.invoke("StoreController:setJsonKey", key, value),
+  setJsonKey: (data: object) =>
+    ipcRenderer.invoke("StoreController:setJsonKey", data),
 });
 
 contextBridge.exposeInMainWorld("system", {

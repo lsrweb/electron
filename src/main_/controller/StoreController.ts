@@ -2,6 +2,7 @@ import { app, type BrowserWindow, type IpcMainEvent } from "electron";
 import FileStore from "../utils/cache";
 import { IpcMainBaseController } from "./base";
 import { SETTING_JSONFILE } from "../constants";
+import { fromJson } from "../utils";
 
 export class StoreController extends IpcMainBaseController {
   fileSystem: FileStore;
@@ -15,9 +16,7 @@ export class StoreController extends IpcMainBaseController {
     this.window = windowCtx;
 
     // 初始化配置文件
-    this.fileSystem.initializeFile(SETTING_JSONFILE, {
-      theme: "light",
-    });
+    this.fileSystem.initializeFile(SETTING_JSONFILE, {});
   }
 
   /**
@@ -45,5 +44,8 @@ export class StoreController extends IpcMainBaseController {
   }
 
   // 设置JSON指定key
-  public setJsonKey(event: IpcMainEvent, key: string, value: any) {}
+  public setJsonKey(event: IpcMainEvent, data: string) {
+    const { key, value } = fromJson(data);
+    this.fileSystem.setCache(key, value, SETTING_JSONFILE);
+  }
 }

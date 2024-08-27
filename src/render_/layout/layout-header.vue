@@ -11,11 +11,11 @@
           所有版本
         </BaseIcon>
       </router-link>
-      <router-link to="program" class="mr-2">
-        <BaseIcon size="60px" @click="getAllProgram">项目</BaseIcon>
+      <router-link to="program" class="mr-2" active-class="active-theme-color">
+        <BaseIcon size="60px" bg-color="" @click="getAllProgram">项目</BaseIcon>
       </router-link>
-      <router-link to="group" class="mr-2">
-        <BaseIcon size="60px" @click="getAllGroup">分组</BaseIcon>
+      <router-link to="group" class="mr-2" active-class="active-theme-color">
+        <BaseIcon size="60px" bg-color="" @click="getAllGroup">分组</BaseIcon>
       </router-link>
     </div>
 
@@ -43,7 +43,7 @@ function closeApp() {
     cancelButtonText: "取消",
     type: "warning",
   }).then(() => {
-    window.system.close();
+    window.system.quit();
   });
 }
 
