@@ -7,42 +7,29 @@ import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
 import Components from "unplugin-vue-components/vite";
 import type { ConfigEnv, UserConfig } from "vite";
 import { defineConfig } from "vite";
-import { pluginExposeRenderer } from "./vite.base.config";
 
 const pathResolve = (dir: string) => {
   return resolve(__dirname, ".", dir);
 };
 // https://vitejs.dev/config
-export default defineConfig((env) => {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const forgeEnv = env as ConfigEnv<"render">;
-  const { root, mode, forgeConfigSelf } = forgeEnv;
-  const name = forgeConfigSelf.name ?? "";
-
+export default defineConfig(({ command }) => {
   return {
-    root,
-    mode,
     base: "./",
     build: {
-      outDir: `.vite/renderer/${name}`,
-      chunkSizeWarningLimit: 1500,
+      outDir: "out/only/render_",
+      chunkSizeWarningLimit: 1024,
+      // 分包
       rollupOptions: {
         output: {
-          manualChunks(id) {
-            if (id.includes("node_modules")) {
-              return id
-                .toString()
-                .split("node_modules/")[1]
-                .split("/")[0]
-                .toString();
-            }
+          manualChunks: {
+            vue: ["vue"],
+            "vue-router": ["vue-router"],
+            "element-plus": ["element-plus"],
           },
         },
       },
     },
     plugins: [
-      pluginExposeRenderer(name),
       vue(),
       vueJsx(),
       AutoImport({

@@ -9,7 +9,10 @@
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
-    "lint": "eslint --ext .ts,.tsx ."
+    "lint": "eslint --ext .ts,.tsx .",
+    "dev-render": "vite --config vite.only.render.ts --mode development",
+    "build-render": "vite build --config vite.only.render.ts --mode production",
+    "preview": "vite preview --config vite.only.render.ts --mode production"
   },
   "devDependencies": {
     "@electron-forge/cli": "^7.4.0",

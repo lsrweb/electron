@@ -31,12 +31,6 @@ class FileStore {
     try {
       const cacheFilePath = this.getCacheFilePath(fileName);
 
-      // 如果文件路径存在,则不进行初始化
-      if (existsSync(cacheFilePath)) {
-        setTimeout(() => feedBack.success("ijjii", this.window), 1160);
-        return;
-      }
-
       // 如果文件路径不存在,则进行初始化
       if (cacheFilePath.includes(".json"))
         writeJSONSync(cacheFilePath, initialData);
@@ -148,7 +142,8 @@ class FileStore {
   public readDirTree(
     dir: string,
     depth: number,
-    flatten: boolean = false
+    flatten: boolean = false,
+    filterRegex: RegExp | null = /^Android/
   ): Record<string, any> | string[] {
     const result: Record<string, any> = {};
     const dirName = path.basename(dir);
@@ -161,9 +156,19 @@ class FileStore {
 
     items.forEach((item: string) => {
       const itemPath = path.join(dir, item);
-      if (statSync(itemPath).isDirectory()) {
+
+      // 检查当前目录是否匹配正则表达式
+      if (
+        statSync(itemPath).isDirectory() &&
+        (!filterRegex || filterRegex.test(item))
+      ) {
         if (depth > 0) {
-          const subTree = this.readDirTree(itemPath, depth - 1, flatten);
+          const subTree = this.readDirTree(
+            itemPath,
+            depth - 1,
+            flatten,
+            filterRegex
+          );
           if (flatten && Array.isArray(subTree)) {
             flatResult.push(...subTree);
           } else {
@@ -179,11 +184,5 @@ class FileStore {
     return flatten ? flatResult : result;
   }
 }
-
-// 测试 readDirTree
-const fileStore = new FileStore();
-const result = fileStore.readDirTree("E:\\Android_uni_app_build", 1, true);
-
-console.log(result);
 
 export default FileStore;
