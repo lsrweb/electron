@@ -23,12 +23,16 @@ export class StoreController extends IpcMainBaseController {
   /**
    * getData
    */
-  public getCacheJsonFile() {}
+  public getCacheJsonFile() {
+    return this.fileSystem.readCache(SETTING_JSONFILE);
+  }
 
   /**
    * setData
    */
-  public setCacheJsonFile(event: IpcMainEvent, data: any) {}
+  public setCacheJsonFile(event: IpcMainEvent, data: any) {
+    this.fileSystem.initializeFile(SETTING_JSONFILE, data);
+  }
 
   /**
    * init

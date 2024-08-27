@@ -23,7 +23,10 @@ class FileStore {
   }
 
   // 私有方法,初始化指定文件,包括文件类型和初始数据
-  initializeFile(fileName: string, initialData: Record<string, any>): void {
+  public initializeFile(
+    fileName: string,
+    initialData: Record<string, any>
+  ): void {
     // 写文件的时候也要判断文件是否存在,不存在则创建文件
     // 同时判断文件是否是json文件,如果是json文件,则使用writeJSONSync
     // 如果不是json文件,则使用writeFileSync
@@ -31,9 +34,17 @@ class FileStore {
     try {
       const cacheFilePath = this.getCacheFilePath(fileName);
 
+      // 将数据写入文件,写入的是JSON,需要将数据转换成JSON格式
+      if (typeof initialData !== "object") {
+        initialData = JSON.parse(initialData);
+      }
+
       // 如果文件路径不存在,则进行初始化
       if (cacheFilePath.includes(".json"))
-        writeJSONSync(cacheFilePath, initialData);
+        writeJSONSync(cacheFilePath, initialData, {
+          spaces: 2,
+          EOL: "\r\n",
+        });
       else writeFileSync(cacheFilePath, JSON.stringify(initialData));
     } catch (error) {
       feedBack.error("缓存初始化失败", this.window);
@@ -45,7 +56,7 @@ class FileStore {
    * @param fileName
    * @returns
    */
-  private getCacheFilePath(fileName?: string): string {
+  public getCacheFilePath(fileName?: string): string {
     try {
       // 文件名可能传入的是整个路径,所以需要判断
       if (fileName && fileName.includes(".json")) return fileName;
@@ -65,7 +76,7 @@ class FileStore {
    * @param fileName
    * @returns
    */
-  private readCache(fileName?: string): string {
+  public readCache(fileName?: string): string {
     try {
       const cacheFilePath = this.getCacheFilePath(fileName);
 
@@ -74,18 +85,20 @@ class FileStore {
         throw new Error("读取的文件路径不存在,请检查文件路径");
 
       // 读取文件,并返回文件内容,如果不是json文件,则使用readFileSync
-      if (cacheFilePath.includes(".json"))
-        return JSON.stringify(readJSONSync(cacheFilePath));
+      if (cacheFilePath.includes(".json")) return readJSONSync(cacheFilePath);
       return readFileSync(cacheFilePath, "utf-8");
     } catch (error) {
       dialog.showErrorBox("错误", "读取缓存失败");
     }
   }
 
-  private writeCache(data: Record<string, any>, fileName?: string): void {
+  public writeCache(data: Record<string, any>, fileName?: string): void {
     try {
       const cacheFilePath = this.getCacheFilePath(fileName);
-      writeJSONSync(cacheFilePath, data);
+      writeJSONSync(cacheFilePath, data, {
+        spaces: 2,
+        EOL: "\r\n",
+      });
     } catch (error) {
       dialog.showErrorBox("错误", "写入缓存失败");
     }
