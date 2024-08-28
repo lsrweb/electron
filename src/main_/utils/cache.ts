@@ -51,6 +51,7 @@ class FileStore {
       // 如果存在,且文件内容不为空,则将新旧数据合并,写入文件
       else {
         const cacheData = readJSONSync(cacheFilePath);
+        if (!cacheData || !initialData) return;
         const newData = { ...cacheData, ...initialData };
 
         if (cacheFilePath.includes(".json")) {
@@ -90,7 +91,9 @@ class FileStore {
    * @param fileName
    * @returns
    */
-  public readCache(fileName?: string): string {
+  public readCache(
+    fileName?: string
+  ): Record<string, object> | string | void | any {
     try {
       const cacheFilePath = this.getCacheFilePath(fileName);
 

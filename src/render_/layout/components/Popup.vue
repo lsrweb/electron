@@ -58,15 +58,8 @@ const props = defineProps<{
 }>();
 
 onMounted(async () => {
-  IpcMainMess.sendSync("cache.setJsonKey", {
-    key: "versionPath",
-    value: "C:/Users/zheng/Desktop/123",
-  });
-
   // 初始化之前先读取已有配置
-  const resultConfig = await IpcMainMess.sendSync("cache.getData");
-
-  form.value = resultConfig;
+  form.value = await IpcMainMess.sendSync("cache.getData");
 });
 
 const formRules = {

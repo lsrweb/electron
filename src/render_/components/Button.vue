@@ -69,7 +69,10 @@ withDefaults(
 
 <style scoped lang="scss">
 .ry-button {
-  @apply flex items-center gap-1 justify-center whitespace-nowrap rounded-md text-sm font-medium transition duration-200 ease-out active:opacity-90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50;
+  @apply inline-flex items-center gap-1 justify-center whitespace-nowrap rounded-md text-sm font-medium transition duration-200 ease-out active:opacity-90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 mr-2;
+  &:last-child {
+    @apply mr-0;
+  }
 
   &.variant-default {
     @apply bg-primary text-primary-foreground shadow hover:bg-primary/90;
