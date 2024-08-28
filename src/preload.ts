@@ -11,6 +11,9 @@ contextBridge.exposeInMainWorld("cache", {
   // 设置JSON指定key
   setJsonKey: (data: object) =>
     ipcRenderer.invoke("StoreController:setJsonKey", data),
+  // 获取版本列表
+  readVersionFolderData: () =>
+    ipcRenderer.invoke("StoreController:readVersionFolderData"),
 });
 
 contextBridge.exposeInMainWorld("system", {

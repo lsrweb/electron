@@ -1,8 +1,9 @@
 import { app, type BrowserWindow, type IpcMainEvent } from "electron";
 import FileStore from "../utils/cache";
 import { IpcMainBaseController } from "./base";
-import { SETTING_JSONFILE } from "../constants";
+import { ANDROID_VERSION_DIR, APPDIR, SETTING_JSONFILE } from "../constants";
 import { fromJson } from "../utils";
+import { existsSync } from "fs-extra";
 
 export class StoreController extends IpcMainBaseController {
   fileSystem: FileStore;
@@ -47,5 +48,19 @@ export class StoreController extends IpcMainBaseController {
   public setJsonKey(event: IpcMainEvent, data: string) {
     const { key, value } = fromJson(data);
     this.fileSystem.setCache(key, value, SETTING_JSONFILE);
+  }
+
+  // 读取已有的版本列表
+  public readVersionFolderData(event: IpcMainEvent, data: any) {
+    // 先读取已有配置
+    const { versionPath } = this.fileSystem.readCache(SETTING_JSONFILE);
+    // 读取版本列表
+    return this.fileSystem.readDirTree(
+      existsSync(versionPath) ? versionPath : ANDROID_VERSION_DIR,
+      1,
+      true
+    );
+
+    // return this.fileSystem.readDirTree(existsSync(ANDROID_VERSION_DIR) ? ANDROID_VERSION_DIR :, 1);
   }
 }

@@ -4,7 +4,7 @@ import { app } from "electron";
 export const HOME = app.getPath("documents");
 
 export const APPDIR = join(HOME, ".unipack"),
-  INSTALL_DIR = join(APPDIR, "versions"),
+  ANDROID_VERSION_DIR = join(APPDIR, "versions"),
   VERSIONS_FILENAME = join(APPDIR, "versions.json"),
   SETTING_JSONFILE = join(APPDIR, "settings.json"),
   PROJECTS_JSONFILE = join(APPDIR, "projects.json"),
