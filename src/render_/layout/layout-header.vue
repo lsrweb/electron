@@ -21,6 +21,7 @@
 
     <!-- setting -->
     <div>
+      <Refresh @click="refreshNowPage" />
       <Settings @click="dialogVisible = true" />
     </div>
 
@@ -36,6 +37,7 @@ import MiniDesk from "../components/Icons/MiniDesk";
 import { ElMessage, ElMessageBox } from "element-plus";
 import Settings from "../components/Icons/Settings";
 import Popup from "./components/Popup.vue";
+import Refresh from "../components/Icons/Refresh";
 
 function closeApp() {
   ElMessageBox.confirm("确定要退出吗？", "提示", {
@@ -56,6 +58,11 @@ function getAllVersion() {}
 function getAllProgram() {}
 
 function getAllGroup() {}
+
+//
+function refreshNowPage() {
+  window.location.reload();
+}
 
 //
 const dialogVisible = ref(false);

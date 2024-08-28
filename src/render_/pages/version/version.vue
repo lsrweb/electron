@@ -24,8 +24,8 @@ const columns = ref([
 const versionArray = ref([]);
 onMounted(async () => {
   const getResult = await IpcMainMess.sendSync("cache.readVersionFolderData");
-  // E:\\Android_uni_app_build\\Android-SDK@4.22.82121_20240625
-  // 需要将路径进行拆分
+  // C:\\Android_uni_app_build\\Android-SDK@4.22.82121_20240625
+  // 路径拆分
   versionArray.value = getResult.map((item: string) => {
     const arr = item.split("\\");
     return {

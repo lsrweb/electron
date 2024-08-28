@@ -18,7 +18,7 @@ export default defineComponent({
           `p-1`,
           props.borderRadius,
           "hover:!bg-[#42b983] hover:!text-white",
-          "cursor-pointer",
+          "cursor-pointer inline-flex mr-2 last:mr-0",
         ]}
         onClick={(event) => {
           event.stopPropagation();
