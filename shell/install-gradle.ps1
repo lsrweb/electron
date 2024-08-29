@@ -1,3 +1,6 @@
+$OutputEncoding = [System.Text.Encoding]::UTF8
+
+
 # 设置 Gradle 版本
 $gradleVersion = "6.5"
 
