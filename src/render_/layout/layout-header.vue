@@ -35,7 +35,7 @@ import { inject } from "vue";
 import BaseIcon from "@r/components/Icons/Base";
 import Close from "../components/Icons/Close";
 import MiniDesk from "../components/Icons/MiniDesk";
-import { ElMessage, ElMessageBox } from "element-plus";
+import { ElMessageBox } from "element-plus";
 import Settings from "../components/Icons/Settings";
 import Popup from "./components/Popup.vue";
 import Refresh from "../components/Icons/Refresh";

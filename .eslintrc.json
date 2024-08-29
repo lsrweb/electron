@@ -6,6 +6,17 @@
     "node": true
   },
   "extends": [
+    // "eslint:recommended",
+    // "@vue/eslint-config-typescript",
+    // "@vue/eslint-config-prettier/skip-formatting",
+    // "plugin:@typescript-eslint/eslint-recommended",
+    // "plugin:@typescript-eslint/recommended",
+    // "plugin:import/recommended",
+    // "plugin:import/electron",
+    // "plugin:import/typescript",
+    // "plugin:vue/vue3-essential",
+    // "./.eslintrc-auto-import.json"
+
     "eslint:recommended",
     "@vue/eslint-config-typescript",
     "@vue/eslint-config-prettier/skip-formatting",
@@ -14,7 +25,6 @@
     "plugin:import/recommended",
     "plugin:import/electron",
     "plugin:import/typescript",
-    "plugin:vue/vue3-essential",
     "./.eslintrc-auto-import.json"
   ],
   "parserOptions": {
