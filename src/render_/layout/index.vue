@@ -4,13 +4,23 @@
       <layout-header />
     </div>
     <div class="layout__content">
-      <router-view />
+      <router-view :key="viewKey" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { ref, provide } from "vue";
 import LayoutHeader from "./layout-header.vue";
+
+const route = useRoute();
+const viewKey = ref(route.fullPath);
+
+function refreshView() {
+  viewKey.value = route.fullPath + "?" + Date.now();
+}
+
+provide("refreshView", refreshView);
 </script>
 
 <style scoped lang="scss">

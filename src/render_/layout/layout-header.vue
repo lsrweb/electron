@@ -31,6 +31,7 @@
 </template>
 
 <script setup lang="ts">
+import { inject } from "vue";
 import BaseIcon from "@r/components/Icons/Base";
 import Close from "../components/Icons/Close";
 import MiniDesk from "../components/Icons/MiniDesk";
@@ -38,6 +39,8 @@ import { ElMessage, ElMessageBox } from "element-plus";
 import Settings from "../components/Icons/Settings";
 import Popup from "./components/Popup.vue";
 import Refresh from "../components/Icons/Refresh";
+
+const refreshView = inject<() => void | undefined>("refreshView");
 
 function closeApp() {
   ElMessageBox.confirm("确定要退出吗？", "提示", {
@@ -59,15 +62,14 @@ function getAllProgram() {}
 
 function getAllGroup() {}
 
-//
 function refreshNowPage() {
-  window.location.reload();
+  if (refreshView) {
+    refreshView();
+  }
 }
 
-//
 const dialogVisible = ref(false);
 
-//
 const form = reactive({
   versionPath: "",
   configPath: "",
