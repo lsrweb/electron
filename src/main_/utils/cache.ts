@@ -182,6 +182,7 @@ class FileStore {
     flatten: boolean = false,
     filterRegex: RegExp | null = /^Android/
   ): Record<string, any> | string[] {
+    if (!existsSync(dir)) return flatten ? [] : {};
     const result: Record<string, any> = {};
     const dirName = path.basename(dir);
     result[dirName] = {};

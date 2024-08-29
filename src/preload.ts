@@ -30,6 +30,14 @@ contextBridge.exposeInMainWorld("system", {
 // 渲染端设置
 contextBridge.exposeInMainWorld("renderSetting", () => {});
 
+// dialog
+contextBridge.exposeInMainWorld("dialog", {
+  showOpenDialog: (options: Electron.OpenDialogOptions) =>
+    ipcRenderer.invoke("dialog", options),
+  showSaveDialog: (options: Electron.SaveDialogOptions) =>
+    ipcRenderer.invoke("dialog", options),
+});
+
 // 主进程->渲染进程消息发送
 contextBridge.exposeInMainWorld("electronAPI", {
   mainProcessLoaded: (callback: () => void) =>

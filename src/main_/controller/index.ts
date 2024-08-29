@@ -39,6 +39,13 @@ export const registerMainHandlers = (mainWindow: BrowserWindow) => {
 
   // 渲染端控制器
   enumControllerMethods(renderSetting);
+
+  // 单独渲染文件选择器控制器
+  //
+  ipcMain.handle("dialog", async (event, data) => {
+    // 解构 type, title, defaultPath, filters,openDirectory
+    const { type, title, defaultPath, filters, openDirectory } = data;
+  });
   return {
     store,
     screen,
