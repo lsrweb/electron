@@ -34,6 +34,8 @@ export function executePowerShellScript(
 ): Promise<string> {
   return new Promise((resolve, reject) => {
     const command = `powershell.exe -File ${scriptPath} ${args.join(" ")}`;
+    console.log(command);
+
     const childProcess = exec(command);
 
     let output = "";

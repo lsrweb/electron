@@ -1,9 +1,15 @@
 import { app, type BrowserWindow, type IpcMainEvent } from "electron";
 import FileStore from "../utils/cache";
 import { IpcMainBaseController } from "./base";
-import { ANDROID_VERSION_DIR, APPDIR, SETTING_JSONFILE } from "../constants";
+import {
+  ANDROID_VERSION_DIR,
+  APPDIR,
+  setEnvironmentScript,
+  SETTING_JSONFILE,
+} from "../constants";
 import { fromJson } from "../utils";
 import { existsSync } from "fs-extra";
+import { executePowerShellScript } from "../utils/exec";
 
 export class StoreController extends IpcMainBaseController {
   fileSystem: FileStore;
@@ -17,7 +23,9 @@ export class StoreController extends IpcMainBaseController {
     this.window = windowCtx;
 
     // 初始化配置文件
-    this.fileSystem.initializeFile(SETTING_JSONFILE, {});
+    this.fileSystem.initializeFile(SETTING_JSONFILE, {
+      STORE_PATH: APPDIR,
+    });
   }
 
   /**
@@ -30,7 +38,37 @@ export class StoreController extends IpcMainBaseController {
   /**
    * setData
    */
-  public setCacheJsonFile(event: IpcMainEvent, data: any) {
+  public async setCacheJsonFile(event: IpcMainEvent, data: any) {
+    // 读取已有配置,如果 STORE_PATH 和原有的不一样,则需要重新初始化在新目录
+    const { STORE_PATH } = this.fileSystem.readCache(SETTING_JSONFILE);
+    if (STORE_PATH !== fromJson(data).STORE_PATH) {
+      // 更新用户环境变量 UNI_PACK_HOME
+      console.log(setEnvironmentScript, "setEnvironmentScript");
+
+      try {
+        await executePowerShellScript(setEnvironmentScript, [
+          "-name",
+          "UNI_PACK_HOME",
+          "-value",
+          fromJson(data).STORE_PATH + "/.unipack",
+          "-user",
+        ]);
+      } catch (error) {
+        console.error("Failed to set environment variable:", error);
+      }
+
+      app.setPath("documents", fromJson(data).STORE_PATH + "/.unipack");
+      // 创建文件夹
+      await this.fileSystem.createDir(fromJson(data).STORE_PATH + "/.unipack");
+
+      this.fileSystem.initializeFile(
+        fromJson(data).STORE_PATH + "/.unipack",
+        data
+      );
+
+      return;
+    }
+
     return this.fileSystem.initializeFile(SETTING_JSONFILE, data);
   }
 

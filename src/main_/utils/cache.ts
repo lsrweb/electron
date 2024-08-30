@@ -6,6 +6,7 @@ import {
   existsSync,
   readdirSync,
   statSync,
+  mkdirSync,
 } from "fs-extra";
 import * as path from "path";
 import { app, dialog, type BrowserWindow } from "electron";
@@ -38,6 +39,8 @@ class FileStore {
       if (typeof initialData !== "object") {
         initialData = JSON.parse(initialData);
       }
+
+      console.log(app.getPath("documents"));
 
       // 如果文件路径不存在,则进行初始化
       if (!existsSync(cacheFilePath)) {
@@ -220,6 +223,17 @@ class FileStore {
     });
 
     return flatten ? flatResult : result;
+  }
+
+  // 创建文件夹
+  public createDir(dir: string): void {
+    try {
+      if (!existsSync(dir)) {
+        mkdirSync(dir);
+      }
+    } catch (error) {
+      dialog.showErrorBox("错误", "创建文件夹失败");
+    }
   }
 }
 

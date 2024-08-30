@@ -1,4 +1,4 @@
-import { join } from "node:path";
+import path, { join } from "node:path";
 import { app } from "electron";
 import { existsSync, mkdirSync } from "fs-extra";
 
@@ -13,6 +13,21 @@ export const APPDIR = join(HOME, ".unipack"),
 
 export const APPNAME = app.getName();
 export const APPVERSION = app.getVersion();
+
+export const shellPath = path.resolve(__dirname, "../../shell");
+export const getEnvironmentScript = path.resolve(
+  shellPath,
+  "get-environment.ps1"
+);
+export const setEnvironmentScript = path.resolve(
+  shellPath,
+  "set-environment.ps1"
+);
+export const curlScript = path.resolve(shellPath, "curl.ps1");
+export const installGradleScript = path.resolve(
+  shellPath,
+  "install-gradle.ps1"
+);
 
 // 自动创建指定目录
 export const createDir = (dir: string) => {

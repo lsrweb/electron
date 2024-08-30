@@ -16,6 +16,14 @@
       ref="settingsForm"
       :label-position="'top'"
     >
+      <!-- 配置文件存储目录 STORE_PATH -->
+      <ElFormItem label="配置文件存储目录" prop="configPath">
+        <ElInput
+          v-model="form.STORE_PATH"
+          placeholder="请输入配置文件存储目录"
+        />
+      </ElFormItem>
+
       <ElFormItem label="读取目录" prop="versionPath">
         <ElInput v-model="form.versionPath" placeholder="请输入版本读取目录" />
       </ElFormItem>
@@ -54,6 +62,7 @@ const props = defineProps<{
     versionPath: string;
     configPath: string;
     javaVersion: string;
+    STORE_PATH: string;
   };
 }>();
 
@@ -70,6 +79,9 @@ const formRules = {
     { required: true, message: "请输入配置文件存储目录", trigger: "blur" },
   ],
   javaVersion: [{ required: true, message: "请输入java路径", trigger: "blur" }],
+  STORE_PATH: [
+    { required: true, message: "请输入配置文件存储目录", trigger: "blur" },
+  ],
 };
 
 const form = ref(toRefs(props.form));

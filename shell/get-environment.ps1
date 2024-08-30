@@ -1,7 +1,3 @@
-# $OutputEncoding = [System.Text.Encoding]::UTF8
-
-# 获取指定的环境变量
-# Usage: get-environment.ps1 <name>
 
 param (
     [string]$name
@@ -23,3 +19,11 @@ if ($envValue) {
     Write-Error "Environment variable '$name' not found."
     exit 1
 }
+
+
+
+# 
+# $OutputEncoding = [System.Text.Encoding]::UTF8
+
+# 获取指定的环境变量
+# Usage: get-environment.ps1 <name>
