@@ -11,7 +11,10 @@ function bootstrap() {
 }
 
 nextTick(() => {
-  bootstrap();
+  setTimeout(() => {
+    bootstrap();
+    // 练习两年半后,关掉定时器
+  }, 2500);
 });
 
 // 创建 Socket.IO 客户端

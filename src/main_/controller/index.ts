@@ -1,9 +1,9 @@
 import type { BrowserWindow } from "electron";
-import { ipcMain } from "electron";
+import { app, ipcMain } from "electron";
 import { IpcMainBaseController } from "./base";
-import { RenderSettingController } from "./RenderController/setting";
 import { ScreenController } from "./ScreenController";
 import { StoreController } from "./StoreController";
+import { ExecController } from "./ExecController";
 
 export const enumControllerMethods = <T extends IpcMainBaseController>(
   clsInstance: T
@@ -32,23 +32,29 @@ export const enumControllerMethods = <T extends IpcMainBaseController>(
 export const registerMainHandlers = (mainWindow: BrowserWindow) => {
   const store = new StoreController(mainWindow);
   const screen = new ScreenController(mainWindow);
-  const renderSetting = new RenderSettingController();
+  const exec = new ExecController(mainWindow);
 
   enumControllerMethods(store);
   enumControllerMethods(screen);
+  enumControllerMethods(exec);
 
   // 渲染端控制器
-  enumControllerMethods(renderSetting);
 
-  // 单独渲染文件选择器控制器
-  //
-  ipcMain.handle("dialog", async (event, data) => {
-    // 解构 type, title, defaultPath, filters,openDirectory
-    const { type, title, defaultPath, filters, openDirectory } = data;
+  // 抛出获取系统信息的方法
+  ipcMain.handle("getSystemInfo", () => {
+    return {
+      platform: process.platform,
+      arch: process.arch,
+      version: process.version,
+
+      //
+      appPath: app.getAppPath(),
+    };
   });
+
   return {
     store,
     screen,
-    renderSetting,
+    exec,
   };
 };

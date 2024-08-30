@@ -16,7 +16,7 @@
       ref="settingsForm"
       :label-position="'top'"
     >
-      <ElFormItem label="Version Read dir" prop="versionPath">
+      <ElFormItem label="读取目录" prop="versionPath">
         <ElInput v-model="form.versionPath" placeholder="请输入版本读取目录" />
       </ElFormItem>
       <!-- <ElFormItem label="配置文件存储目录" prop="configPath">
@@ -25,18 +25,18 @@
           placeholder="请输入配置文件存储目录"
         />
       </ElFormItem> -->
-      <ElFormItem label="Java1.8 jdk dir" prop="javaVersion">
+      <!-- <ElFormItem label="Java1.8 jdk dir" prop="javaVersion">
         <ElInput v-model="form.javaVersion" placeholder="请输入java路径" />
-      </ElFormItem>
+      </ElFormItem> -->
 
-      <ElAlert
+      <!-- <ElAlert
         type="success"
         show-icon
         :closable="false"
         class="!mt-2"
         :description="'解压jdk1.8.0_201版本'"
       >
-      </ElAlert>
+      </ElAlert> -->
     </ElForm>
 
     <Button type="primary" @click.stop="saveSetting" class="mt-2">保存</Button>

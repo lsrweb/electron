@@ -27,3 +27,31 @@ export function executeCommand(command: string): Promise<string> {
     });
   });
 }
+
+export function executePowerShellScript(
+  scriptPath: string,
+  args: string[]
+): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const command = `powershell.exe -File ${scriptPath} ${args.join(" ")}`;
+    const childProcess = exec(command);
+
+    let output = "";
+
+    childProcess.stdout.on("data", (data) => {
+      output += data;
+    });
+
+    childProcess.stderr.on("data", (data) => {
+      reject(new Error(data));
+    });
+
+    childProcess.on("close", (code) => {
+      if (code === 0) {
+        resolve(output);
+      } else {
+        reject(new Error(`Script execution failed with code ${code}`));
+      }
+    });
+  });
+}

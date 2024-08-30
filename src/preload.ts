@@ -38,6 +38,11 @@ contextBridge.exposeInMainWorld("dialog", {
     ipcRenderer.invoke("dialog", options),
 });
 
+// 获取系统信息
+contextBridge.exposeInMainWorld("getSystemInfo", {
+  getSystemInfo: () => ipcRenderer.invoke("getSystemInfo"),
+});
+
 // 主进程->渲染进程消息发送
 contextBridge.exposeInMainWorld("electronAPI", {
   mainProcessLoaded: (callback: () => void) =>

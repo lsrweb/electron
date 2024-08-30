@@ -1,10 +1,9 @@
-import { createTray } from "./main_/core/Tray";
-import { app, BrowserWindow, ipcMain } from "electron";
+import { app, BrowserWindow } from "electron";
 import path from "path";
+import { createTray } from "./main_/core/Tray";
 import { registerMainHandlers } from "./main_/controller";
 import { APPDIR } from "./main_/constants";
 import { checkFolderExist } from "./main_/utils/folder";
-
 import { Server } from "socket.io";
 import http from "http";
 import type { CustomApp } from "./types/electron-app";
@@ -33,10 +32,7 @@ const installExtensions = async () => {
     .catch(console.log);
 };
 
-// 创建 WebSocket 服务
-// 创建 HTTP 服务器
 const server = http.createServer();
-// 创建 Socket.IO 服务器
 const io = new Server(server, {
   cors: {
     origin: "*",
@@ -48,14 +44,12 @@ io.on("connection", (socket) => {
 
   socket.on("message", (message) => {
     console.log(`Main get message: ${message}`);
-    // 处理收到的消息
   });
 
   socket.on("disconnect", () => {
     console.log("Socket.IO is disconnected");
   });
 
-  // 向客户端发送消息
   socket.emit("message", "Main process Socket.IO server is connected");
 });
 
@@ -66,10 +60,10 @@ server.listen(8080, () => {
 if (require("electron-squirrel-startup")) {
   app.quit();
 }
+
 let mainWindow: BrowserWindow;
 
 const createWindow = async () => {
-  // Create the browser window.
   mainWindow = new BrowserWindow({
     width: 1300,
     height: 900,
@@ -82,7 +76,7 @@ const createWindow = async () => {
     titleBarStyle: "hidden",
     icon: path.join(__dirname, "../../images/icon.png"),
   });
-  // and load the index.html of the app.
+
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
     mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
   } else {
@@ -90,42 +84,57 @@ const createWindow = async () => {
       path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`)
     );
   }
+
   if (isDebug) {
     await installExtensions();
   }
   if (isDebug) mainWindow.webContents.openDevTools({ mode: "undocked" });
+
+  mainWindow.once("ready-to-show", () => {
+    mainWindow.show();
+  });
 };
 
-app.whenReady().then(() => {
-  createWindow();
+const gotTheLock = app.requestSingleInstanceLock();
 
-  // 给app指定类型 CustomApp
-  (app as CustomApp).ws = io;
-  (app as CustomApp).mainWindow = mainWindow;
-
-  registerMainHandlers(mainWindow);
-  // 初始化配置文件的文件夹
-  checkFolderExist(APPDIR);
-
-  // 注册托盘图标
-  createTray(mainWindow);
-
-  mainWindow.webContents.on("did-finish-load", () => {
-    mainWindow.webContents.send("main-process-loaded");
+// 如果已经有了实例，则退出已有实例
+if (!gotTheLock) {
+  app.exit();
+} else {
+  app.on("second-instance", () => {
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.focus();
+    }
   });
-});
 
-app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") {
-    app.quit();
-  }
-});
-
-app.on("activate", () => {
-  if (BrowserWindow.getAllWindows().length === 0) {
+  app.whenReady().then(() => {
     createWindow();
-  }
-});
+
+    (app as CustomApp).ws = io;
+    (app as CustomApp).mainWindow = mainWindow;
+
+    registerMainHandlers(mainWindow);
+    checkFolderExist(APPDIR);
+    createTray(mainWindow);
+
+    mainWindow.webContents.on("did-finish-load", () => {
+      mainWindow.webContents.send("main-process-loaded");
+    });
+  });
+
+  app.on("window-all-closed", () => {
+    if (process.platform !== "darwin") {
+      app.quit();
+    }
+  });
+
+  app.on("activate", () => {
+    if (BrowserWindow.getAllWindows().length === 0) {
+      createWindow();
+    }
+  });
+}
 
 process.on("uncaughtException", (error) => {});
 

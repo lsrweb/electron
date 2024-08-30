@@ -14,6 +14,7 @@ const config: ForgeConfig = {
     asar: true,
     icon: "./images/icon.ico",
     overwrite: true,
+    extraResource: ["./shell", "./static"],
   },
   rebuildConfig: {},
   makers: [
