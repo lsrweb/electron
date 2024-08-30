@@ -1,0 +1,37 @@
+<template>
+  <div class="view">
+    <el-tabs
+      :tab-position="'left'"
+      v-model="modelSelect"
+      class="h-full"
+      stretch
+    >
+      <el-tab-pane
+        v-for="(item, index) in labelArray"
+        :key="index"
+        :label="item"
+      >
+        <RouterView v-slot="{ Component }" :key="index"> </RouterView>
+      </el-tab-pane>
+    </el-tabs>
+  </div>
+</template>
+
+<script setup lang="ts">
+const router = useRouter();
+const route = useRoute();
+
+const modelSelect = ref<string>("0");
+
+const labelArray = ["Java设置", "Gradle设置"];
+const pathArray: string[] = ["setting-java", "setting-gradle"] as const;
+
+watch(
+  () => modelSelect.value,
+  (val) => {
+    router.push({ path: pathArray[Number(val)] });
+  }
+);
+</script>
+
+<style scoped></style>

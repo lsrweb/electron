@@ -54,12 +54,11 @@ export class StoreController extends IpcMainBaseController {
   public readVersionFolderData(event: IpcMainEvent, data: any) {
     // 先读取已有配置
     const { versionPath } = this.fileSystem.readCache(SETTING_JSONFILE);
+    const resultPath = existsSync(versionPath)
+      ? versionPath
+      : ANDROID_VERSION_DIR;
 
     // 读取版本列表
-    return this.fileSystem.readDirTree(
-      existsSync(versionPath) ? versionPath : ANDROID_VERSION_DIR,
-      1,
-      true
-    );
+    return this.fileSystem.readDirTree(resultPath, 1, true);
   }
 }

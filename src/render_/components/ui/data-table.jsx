@@ -23,6 +23,10 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+    actionProps: {
+      type: Object,
+      default: () => ({}),
+    },
   },
   emits: ["editRow", "deleteRow"],
   setup(props, { slots, emit }) {
@@ -30,7 +34,13 @@ export default defineComponent({
       <ElTable
         data={props.data}
         border
-        header-row-style={{ background: "#242425" }}
+        v-slots={{
+          empty: () => (
+            <div class="text-center py-4">
+              <p class="text-gray-400">暂无数据</p>
+            </div>
+          ),
+        }}
       >
         {props.columns.map((column) => (
           // <ElTableColumn
@@ -44,6 +54,8 @@ export default defineComponent({
             key={column.key}
             prop={column.key}
             label={column.label}
+            headerAlign="center"
+            align="center"
             {...column.props}
           >
             {({ row }) => {
@@ -71,17 +83,27 @@ export default defineComponent({
         ))}
 
         {slots.action && !props.action ? (
-          <ElTableColumn label="操作" fixed="right" align="center">
+          <ElTableColumn
+            label="操作"
+            fixed="right"
+            align="center"
+            {...props.actionProps}
+          >
             {({ row }) => <>{slots.action({ row })}</>}
           </ElTableColumn>
         ) : (
-          <ElTableColumn label="操作" fixed="right" align="center">
+          <ElTableColumn
+            label="操作"
+            fixed="right"
+            align="center"
+            {...props.actionProps}
+          >
             {({ row }) => (
               <>
                 <Button onClick={() => emit("editRow", row)}>编辑</Button>
                 <Button onClick={() => emit("deleteRow", row)}>删除</Button>
 
-                <div class={"ml-2 inline-flex"}>
+                <div class={"inline-flex"}>
                   {...slots.action && slots.action({ row })}
                 </div>
               </>

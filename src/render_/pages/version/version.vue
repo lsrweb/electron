@@ -1,13 +1,15 @@
 <script setup lang="ts">
+import Button from "@r/components/Button.vue";
 import dataTable from "@r/components/ui/data-table";
 import IpcMainMess from "@r/utils/ipc";
 
 const columns = ref([
   {
     label: "版本名称",
-    key: "name",
+    key: "version",
     props: {
       showOverflowTooltip: true,
+      width: "200px",
     },
   },
   {
@@ -16,7 +18,13 @@ const columns = ref([
     props: {
       //
       showOverflowTooltip: true,
-      width: "300px",
+    },
+  },
+  {
+    label: "子项目",
+    key: "action",
+    props: {
+      width: "200px",
     },
   },
 ]);
@@ -24,8 +32,6 @@ const columns = ref([
 const versionArray = ref([]);
 onMounted(async () => {
   const getResult = await IpcMainMess.sendSync("cache.readVersionFolderData");
-  // C:\\Android_uni_app_build\\Android-SDK@4.22.82121_20240625
-  // 路径拆分
   versionArray.value = getResult.map((item: string) => {
     const arr = item.split("\\");
     return {
@@ -48,8 +54,11 @@ function handleDelete(row: any) {
       :data="versionArray"
       :columns="columns"
       @deleteRow="handleDelete"
+      :action-props="{ width: '300px' }"
     >
-      <template #action>123</template>
+      <template #action>
+        <Button type="text">查看下属项目</Button>
+      </template>
     </data-table>
   </div>
 </template>

@@ -28,6 +28,32 @@ const router = createRouter({
           name: "group",
           component: () => import("@r/pages/group/group.vue"),
         },
+        {
+          path: "/tools",
+          name: "tools",
+          component: () => import("@r/pages/tools/tools.vue"),
+          redirect: "setting-java",
+          children: [
+            {
+              path: "/setting-java",
+              name: "setting-java",
+              component: () =>
+                import("@r/pages/tools/children/setting-java.vue"),
+            },
+            {
+              path: "/setting-gradle",
+              name: "setting-gradle",
+              component: () =>
+                import("@r/pages/tools/children/setting-gradle.vue"),
+            },
+          ],
+        },
+        {
+          // 无匹配路由
+          path: "/:pathMatch(.*)*",
+          name: "not-found",
+          redirect: "/version",
+        },
       ],
     },
   ],

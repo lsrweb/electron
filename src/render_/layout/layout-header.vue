@@ -17,6 +17,9 @@
       <router-link to="group" class="mr-2" active-class="active-theme-color">
         <BaseIcon size="60px" bg-color="" @click="getAllGroup">分组</BaseIcon>
       </router-link>
+      <router-link to="tools" class="mr-2" active-class="active-theme-color">
+        <BaseIcon size="60px" bg-color="" @click="getAllGroup">工具</BaseIcon>
+      </router-link>
     </div>
 
     <!-- setting -->

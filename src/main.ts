@@ -9,6 +9,30 @@ import { Server } from "socket.io";
 import http from "http";
 import type { CustomApp } from "./types/electron-app";
 
+if (process.env.NODE_ENV === "production") {
+  // @ts-ignore
+  import("source-map-support").then((mapper) => mapper.default.install());
+}
+
+const isDebug =
+  process.env.NODE_ENV === "development" || process.env.DEBUG_PROD === "true";
+if (isDebug) {
+  import("electron-debug").then(({ default: debug }) => debug());
+}
+
+const installExtensions = async () => {
+  const devtools = require("electron-devtools-installer");
+  const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
+  const extensions = ["REACT_DEVELOPER_TOOLS"];
+
+  return devtools
+    .default(
+      extensions.map((name) => devtools[name]),
+      forceDownload
+    )
+    .catch(console.log);
+};
+
 // 创建 WebSocket 服务
 // 创建 HTTP 服务器
 const server = http.createServer();
@@ -44,10 +68,10 @@ if (require("electron-squirrel-startup")) {
 }
 let mainWindow: BrowserWindow;
 
-const createWindow = () => {
+const createWindow = async () => {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 1600,
+    width: 1300,
     height: 900,
     minWidth: 900,
     webPreferences: {
@@ -66,7 +90,10 @@ const createWindow = () => {
       path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`)
     );
   }
-  mainWindow.webContents.openDevTools();
+  if (isDebug) {
+    await installExtensions();
+  }
+  if (isDebug) mainWindow.webContents.openDevTools({ mode: "undocked" });
 };
 
 app.whenReady().then(() => {

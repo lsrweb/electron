@@ -4,7 +4,11 @@
       <layout-header />
     </div>
     <div class="layout__content">
-      <router-view :key="viewKey" />
+      <router-view :key="viewKey" v-slot="{ Component }">
+        <transition name="slide-fade" mode="out-in">
+          <component :is="Component" class="view-parent-com h-full" />
+        </transition>
+      </router-view>
     </div>
   </div>
 </template>
@@ -31,11 +35,25 @@ provide("refreshView", refreshView);
   }
   .layout__content {
     flex: 1 1 auto;
-    overflow: auto;
+    overflow: hidden;
     @apply p-2;
   }
   .layout__footer {
     flex: 0 0 auto;
   }
+}
+
+.slide-fade-enter-active {
+  transition: all 0.3s ease-out;
+}
+
+.slide-fade-leave-active {
+  transition: all 0s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: translateX(20px);
+  opacity: 0;
 }
 </style>
