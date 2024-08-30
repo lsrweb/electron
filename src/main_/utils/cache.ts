@@ -235,6 +235,14 @@ class FileStore {
       dialog.showErrorBox("错误", "创建文件夹失败");
     }
   }
+
+  public createFile(filePath: string, data: string): void {
+    try {
+      writeFileSync(filePath, data);
+    } catch (error) {
+      dialog.showErrorBox("错误", "创建文件失败");
+    }
+  }
 }
 
 export default FileStore;

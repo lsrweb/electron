@@ -43,21 +43,26 @@ export class StoreController extends IpcMainBaseController {
     const { STORE_PATH } = this.fileSystem.readCache(SETTING_JSONFILE);
     if (STORE_PATH !== fromJson(data).STORE_PATH) {
       // 更新用户环境变量 UNI_PACK_HOME
-      console.log(setEnvironmentScript, "setEnvironmentScript");
 
-      try {
-        await executePowerShellScript(setEnvironmentScript, [
-          "-name",
-          "UNI_PACK_HOME",
-          "-value",
-          fromJson(data).STORE_PATH + "/.unipack",
-          "-user",
-        ]);
-      } catch (error) {
-        console.error("Failed to set environment variable:", error);
-      }
+      // try {
+      //   await executePowerShellScript(setEnvironmentScript, [
+      //     "-name",
+      //     "UNI_PACK_HOME",
+      //     "-value",
+      //     fromJson(data).STORE_PATH + "/.unipack",
+      //     "-user",
+      //   ]);
+      // } catch (error) {
+      //   console.error("Failed to set environment variable:", error);
+      // }
 
-      app.setPath("documents", fromJson(data).STORE_PATH + "/.unipack");
+      // 在 user 目录下创建 .unipack 文件,并写入 HOME 变量
+      console.log(app.getPath("home"), 'app.getPath("home")');
+
+      this.fileSystem.createFile(
+        app.getPath("home"),
+        JSON.stringify({ HOME: fromJson(data).STORE_PATH + "/.unipack" })
+      );
       // 创建文件夹
       await this.fileSystem.createDir(fromJson(data).STORE_PATH + "/.unipack");
 
