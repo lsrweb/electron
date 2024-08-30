@@ -32,3 +32,15 @@ export function diff(
 
   return diffCount === 0 ? null : { diffObj, diffCount };
 }
+
+// 路径转换,将/  \ 转换为\\
+export function pathTrans(path: string): string {
+  console.log(`path trans: ${path}`);
+  return path.replace(/\//g, "\\");
+}
+
+// 将转化的路径转换回来
+export function pathReTrans(path: string): string {
+  console.log(`path retrans: ${path}`);
+  return path.replace(/\\/g, "/");
+}

@@ -10,6 +10,7 @@ import {
 import { fromJson } from "../utils";
 import { existsSync } from "fs-extra";
 import { executePowerShellScript } from "../utils/exec";
+import { pathTrans } from "@/render_/utils";
 
 export class StoreController extends IpcMainBaseController {
   fileSystem: FileStore;
@@ -26,6 +27,11 @@ export class StoreController extends IpcMainBaseController {
     this.fileSystem.initializeFile(SETTING_JSONFILE, {
       STORE_PATH: APPDIR,
     });
+
+    // 读取文件,如果文件不存在,则创建文件
+    if (!existsSync(`${app.getPath("home")}/.unipack`)) {
+      this.fileSystem.createFile(app.getPath("home") + "/.unipack", "{}");
+    }
   }
 
   /**
@@ -43,6 +49,7 @@ export class StoreController extends IpcMainBaseController {
     const { STORE_PATH } = this.fileSystem.readCache(SETTING_JSONFILE);
     if (STORE_PATH !== fromJson(data).STORE_PATH) {
       // 更新用户环境变量 UNI_PACK_HOME
+      const GET_PATH_STORE = fromJson(data).STORE_PATH;
 
       // try {
       //   await executePowerShellScript(setEnvironmentScript, [
@@ -56,19 +63,23 @@ export class StoreController extends IpcMainBaseController {
       //   console.error("Failed to set environment variable:", error);
       // }
 
-      // 在 user 目录下创建 .unipack 文件,并写入 HOME 变量
-      console.log(app.getPath("home"), 'app.getPath("home")');
+      //
 
-      this.fileSystem.createFile(
-        app.getPath("home"),
-        JSON.stringify({ HOME: fromJson(data).STORE_PATH + "/.unipack" })
-      );
       // 创建文件夹
-      await this.fileSystem.createDir(fromJson(data).STORE_PATH + "/.unipack");
+      await this.fileSystem.createDir(pathTrans(`${GET_PATH_STORE}\\unipack`));
+      await this.fileSystem.createFile(
+        app.getPath("home") + "/.unipack",
+        JSON.stringify({
+          HOME: pathTrans(`${GET_PATH_STORE}`),
+        })
+      );
 
+      // 读取原有配置,并写入新的配置
+      const setting = this.fileSystem.readCache(SETTING_JSONFILE);
+      setting.STORE_PATH = fromJson(data).STORE_PATH;
       this.fileSystem.initializeFile(
-        fromJson(data).STORE_PATH + "/.unipack",
-        data
+        `${GET_PATH_STORE}\\unipack\\setting.json`,
+        setting
       );
 
       return;

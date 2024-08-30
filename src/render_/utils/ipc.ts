@@ -51,6 +51,7 @@ class IpcMainMess {
       return this.chainCall(channel, this.formatData(data));
     } catch (err) {
       console.error(err);
+      return Promise.reject(err);
     }
   }
 }

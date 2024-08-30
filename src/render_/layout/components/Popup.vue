@@ -17,7 +17,7 @@
       :label-position="'top'"
     >
       <!-- 配置文件存储目录 STORE_PATH -->
-      <ElFormItem label="配置文件存储目录" prop="configPath">
+      <ElFormItem label="配置文件存储目录" prop="STORE_PATH">
         <ElInput
           v-model="form.STORE_PATH"
           placeholder="请输入配置文件存储目录"

@@ -13,6 +13,7 @@ import { app, dialog, type BrowserWindow } from "electron";
 import { APPDIR } from "../constants";
 import { feedBack } from "./feedback";
 import type { CustomApp } from "@/types/electron-app";
+import { pathReTrans } from "@/render_/utils";
 
 class FileStore {
   private window: BrowserWindow;
@@ -196,7 +197,7 @@ class FileStore {
     const flatResult: string[] = [];
 
     items.forEach((item: string) => {
-      const itemPath = path.join(dir, item);
+      const itemPath = pathReTrans(path.join(dir, item));
 
       // 检查当前目录是否匹配正则表达式
       if (
@@ -229,17 +230,21 @@ class FileStore {
   public createDir(dir: string): void {
     try {
       if (!existsSync(dir)) {
-        mkdirSync(dir);
+        mkdirSync(dir, { recursive: true, mode: 0o777 });
       }
     } catch (error) {
+      console.log(error);
       dialog.showErrorBox("错误", "创建文件夹失败");
     }
   }
 
-  public createFile(filePath: string, data: string): void {
+  public createFile(filePath: string, data?: string): void {
     try {
-      writeFileSync(filePath, data);
+      writeFileSync(filePath, data, {
+        encoding: "utf-8",
+      });
     } catch (error) {
+      console.log(error);
       dialog.showErrorBox("错误", "创建文件失败");
     }
   }
