@@ -70,7 +70,7 @@ const rowInfo = ref<{ version?: string; cwd?: string }>({});
       </template>
     </data-table>
 
-    <CreateProject v-model:visible="showCreateProject" :version="rowInfo.version" />
+    <CreateProject v-model:visible="showCreateProject" :version="rowInfo.version" :CATCH="rowInfo.cwd" />
   </div>
 </template>
 

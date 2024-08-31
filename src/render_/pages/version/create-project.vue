@@ -10,6 +10,7 @@
       <ElForm ref="formRef" :model="form" label-width="100px" :rules="rules">
         <ElFormItem label="dcloud_appid" prop="dcloud_appid">
           <ElInput v-model="form.dcloud_appid" placeholder="开发者需登录https://dev.dcloud.net.cn/申请签名" />
+          <!-- 打开decloud -->
         </ElFormItem>
         <ElFormItem label="package" prop="package">
           <!-- <ElInput v-model="form.package" placeholder="请输入应用包名" /> -->
@@ -41,15 +42,16 @@
             <ElOption label="选择已有密钥" value="2" />
           </ElSelect>
         </ElFormItem>
-
-        <Button type="primary" @click="confirmCreate">确定</Button>
       </ElForm>
+
+      <Button type="primary" @click.stop="confirmCreate" class="mt-2">保存</Button>
     </div>
   </ElDrawer>
 </template>
 
 <script setup lang="ts">
 import { generateRandomPackageName } from "./utils";
+import IpcMainMess from "@r/utils/ipc";
 
 const emit = defineEmits(["update:visible"]);
 
@@ -57,6 +59,7 @@ const props = withDefaults(
   defineProps<{
     visible: boolean;
     version: string;
+    CATCH: string;
   }>(),
   {
     visible: false,
@@ -81,7 +84,10 @@ const form = reactive({
 // 版本规则
 const rules = {
   dcloud_appid: [{ required: true, message: "请输入dcloud_appid", trigger: ["blur", "change"] }],
-  package: [{ required: true, message: "请输入package", trigger: ["blur", "change"] }],
+  package: [
+    { required: true, message: "请输入package", trigger: ["blur", "change"] },
+    { pattern: /^[a-zA-Z0-9]+\.[a-zA-Z0-9]+\.[a-zA-Z0-9]+$/, message: "请输入正确的package", trigger: ["blur", "change"] },
+  ],
   dcloud_appkey: [{ required: true, message: "请输入dcloud_appkey", trigger: ["blur", "change"] }],
   appname: [{ required: true, message: "请输入appname", trigger: ["blur", "change"] }],
   appversion: [{ required: true, message: "请输入appversion", trigger: ["blur", "change"] }],
@@ -100,7 +106,7 @@ function confirmCreate() {
   (formRef.value as any).validate(async (valid: boolean) => {
     if (valid) {
       // 创建项目
-      console.log(form);
+      IpcMainMess.sendSync("cache.createProject", { ...form, CATCH: props.CATCH });
     }
   });
 }

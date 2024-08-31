@@ -12,6 +12,11 @@ contextBridge.exposeInMainWorld("cache", {
   readVersionFolderData: () => ipcRenderer.invoke("StoreController:readVersionFolderData"),
   // 资源管理器
   openExplorer: (data: string) => ipcRenderer.invoke("StoreController:openExplorer", data),
+
+  // ********************************
+  // program
+  // ********************************
+  createProject: (data: any) => ipcRenderer.invoke("StoreController:createProject", data),
 });
 
 contextBridge.exposeInMainWorld("system", {

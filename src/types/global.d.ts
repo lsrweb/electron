@@ -15,6 +15,9 @@ declare global {
       setData: (data: any) => Promise<void>;
       getJsonKey: (key: string) => Promise<any>;
       setJsonKey: (key: string, value: any) => Promise<void>;
+      readVersionFolderData: () => Promise<any>;
+      openExplorer: (data: string) => Promise<void>;
+      createProject: (data: any) => Promise<void>;
     };
 
     system: {
@@ -25,6 +28,13 @@ declare global {
     };
 
     renderSetting: {};
+
+    tools: {
+      getJavaVersionList: () => Promise<any>;
+      setJavaVersionFolder: (data: any) => Promise<void>;
+      setJavaVersionAsEnv: (data: any) => Promise<void>;
+      generateKeyStoreFile: (data: any) => Promise<void>;
+    };
   }
 }
 

@@ -1,12 +1,22 @@
 import { app, dialog, type BrowserWindow, type IpcMainEvent } from "electron";
 import FileStore from "../utils/cache";
 import { IpcMainBaseController } from "./base";
-import { APPDIR, JAVA_VERSION_MANAGER_PATH, SETTING_JSONFILE, UNI_BUILD_VERSION_MANAGER_PATH, GRADLE_VERSION_MANAGER_PATH, GLOBAL_CACHE_SETTING, HOME } from "../constants";
+import {
+  APPDIR,
+  JAVA_VERSION_MANAGER_PATH,
+  SETTING_JSONFILE,
+  UNI_BUILD_VERSION_MANAGER_PATH,
+  GRADLE_VERSION_MANAGER_PATH,
+  GLOBAL_CACHE_SETTING,
+  HOME,
+} from "../constants";
 import { fromJson, toJson } from "../utils";
-import { existsSync } from "fs-extra";
+import { existsSync, readFileSync } from "fs-extra";
 import { executeCommand, executePowerShellScript } from "../utils/exec";
 import { pathReTrans, pathTrans } from "@/render_/utils";
 import { errorToast } from "./errorBase";
+// @ts-ignore
+import xml2js from "xml2js";
 
 export class StoreController extends IpcMainBaseController {
   fileSystem: FileStore;
@@ -24,6 +34,8 @@ export class StoreController extends IpcMainBaseController {
     // 初始化配置文件
 
     this.initCache();
+
+    this.createProject();
   }
 
   /**
@@ -125,4 +137,79 @@ export class StoreController extends IpcMainBaseController {
       return errorToast("打开资源管理器失败");
     }
   }
+
+  // dev
+  private deve_dcloud_control_xml = `<CATCH>\\HBuilder-Integrate-AS\\simpleDemo\\src\\main\\assets\\data\\dcloud_control.xml`;
+  private deve_dcloud_values_string_xml = `<CATCH>\\HBuilder-Integrate-AS\\simpleDemo\\src\\main\\res\\values\\strings.xml`;
+  private deve_AndroidManifest_xml = `<CATCH>\\HBuilder-Integrate-AS\\simpleDemo\\src\\main\\AndroidManifest.xml`;
+  private deve_build_gradle = `<CATCH>\\HBuilder-Integrate-AS\\simpleDemo\\build.gradle`;
+
+  // prod
+  private prod_dcloud_control_xml = `<CATCH>\\HBuilder-HelloUniApp\\app\\src\\main\\assets\\data\\dcloud_control.xml`;
+  private prod_dcloud_values_string_xml = `<CATCH>\\HBuilder-HelloUniApp\\app\\src\\main\\res\\values\\strings.xml`;
+  private prod_AndroidManifest_xml = `<CATCH>\\HBuilder-HelloUniApp\\app\\src\\main\\AndroidManifest.xml`;
+  private prod_build_gradle = `<CATCH>\\HBuilder-HelloUniApp\\app\\build.gradle`;
+
+  // 将路径中的 <CATCH> 替换为传入的路径组成新的路径返回
+  private CATCH_REPLACE_REG(CATCH: string, path: string) {
+    // return this.dcloud_control_xml.replace(/<CATCH>/, CATCH);
+    switch (path) {
+      case "deve_dcloud_control_xml":
+        return this.deve_dcloud_control_xml.replace(/<CATCH>/, CATCH);
+      case "deve_dcloud_values_string_xml":
+        return this.deve_dcloud_values_string_xml.replace(/<CATCH>/, CATCH);
+      case "deve_AndroidManifest_xml":
+        return this.deve_AndroidManifest_xml.replace(/<CATCH>/, CATCH);
+      case "deve_build_gradle":
+        return this.deve_build_gradle.replace(/<CATCH>/, CATCH);
+      case "prod_dcloud_control_xml":
+        return this.prod_dcloud_control_xml.replace(/<CATCH>/, CATCH);
+      case "prod_dcloud_values_string_xml":
+        return this.prod_dcloud_values_string_xml.replace(/<CATCH>/, CATCH);
+      case "prod_AndroidManifest_xml":
+        return this.prod_AndroidManifest_xml.replace(/<CATCH>/, CATCH);
+      case "prod_build_gradle":
+        return this.prod_build_gradle.replace(/<CATCH>/, CATCH);
+      default:
+        return path;
+    }
+  }
+
+  // 创建一个项目
+  public async createProject(event?: IpcMainEvent, data?: any) {
+    try {
+      // 存在则创建项目
+      const parserXml = new xml2js.Parser();
+      const builder = new xml2js.Builder();
+
+      // G:\uniHelperBuiler\UNI_BUILD_VERSION\Android-SDK@4.24.82145_20240723\HBuilder-Integrate-AS\simpleDemo\src\main\assets\data\dcloud_control.xml
+      const { CATCH } = fromJson(data);
+      // 判断传入 CATCH 是否存在
+      if (!existsSync(CATCH)) {
+        return errorToast("路径不存在");
+      }
+
+      //
+
+      // parserXml.parseString(
+      //   readFileSync(
+      //     // `\\HBuilder-Integrate-AS\\simpleDemo\\src\\main\\assets\\data\\dcloud_control.xml`
+      //     // 将路径中的标识符拼接上其他路径
+      //   ),
+      //   (err: any, result: any) => {
+      //     console.log(err, JSON.stringify(result));
+      //     //  { hbuilder: { apps: [{ app: [{ $: { appid: "__UNI__A", appver: "" } }] }] } };
+      //     // 修改 appid 为 __UNI__B
+      //     result.hbuilder.apps[0].app[0].$.appid = "__UNI__B";
+      //     const xml = builder.buildObject(result);
+      //     console.log(xml);
+      //   }
+      // );
+    } catch (error) {
+      return errorToast("创建项目失败");
+    }
+  }
+
+  // 构建apk包
+  public async buildApkFile(event: IpcMainEvent, data: any) {}
 }
