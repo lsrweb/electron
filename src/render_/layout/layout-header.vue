@@ -29,7 +29,7 @@
     </div>
 
     <!-- 右侧设置弹窗 -->
-    <Popup v-model:dialogVisible="dialogVisible" :form="form"></Popup>
+    <Popup v-model:dialogVisible="dialogVisible"></Popup>
   </div>
 </template>
 
@@ -72,13 +72,6 @@ function refreshNowPage() {
 }
 
 const dialogVisible = ref(false);
-
-const form = reactive({
-  VERSION_PATH: "",
-  configPath: "",
-  javaVersion: "",
-  STORE_PATH: "",
-});
 </script>
 
 <style scoped lang="scss">

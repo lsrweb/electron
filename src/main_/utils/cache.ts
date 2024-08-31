@@ -1,19 +1,11 @@
-import {
-  readJSONSync,
-  writeJSONSync,
-  writeFileSync,
-  readFileSync,
-  existsSync,
-  readdirSync,
-  statSync,
-  mkdirSync,
-} from "fs-extra";
+import { readJSONSync, writeJSONSync, writeFileSync, readFileSync, existsSync, readdirSync, statSync, mkdirSync } from "fs-extra";
 import * as path from "path";
 import { app, dialog, type BrowserWindow } from "electron";
 import { APPDIR } from "../constants";
 import { feedBack } from "./feedback";
 import type { CustomApp } from "@/types/electron-app";
 import { pathReTrans } from "@/render_/utils";
+import { toJson } from ".";
 
 class FileStore {
   private window: BrowserWindow;
@@ -25,10 +17,7 @@ class FileStore {
   }
 
   // 私有方法,初始化指定文件,包括文件类型和初始数据
-  public initializeFile(
-    fileName: string,
-    initialData: Record<string, any>
-  ): void {
+  public initializeFile(fileName: string, initialData: Record<string, any>): void {
     // 写文件的时候也要判断文件是否存在,不存在则创建文件
     // 同时判断文件是否是json文件,如果是json文件,则使用writeJSONSync
     // 如果不是json文件,则使用writeFileSync
@@ -95,15 +84,12 @@ class FileStore {
    * @param fileName
    * @returns
    */
-  public readCache(
-    fileName?: string
-  ): Record<string, object> | string | void | any {
+  public readCache(fileName?: string): Record<string, object> | string | void | any {
     try {
       const cacheFilePath = this.getCacheFilePath(fileName);
 
       // 如果读取的文件路径不存在,则报错
-      if (!existsSync(cacheFilePath))
-        throw new Error("读取的文件路径不存在,请检查文件路径");
+      if (!existsSync(cacheFilePath)) throw new Error("读取的文件路径不存在,请检查文件路径");
 
       // 读取文件,并返回文件内容,如果不是json文件,则使用readFileSync
       if (cacheFilePath.includes(".json")) return readJSONSync(cacheFilePath);
@@ -180,12 +166,7 @@ class FileStore {
   }
 
   // 读取传入指定绝对路径下指定层数文件夹名称树
-  public readDirTree(
-    dir: string,
-    depth: number,
-    flatten: boolean = false,
-    filterRegex: RegExp | null = /^Android/
-  ): Record<string, any> | string[] {
+  public readDirTree(dir: string, depth: number, flatten: boolean = false, filterRegex: RegExp | null = /^Android/): Record<string, any> | string[] {
     if (!existsSync(dir)) return flatten ? [] : {};
     const result: Record<string, any> = {};
     const dirName = path.basename(dir);
@@ -200,17 +181,9 @@ class FileStore {
       const itemPath = pathReTrans(path.join(dir, item));
 
       // 检查当前目录是否匹配正则表达式
-      if (
-        statSync(itemPath).isDirectory() &&
-        (!filterRegex || filterRegex.test(item))
-      ) {
+      if (statSync(itemPath).isDirectory() && (!filterRegex || filterRegex.test(item))) {
         if (depth > 0) {
-          const subTree = this.readDirTree(
-            itemPath,
-            depth - 1,
-            flatten,
-            filterRegex
-          );
+          const subTree = this.readDirTree(itemPath, depth - 1, flatten, filterRegex);
           if (flatten && Array.isArray(subTree)) {
             flatResult.push(...subTree);
           } else {
@@ -227,35 +200,79 @@ class FileStore {
   }
 
   // 创建文件夹
-  public createDir(dir: string): void {
-    try {
-      if (!existsSync(dir)) {
-        mkdirSync(dir, { recursive: true, mode: 0o777 });
+  public createDir(dir: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      try {
+        if (!existsSync(dir)) {
+          mkdirSync(dir, { recursive: true, mode: 0o777 });
+        }
+        resolve();
+      } catch (error) {
+        console.log(error);
+        reject(new Error("创建文件夹失败"));
       }
-    } catch (error) {
-      console.log(error);
-      dialog.showErrorBox("错误", "创建文件夹失败");
-    }
+    });
   }
 
-  public createFile(filePath: string, data?: string): void {
-    try {
-      writeFileSync(filePath, data, {
-        encoding: "utf-8",
-      });
-    } catch (error) {
-      console.log(error);
-      dialog.showErrorBox("错误", "创建文件失败");
-    }
+  public createFile(filePath: string, data?: object): Promise<void> {
+    return new Promise((resolve, reject) => {
+      try {
+        if (filePath.includes(".json")) {
+          writeJSONSync(filePath, data || {}, {
+            spaces: 2,
+            EOL: "\r\n",
+          });
+        } else {
+          writeFileSync(filePath, toJson(data) || "", {
+            encoding: "utf-8",
+          });
+        }
+        resolve();
+      } catch (error) {
+        console.log(error);
+        reject(new Error("创建文件失败"));
+      }
+    });
   }
 
-  public readFile(filePath: string): string {
-    try {
-      return readFileSync(filePath, "utf-8");
-    } catch (error) {
-      console.log(error);
-      dialog.showErrorBox("错误", "读取文件失败");
-    }
+  public updateFile(filePath: string, data: object): Promise<void> {
+    return new Promise((resolve, reject) => {
+      try {
+        if (filePath.includes(".json")) {
+          const cacheData = readJSONSync(filePath);
+          if (!cacheData || !data) return;
+          const newData = { ...cacheData, ...data };
+
+          writeJSONSync(filePath, newData, {
+            spaces: 2,
+            EOL: "\r\n",
+          });
+        } else {
+          writeFileSync(filePath, toJson(data) || "", {
+            encoding: "utf-8",
+          });
+        }
+        resolve();
+      } catch (error) {
+        console.log(error);
+        reject(new Error("更新文件失败"));
+      }
+    });
+  }
+
+  public readFile(filePath: string): Promise<string | object> {
+    return new Promise((resolve, reject) => {
+      try {
+        if (filePath.includes(".json")) {
+          resolve(readJSONSync(filePath));
+        } else {
+          resolve(readFileSync(filePath, "utf-8"));
+        }
+      } catch (error) {
+        console.log(error);
+        reject(new Error(error instanceof Error ? error.message : "读取文件失败"));
+      }
+    });
   }
 }
 

@@ -17,15 +17,18 @@
       :label-position="'top'"
     >
       <!-- 配置文件存储目录 STORE_PATH -->
-      <ElFormItem label="配置文件存储目录" prop="STORE_PATH">
+      <ElFormItem label="配置文件存储目录" prop="APP_HOME_CACHE_PATH">
         <ElInput
-          v-model="form.STORE_PATH"
+          v-model="form.APP_HOME_CACHE_PATH"
           placeholder="请输入配置文件存储目录"
         />
       </ElFormItem>
 
-      <ElFormItem label="读取目录" prop="VERSION_PATH">
-        <ElInput v-model="form.VERSION_PATH" placeholder="请输入版本读取目录" />
+      <ElFormItem label="读取目录" prop="UNI_BUILD_VERSION_MANAGER_PATH">
+        <ElInput
+          v-model="form.UNI_BUILD_VERSION_MANAGER_PATH"
+          placeholder="请输入版本读取目录"
+        />
       </ElFormItem>
       <!-- <ElFormItem label="配置文件存储目录" prop="configPath">
         <ElInput
@@ -58,12 +61,6 @@ import { ElNotification } from "element-plus";
 
 const props = defineProps<{
   dialogVisible: boolean;
-  form?: {
-    VERSION_PATH: string;
-    configPath: string;
-    javaVersion: string;
-    STORE_PATH: string;
-  };
 }>();
 
 onMounted(async () => {
@@ -73,19 +70,18 @@ onMounted(async () => {
 });
 
 const formRules = {
-  VERSION_PATH: [
+  APP_HOME_CACHE_PATH: [
+    { required: true, message: "请输入配置文件存储目录", trigger: "blur" },
+  ],
+  UNI_BUILD_VERSION_MANAGER_PATH: [
     { required: true, message: "请输入版本读取目录", trigger: "blur" },
-  ],
-  configPath: [
-    { required: true, message: "请输入配置文件存储目录", trigger: "blur" },
-  ],
-  javaVersion: [{ required: true, message: "请输入java路径", trigger: "blur" }],
-  STORE_PATH: [
-    { required: true, message: "请输入配置文件存储目录", trigger: "blur" },
   ],
 };
 
-const form = ref(toRefs(props.form));
+const form = ref({
+  APP_HOME_CACHE_PATH: "",
+  UNI_BUILD_VERSION_MANAGER_PATH: "",
+});
 
 const emit = defineEmits(["update:dialogVisible"]);
 const dialogVisible = computed({
