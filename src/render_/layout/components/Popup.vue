@@ -15,7 +15,7 @@
       <!-- <ElFormItem label="配置文件存储目录" prop="configPath">
         <ElInput
           v-model="form.configPath"
-          placeholder="请输入配置文件存储目录"
+          placeholder="请输入配置文件存储目录" 
         />
       </ElFormItem> -->
       <!-- <ElFormItem label="Java1.8 jdk dir" prop="javaVersion">
