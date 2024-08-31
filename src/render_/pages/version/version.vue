@@ -59,7 +59,10 @@ function clickRow({ cwd }: any) {
 
 // 创建项目
 const showCreateProject = ref(false);
-const rowInfo = ref<{ version?: string; cwd?: string }>({});
+const rowInfo = ref<{ version?: string; cwd?: string }>({
+  version: "",
+  cwd: "",
+});
 </script>
 
 <template>
