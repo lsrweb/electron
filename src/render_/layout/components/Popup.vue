@@ -24,8 +24,8 @@
         />
       </ElFormItem>
 
-      <ElFormItem label="读取目录" prop="versionPath">
-        <ElInput v-model="form.versionPath" placeholder="请输入版本读取目录" />
+      <ElFormItem label="读取目录" prop="VERSION_PATH">
+        <ElInput v-model="form.VERSION_PATH" placeholder="请输入版本读取目录" />
       </ElFormItem>
       <!-- <ElFormItem label="配置文件存储目录" prop="configPath">
         <ElInput
@@ -59,7 +59,7 @@ import { ElNotification } from "element-plus";
 const props = defineProps<{
   dialogVisible: boolean;
   form?: {
-    versionPath: string;
+    VERSION_PATH: string;
     configPath: string;
     javaVersion: string;
     STORE_PATH: string;
@@ -69,10 +69,11 @@ const props = defineProps<{
 onMounted(async () => {
   // 初始化之前先读取已有配置
   form.value = await IpcMainMess.sendSync("cache.getData");
+  console.log(form.value);
 });
 
 const formRules = {
-  versionPath: [
+  VERSION_PATH: [
     { required: true, message: "请输入版本读取目录", trigger: "blur" },
   ],
   configPath: [

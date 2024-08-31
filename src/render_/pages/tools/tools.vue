@@ -23,8 +23,12 @@ const route = useRoute();
 
 const modelSelect = ref<string>("0");
 
-const labelArray = ["Java设置", "Gradle设置"];
-const pathArray: string[] = ["setting-java", "setting-gradle"] as const;
+const labelArray = ["Java设置", "Gradle设置", "密钥设置"] as const;
+const pathArray: string[] = [
+  "setting-java",
+  "setting-gradle",
+  "secret-genderal",
+] as const;
 
 watch(
   () => modelSelect.value,

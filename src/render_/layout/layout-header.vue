@@ -74,7 +74,7 @@ function refreshNowPage() {
 const dialogVisible = ref(false);
 
 const form = reactive({
-  versionPath: "",
+  VERSION_PATH: "",
   configPath: "",
   javaVersion: "",
   STORE_PATH: "",

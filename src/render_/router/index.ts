@@ -46,6 +46,11 @@ const router = createRouter({
               component: () =>
                 import("@r/pages/tools/children/setting-gradle.vue"),
             },
+            {
+              path: "/secret-genderal",
+              name: "secret-genderal",
+              component: () => import("@r/pages/tools/children/secret-key.vue"),
+            },
           ],
         },
         {

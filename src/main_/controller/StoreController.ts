@@ -7,7 +7,7 @@ import {
   setEnvironmentScript,
   SETTING_JSONFILE,
 } from "../constants";
-import { fromJson } from "../utils";
+import { fromJson, toJson } from "../utils";
 import { existsSync } from "fs-extra";
 import { executePowerShellScript } from "../utils/exec";
 import { pathTrans } from "@/render_/utils";
@@ -25,13 +25,19 @@ export class StoreController extends IpcMainBaseController {
     this.window = windowCtx;
 
     // 初始化配置文件
-    this.fileSystem.initializeFile(SETTING_JSONFILE, {
-      STORE_PATH: APPDIR,
-    });
+
     try {
+      this.fileSystem.initializeFile(SETTING_JSONFILE, {
+        STORE_PATH: APPDIR,
+      });
       // 读取文件,如果文件不存在,则创建文件
       if (!existsSync(`${app.getPath("home")}/.unipack`)) {
-        this.fileSystem.createFile(app.getPath("home") + "/.unipack", "{}");
+        this.fileSystem.createFile(
+          app.getPath("home") + "/.unipack",
+          toJson({ HOME: `${APPDIR}` })
+        );
+
+        this.unipackINfo = { HOME: APPDIR };
       } else {
         // 读取文件
         this.unipackINfo = fromJson(
@@ -47,10 +53,14 @@ export class StoreController extends IpcMainBaseController {
    * getData 获取已有缓存
    */
   public getCacheJsonFile() {
-    return {
-      ...this.fileSystem.readCache(SETTING_JSONFILE),
-      STORE_PATH: this.unipackINfo.HOME || APPDIR,
-    };
+    try {
+      return {
+        ...this.fileSystem.readCache(SETTING_JSONFILE),
+        STORE_PATH: this.unipackINfo.HOME || APPDIR,
+      };
+    } catch (error) {
+      console.error("Failed to get environment variable:", error);
+    }
   }
 
   /**
@@ -59,9 +69,10 @@ export class StoreController extends IpcMainBaseController {
   public async setCacheJsonFile(event: IpcMainEvent, data: any) {
     // 读取已有配置,如果 STORE_PATH 和原有的不一样,则需要重新初始化在新目录
     const { STORE_PATH } = this.fileSystem.readCache(SETTING_JSONFILE);
-    if (STORE_PATH !== fromJson(data).STORE_PATH) {
+    if (this.unipackINfo.HOME !== APPDIR) {
       // 更新用户环境变量 UNI_PACK_HOME
       const GET_PATH_STORE = fromJson(data).STORE_PATH;
+      const GET_VERSION_PATH = fromJson(data).VERSION_PATH;
 
       // 创建文件夹
       await this.fileSystem.createDir(pathTrans(`${GET_PATH_STORE}\\unipack`));
@@ -74,13 +85,15 @@ export class StoreController extends IpcMainBaseController {
 
       // 读取原有配置,并写入新的配置
       const setting = this.fileSystem.readCache(SETTING_JSONFILE);
-      setting.STORE_PATH = fromJson(data).STORE_PATH;
+      setting.STORE_PATH = GET_PATH_STORE;
+      setting.VERSION_PATH = GET_VERSION_PATH;
+
       this.fileSystem.initializeFile(
         `${GET_PATH_STORE}\\unipack\\setting.json`,
         setting
       );
 
-      return;
+      return setting;
     }
 
     return this.fileSystem.initializeFile(SETTING_JSONFILE, data);
@@ -104,13 +117,13 @@ export class StoreController extends IpcMainBaseController {
 
   // 读取已有的版本列表
   public readVersionFolderData(event: IpcMainEvent, data: any) {
-    // 先读取已有配置
-    const { versionPath } = this.fileSystem.readCache(SETTING_JSONFILE);
-    const resultPath = existsSync(versionPath)
-      ? versionPath
-      : ANDROID_VERSION_DIR;
-
-    // 读取版本列表
-    return this.fileSystem.readDirTree(resultPath, 1, true);
+    // const { VERSION_PATH } = this.fileSystem.readCache(SETTING_JSONFILE);
+    // console.log("VERSION_PATH", VERSION_PATH);
+    // const resultPath = existsSync(VERSION_PATH)
+    //   ? VERSION_PATH
+    //   : ANDROID_VERSION_DIR;
+    // // 读取版本列表
+    // return this.fileSystem.readDirTree(resultPath, 1, true);
+    // 先读取已有配置,读取项目跟目录
   }
 }

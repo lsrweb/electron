@@ -52,3 +52,21 @@ contextBridge.exposeInMainWorld("electronAPI", {
   feedBackSuccess: (callback: () => void) =>
     ipcRenderer.on("feedback:success", () => callback()),
 });
+
+// ********************************
+// ToolsView-controller
+// ********************************
+contextBridge.exposeInMainWorld("tools", {
+  // 获取已有 java 版本列表
+  getJavaVersionList: () =>
+    ipcRenderer.invoke("ToolsController:getJavaVersionList"),
+  // 设置java版本列表统一存储目录
+  setJavaVersionFolder: (data: any) =>
+    ipcRenderer.invoke("ToolsController:setJavaVersionFolder", data),
+  // 设置制定java版本为环境变量
+  setJavaVersionAsEnv: (data: any) =>
+    ipcRenderer.invoke("ToolsController:setJavaVersionAsEnv", data),
+  // 适用指定的java版本生成密钥库文件
+  generateKeyStoreFile: (data: any) =>
+    ipcRenderer.invoke("ToolsController:generateKeyStoreFile", data),
+});

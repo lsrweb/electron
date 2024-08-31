@@ -4,6 +4,7 @@ import { IpcMainBaseController } from "./base";
 import { ScreenController } from "./ScreenController";
 import { StoreController } from "./StoreController";
 import { ExecController } from "./ExecController";
+import { ToolsController } from "./ToolsController";
 
 export const enumControllerMethods = <T extends IpcMainBaseController>(
   clsInstance: T
@@ -33,10 +34,12 @@ export const registerMainHandlers = (mainWindow: BrowserWindow) => {
   const store = new StoreController(mainWindow);
   const screen = new ScreenController(mainWindow);
   const exec = new ExecController(mainWindow);
+  const tools = new ToolsController(mainWindow);
 
   enumControllerMethods(store);
   enumControllerMethods(screen);
   enumControllerMethods(exec);
+  enumControllerMethods(tools);
 
   // 渲染端控制器
 
@@ -56,5 +59,6 @@ export const registerMainHandlers = (mainWindow: BrowserWindow) => {
     store,
     screen,
     exec,
+    tools,
   };
 };
