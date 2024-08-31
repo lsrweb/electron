@@ -23,6 +23,7 @@ const columns = ref([
     },
     buttonProps: {
       variant: "link",
+      class: "!text-blue-500 !w-full !text-ellipsis !overflow-hidden !whitespace-nowrap !overflow-ellipsis !block",
     },
   },
   {
@@ -55,7 +56,7 @@ function handleDelete(row: any) {
 }
 
 function clickRow({ cwd }: any) {
-  IpcMainMess.sendSync("cache.openExplorer", cwd);
+  IpcMainMess.sendSync("cache.openExplorer", { cwd });
 }
 </script>
 
@@ -63,7 +64,7 @@ function clickRow({ cwd }: any) {
   <div>
     <data-table :data="versionArray" :columns="columns" @deleteRow="handleDelete" :action-props="{ width: '300px' }" @clickRow="clickRow">
       <template #action>
-        <Button type="text">查看下属项目</Button>
+        <Button type="text" class="text-ellipsis">查看下属项目</Button>
       </template>
     </data-table>
   </div>

@@ -16,10 +16,7 @@ export function fromJson(json: string): any {
 }
 
 // diff 比对两个对象的差异,返回差异的对象和差异的属性个数,如果没有差异则返回null
-export function diff(
-  obj1: Record<string, any>,
-  obj2: Record<string, any>
-): { diffObj: any; diffCount: number } | null {
+export function diff(obj1: Record<string, any>, obj2: Record<string, any>): { diffObj: any; diffCount: number } | null {
   const diffObj: any = {};
   let diffCount = 0;
 
@@ -36,7 +33,8 @@ export function diff(
 // 路径转换,将/  \ 转换为\\
 export function pathTrans(path: string): string {
   console.log(`path trans: ${path}`);
-  return path.replace(/\//g, "\\");
+  // 去掉引号
+  return path.replace(/[\\/]/g, "\\\\").replace(/"/g, "");
 }
 
 // 将转化的路径转换回来

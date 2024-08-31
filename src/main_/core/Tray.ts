@@ -17,21 +17,24 @@ const createTray = (mainWindow: BrowserWindow) => {
     {
       label: "退出",
       click: () => {
+        mainWindow.destroy();
         app.quit();
       },
     },
   ]);
 
-  tray.setToolTip("My Electron App");
+  tray.setToolTip("UniHelperBuild");
   tray.setContextMenu(contextMenu);
 
   tray.on("click", () => {
+    console.log(mainWindow.isVisible());
+
     if (mainWindow.isVisible()) {
       mainWindow.hide();
-      mainWindow.setSkipTaskbar(false);
+      mainWindow.setSkipTaskbar(true);
     } else {
       mainWindow.show();
-      mainWindow.setSkipTaskbar(true);
+      mainWindow.setSkipTaskbar(false);
     }
   });
 };

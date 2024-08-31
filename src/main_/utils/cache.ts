@@ -178,7 +178,7 @@ class FileStore {
     const flatResult: string[] = [];
 
     items.forEach((item: string) => {
-      const itemPath = pathReTrans(path.join(dir, item));
+      const itemPath = path.join(dir, item);
 
       // 检查当前目录是否匹配正则表达式
       if (statSync(itemPath).isDirectory() && (!filterRegex || filterRegex.test(item))) {

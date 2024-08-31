@@ -1,6 +1,9 @@
 import { fromJson, toJson } from "@r/utils/index";
+import { ElNotification } from "element-plus";
 
 class IpcMainMess {
+  private elNotification: any;
+
   // 私有方法,将数据格式化成字符串
   private formatData(data: any) {
     return toJson(data);
@@ -46,9 +49,26 @@ class IpcMainMess {
    * 向主进程发送消息,并等待主进程返回结果
    * 传入方法字符串路径,从window上进行调用
    */
-  sendSync(channel: string, data?: any) {
+  async sendSync(channel: string, data?: any) {
     try {
-      return this.chainCall(channel, this.formatData(data));
+      const result = await this.chainCall(channel, this.formatData(data));
+      console.log("sendSync result: ", channel, result);
+      if (typeof result == "object" && result.hasOwnProperty("type")) {
+        if (this.elNotification) {
+          this.elNotification.close();
+          await nextTick();
+        }
+        this.elNotification = ElNotification({
+          title: result.title,
+          message: result.message,
+          type: result.type,
+          duration: result.duration,
+          position: "bottom-right",
+        });
+
+        return Promise.reject(result);
+      }
+      return result;
     } catch (err) {
       console.error(err);
       return Promise.reject(err);

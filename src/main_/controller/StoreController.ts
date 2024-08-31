@@ -1,11 +1,12 @@
-import { app, type BrowserWindow, type IpcMainEvent } from "electron";
+import { app, dialog, type BrowserWindow, type IpcMainEvent } from "electron";
 import FileStore from "../utils/cache";
 import { IpcMainBaseController } from "./base";
 import { APPDIR, JAVA_VERSION_MANAGER_PATH, SETTING_JSONFILE, UNI_BUILD_VERSION_MANAGER_PATH, GRADLE_VERSION_MANAGER_PATH, GLOBAL_CACHE_SETTING, HOME } from "../constants";
 import { fromJson, toJson } from "../utils";
 import { existsSync } from "fs-extra";
 import { executeCommand, executePowerShellScript } from "../utils/exec";
-import { pathTrans } from "@/render_/utils";
+import { pathReTrans, pathTrans } from "@/render_/utils";
+import { errorToast } from "./errorBase";
 
 export class StoreController extends IpcMainBaseController {
   fileSystem: FileStore;
@@ -105,17 +106,21 @@ export class StoreController extends IpcMainBaseController {
       const { UNI_BUILD_VERSION_MANAGER_PATH } = this.GLOBAL_SETTING;
 
       return this.fileSystem.readDirTree(UNI_BUILD_VERSION_MANAGER_PATH, 1, true);
-    } catch (error) {}
+    } catch (error) {
+      return errorToast("读取版本列表失败");
+    }
   }
 
   // 传入路径,使用资源管理器打开
-  public openExplorer(event: IpcMainEvent, path: string) {
-    console.log("openExplorer", path);
-    if (!existsSync(path)) {
-      console.error("路径不存在", path);
-      return;
-    }
+  public async openExplorer(event: IpcMainEvent, path: string) {
+    try {
+      if (!existsSync(fromJson(path).cwd)) {
+        return errorToast("路径不存在");
+      }
 
-    executeCommand(`start explorer ${pathTrans(path)}`);
+      return executeCommand(`start explorer ${fromJson(path).cwd}`);
+    } catch (error) {
+      return errorToast("打开资源管理器失败");
+    }
   }
 }
