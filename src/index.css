@@ -79,3 +79,12 @@ html {
 ::-webkit-scrollbar-thumb:hover {
   background-color: #848484;
 }
+
+/* electron 允许拖拽 class */
+.draggable {
+  -webkit-app-region: drag;
+}
+/* 排除拖拽 */
+.no-drag {
+  -webkit-app-region: no-drag;
+}

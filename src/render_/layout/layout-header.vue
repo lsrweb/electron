@@ -1,7 +1,7 @@
 <template>
-  <div class="layout-header">
+  <div class="layout-header draggable">
     <!-- 最小化/[全屏,取消全屏,退出] -->
-    <div class="header__btns">
+    <div class="header__btns no-drag">
       <Close class="mr-2" @click="closeApp" />
       <MiniDesk class="mr-2" @click="miniApp" />
 
@@ -23,7 +23,7 @@
     </div>
 
     <!-- setting -->
-    <div>
+    <div class="no-drag">
       <Refresh @click="refreshNowPage" />
       <Settings @click="dialogVisible = true" />
     </div>
@@ -77,6 +77,7 @@ const form = reactive({
   versionPath: "",
   configPath: "",
   javaVersion: "",
+  STORE_PATH: "",
 });
 </script>
 

@@ -40,10 +40,6 @@ let HomeEnv = (
       //   "utf8"
       // );
       // return JSON.parse(data).HOME;
-      console.log(
-        readFileSync(app.getPath("home") + "/.unipack", "utf8"),
-        'readFileSync(app.getPath("home") + "/.unipack", "utf8");'
-      );
     } catch (error) {
       console.error("Failed to get environment variable:", error);
     }

@@ -15,6 +15,7 @@ import { pathTrans } from "@/render_/utils";
 export class StoreController extends IpcMainBaseController {
   fileSystem: FileStore;
   private window: BrowserWindow;
+  private unipackINfo: any;
 
   constructor(windowCtx: BrowserWindow) {
     super("StoreController");
@@ -27,18 +28,29 @@ export class StoreController extends IpcMainBaseController {
     this.fileSystem.initializeFile(SETTING_JSONFILE, {
       STORE_PATH: APPDIR,
     });
-
-    // 读取文件,如果文件不存在,则创建文件
-    if (!existsSync(`${app.getPath("home")}/.unipack`)) {
-      this.fileSystem.createFile(app.getPath("home") + "/.unipack", "{}");
+    try {
+      // 读取文件,如果文件不存在,则创建文件
+      if (!existsSync(`${app.getPath("home")}/.unipack`)) {
+        this.fileSystem.createFile(app.getPath("home") + "/.unipack", "{}");
+      } else {
+        // 读取文件
+        this.unipackINfo = fromJson(
+          this.fileSystem.readFile(pathTrans(`${app.getPath("home")}/.unipack`))
+        );
+      }
+    } catch (error) {
+      console.error("Failed to get environment variable:", error);
     }
   }
 
   /**
-   * getData
+   * getData 获取已有缓存
    */
   public getCacheJsonFile() {
-    return this.fileSystem.readCache(SETTING_JSONFILE);
+    return {
+      ...this.fileSystem.readCache(SETTING_JSONFILE),
+      STORE_PATH: this.unipackINfo.HOME || APPDIR,
+    };
   }
 
   /**
@@ -50,20 +62,6 @@ export class StoreController extends IpcMainBaseController {
     if (STORE_PATH !== fromJson(data).STORE_PATH) {
       // 更新用户环境变量 UNI_PACK_HOME
       const GET_PATH_STORE = fromJson(data).STORE_PATH;
-
-      // try {
-      //   await executePowerShellScript(setEnvironmentScript, [
-      //     "-name",
-      //     "UNI_PACK_HOME",
-      //     "-value",
-      //     fromJson(data).STORE_PATH + "/.unipack",
-      //     "-user",
-      //   ]);
-      // } catch (error) {
-      //   console.error("Failed to set environment variable:", error);
-      // }
-
-      //
 
       // 创建文件夹
       await this.fileSystem.createDir(pathTrans(`${GET_PATH_STORE}\\unipack`));

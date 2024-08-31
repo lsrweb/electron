@@ -121,7 +121,7 @@ class FileStore {
         EOL: "\r\n",
       });
     } catch (error) {
-      dialog.showErrorBox("错误", "写入缓存失败");
+      dialog.showErrorBox("错误", error);
     }
   }
 
@@ -246,6 +246,15 @@ class FileStore {
     } catch (error) {
       console.log(error);
       dialog.showErrorBox("错误", "创建文件失败");
+    }
+  }
+
+  public readFile(filePath: string): string {
+    try {
+      return readFileSync(filePath, "utf-8");
+    } catch (error) {
+      console.log(error);
+      dialog.showErrorBox("错误", "读取文件失败");
     }
   }
 }
