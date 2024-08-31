@@ -1,34 +1,16 @@
 <template>
-  <ElDrawer
-    title="设置"
-    direction="rtl"
-    size="500px"
-    v-model:model-value="dialogVisible"
-    :close-on-click-modal="false"
-  >
+  <ElDrawer title="设置" direction="rtl" size="500px" v-model:model-value="dialogVisible" v-if="dialogVisible" :close-on-click-modal="false">
     <!-- 版本读取目录 -->
     <!-- 配置文件存储目录 -->
     <!-- java 版本 -->
-    <ElForm
-      v-model="form"
-      :model="form"
-      :rules="formRules"
-      ref="settingsForm"
-      :label-position="'top'"
-    >
+    <ElForm v-model="form" :model="form" :rules="formRules" ref="settingsForm" :label-position="'top'">
       <!-- 配置文件存储目录 STORE_PATH -->
       <ElFormItem label="配置文件存储目录" prop="APP_HOME_CACHE_PATH">
-        <ElInput
-          v-model="form.APP_HOME_CACHE_PATH"
-          placeholder="请输入配置文件存储目录"
-        />
+        <ElInput v-model="form.APP_HOME_CACHE_PATH" placeholder="请输入配置文件存储目录" />
       </ElFormItem>
 
       <ElFormItem label="读取目录" prop="UNI_BUILD_VERSION_MANAGER_PATH">
-        <ElInput
-          v-model="form.UNI_BUILD_VERSION_MANAGER_PATH"
-          placeholder="请输入版本读取目录"
-        />
+        <ElInput v-model="form.UNI_BUILD_VERSION_MANAGER_PATH" placeholder="请输入版本读取目录" />
       </ElFormItem>
       <!-- <ElFormItem label="配置文件存储目录" prop="configPath">
         <ElInput
@@ -63,19 +45,20 @@ const props = defineProps<{
   dialogVisible: boolean;
 }>();
 
-onMounted(async () => {
-  // 初始化之前先读取已有配置
-  form.value = await IpcMainMess.sendSync("cache.getData");
-  console.log(form.value);
-});
+watch(
+  () => props.dialogVisible,
+  async (val) => {
+    if (val) {
+      // 初始化之前先读取已有配置
+      form.value = await IpcMainMess.sendSync("cache.getData");
+      console.log(form.value);
+    }
+  }
+);
 
 const formRules = {
-  APP_HOME_CACHE_PATH: [
-    { required: true, message: "请输入配置文件存储目录", trigger: "blur" },
-  ],
-  UNI_BUILD_VERSION_MANAGER_PATH: [
-    { required: true, message: "请输入版本读取目录", trigger: "blur" },
-  ],
+  APP_HOME_CACHE_PATH: [{ required: true, message: "请输入配置文件存储目录", trigger: "blur" }],
+  UNI_BUILD_VERSION_MANAGER_PATH: [{ required: true, message: "请输入版本读取目录", trigger: "blur" }],
 };
 
 const form = ref({

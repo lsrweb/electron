@@ -39,7 +39,8 @@ export class StoreController extends IpcMainBaseController {
       } else {
         // 读取全局配置文件 GLOBAL_DIR
         // @ts-ignore
-        this.GLOBAL_DIR = await this.fileSystem.readFile(GLOBAL_CACHE_SETTING).APP_HOME_CACHE_PATH;
+        const { APP_HOME_CACHE_PATH } = await this.fileSystem.readFile(GLOBAL_CACHE_SETTING);
+        this.GLOBAL_DIR = APP_HOME_CACHE_PATH;
       }
 
       // 1.创建项目全局存储目录
@@ -48,20 +49,15 @@ export class StoreController extends IpcMainBaseController {
       // 2.优先创建C盘下的全局配置文件
       await this.fileSystem.createFile(SETTING_JSONFILE(this.GLOBAL_DIR), {
         APP_HOME_CACHE_PATH: this.GLOBAL_DIR ?? APPDIR,
-        UNI_BUILD_VERSION_MANAGER_PATH: UNI_BUILD_VERSION_MANAGER_PATH(),
-        JAVA_VERSION_MANAGER_PATH: JAVA_VERSION_MANAGER_PATH(),
-        GRADLE_VERSION_MANAGER_PATH: GRADLE_VERSION_MANAGER_PATH(),
+        UNI_BUILD_VERSION_MANAGER_PATH: UNI_BUILD_VERSION_MANAGER_PATH(this.GLOBAL_DIR),
+        JAVA_VERSION_MANAGER_PATH: JAVA_VERSION_MANAGER_PATH(this.GLOBAL_DIR),
+        GRADLE_VERSION_MANAGER_PATH: GRADLE_VERSION_MANAGER_PATH(this.GLOBAL_DIR),
       });
 
       // 3.配置文件初始化之后,分别创建对应的文件夹
       await this.fileSystem.createDir(UNI_BUILD_VERSION_MANAGER_PATH(this.GLOBAL_DIR));
       this.fileSystem.createDir(JAVA_VERSION_MANAGER_PATH(this.GLOBAL_DIR));
       this.fileSystem.createDir(GRADLE_VERSION_MANAGER_PATH(this.GLOBAL_DIR));
-
-      // 读取全局配置文件 GLOBAL_DIR
-      this.GLOBAL_DIR =
-        // @ts-ignore
-        this.fileSystem.readFile(GLOBAL_CACHE_SETTING).APP_HOME_CACHE_PATH;
     } catch (error) {
       console.error("Failed to get environment variable:", error);
     }
@@ -70,9 +66,9 @@ export class StoreController extends IpcMainBaseController {
   /**
    * getData 获取已有缓存
    */
-  public getCacheJsonFile() {
+  public async getCacheJsonFile() {
     try {
-      return this.fileSystem.readFile(SETTING_JSONFILE(this.GLOBAL_DIR));
+      return await this.fileSystem.readFile(SETTING_JSONFILE(this.GLOBAL_DIR));
     } catch (error) {
       console.error("Failed to get environment variable:", error);
     }
