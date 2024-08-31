@@ -10,7 +10,8 @@ import { pathTrans } from "@/render_/utils";
 export class StoreController extends IpcMainBaseController {
   fileSystem: FileStore;
   private window: BrowserWindow;
-  private GLOBAL_DIR: string;
+  private GLOBAL_DIR: any;
+  private GLOBAL_SETTING: any;
 
   constructor(windowCtx: BrowserWindow) {
     super("StoreController");
@@ -39,8 +40,10 @@ export class StoreController extends IpcMainBaseController {
       } else {
         // 读取全局配置文件 GLOBAL_DIR
         // @ts-ignore
-        const { APP_HOME_CACHE_PATH } = await this.fileSystem.readFile(GLOBAL_CACHE_SETTING);
-        this.GLOBAL_DIR = APP_HOME_CACHE_PATH;
+        const APP_CACHE: any = await this.fileSystem.readFile(GLOBAL_CACHE_SETTING);
+        this.GLOBAL_DIR = APP_CACHE["APP_HOME_CACHE_PATH"];
+
+        this.GLOBAL_SETTING = await this.fileSystem.readFile(SETTING_JSONFILE(this.GLOBAL_DIR));
       }
 
       // 1.创建项目全局存储目录
@@ -104,8 +107,9 @@ export class StoreController extends IpcMainBaseController {
   // 读取已有的版本列表
   public readVersionFolderData(event: IpcMainEvent, data: any): any {
     try {
-      console.log("readVersionFolderData:", data);
-      return [];
+      const { UNI_BUILD_VERSION_MANAGER_PATH } = this.GLOBAL_SETTING;
+
+      return this.fileSystem.readDirTree(UNI_BUILD_VERSION_MANAGER_PATH, 1, true);
     } catch (error) {}
   }
 }

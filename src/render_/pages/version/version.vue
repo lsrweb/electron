@@ -32,6 +32,8 @@ const columns = ref([
 const versionArray = ref([]);
 onMounted(async () => {
   const getResult = await IpcMainMess.sendSync("cache.readVersionFolderData");
+  console.log(getResult);
+
   versionArray.value = getResult.map((item: string) => {
     const arr = item.split("\\");
     return {
@@ -50,12 +52,7 @@ function handleDelete(row: any) {
 
 <template>
   <div>
-    <data-table
-      :data="versionArray"
-      :columns="columns"
-      @deleteRow="handleDelete"
-      :action-props="{ width: '300px' }"
-    >
+    <data-table :data="versionArray" :columns="columns" @deleteRow="handleDelete" :action-props="{ width: '300px' }">
       <template #action>
         <Button type="text">查看下属项目</Button>
       </template>

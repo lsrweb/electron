@@ -260,7 +260,7 @@ class FileStore {
     });
   }
 
-  public readFile(filePath: string): Promise<string | object> {
+  public readFile(filePath: string): Promise<object | string> {
     return new Promise((resolve, reject) => {
       try {
         if (filePath.includes(".json")) {
