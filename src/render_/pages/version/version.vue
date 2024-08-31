@@ -15,9 +15,14 @@ const columns = ref([
   {
     label: "路径",
     key: "cwd",
+    type: "button",
     props: {
       //
       showOverflowTooltip: true,
+      width: "400px",
+    },
+    buttonProps: {
+      variant: "link",
     },
   },
   {
@@ -48,11 +53,15 @@ onMounted(async () => {
 function handleDelete(row: any) {
   console.log(row);
 }
+
+function clickRow({ cwd }: any) {
+  IpcMainMess.sendSync("cache.openExplorer", cwd);
+}
 </script>
 
 <template>
   <div>
-    <data-table :data="versionArray" :columns="columns" @deleteRow="handleDelete" :action-props="{ width: '300px' }">
+    <data-table :data="versionArray" :columns="columns" @deleteRow="handleDelete" :action-props="{ width: '300px' }" @clickRow="clickRow">
       <template #action>
         <Button type="text">查看下属项目</Button>
       </template>

@@ -3,17 +3,15 @@ contextBridge.exposeInMainWorld("cache", {
   // 获取缓存数据
   getData: () => ipcRenderer.invoke("StoreController:getCacheJsonFile"),
   // 设置缓存数据
-  setData: (data: any) =>
-    ipcRenderer.invoke("StoreController:setCacheJsonFile", data),
+  setData: (data: any) => ipcRenderer.invoke("StoreController:setCacheJsonFile", data),
   // 获取JSON指定key
-  getJsonKey: (key: string) =>
-    ipcRenderer.invoke("StoreController:getJsonKey", key),
+  getJsonKey: (key: string) => ipcRenderer.invoke("StoreController:getJsonKey", key),
   // 设置JSON指定key
-  setJsonKey: (data: object) =>
-    ipcRenderer.invoke("StoreController:setJsonKey", data),
+  setJsonKey: (data: object) => ipcRenderer.invoke("StoreController:setJsonKey", data),
   // 获取版本列表
-  readVersionFolderData: () =>
-    ipcRenderer.invoke("StoreController:readVersionFolderData"),
+  readVersionFolderData: () => ipcRenderer.invoke("StoreController:readVersionFolderData"),
+  // 资源管理器
+  openExplorer: (data: string) => ipcRenderer.invoke("StoreController:openExplorer", data),
 });
 
 contextBridge.exposeInMainWorld("system", {
@@ -32,10 +30,8 @@ contextBridge.exposeInMainWorld("renderSetting", () => {});
 
 // dialog
 contextBridge.exposeInMainWorld("dialog", {
-  showOpenDialog: (options: Electron.OpenDialogOptions) =>
-    ipcRenderer.invoke("dialog", options),
-  showSaveDialog: (options: Electron.SaveDialogOptions) =>
-    ipcRenderer.invoke("dialog", options),
+  showOpenDialog: (options: Electron.OpenDialogOptions) => ipcRenderer.invoke("dialog", options),
+  showSaveDialog: (options: Electron.SaveDialogOptions) => ipcRenderer.invoke("dialog", options),
 });
 
 // 获取系统信息
@@ -45,12 +41,10 @@ contextBridge.exposeInMainWorld("getSystemInfo", {
 
 // 主进程->渲染进程消息发送
 contextBridge.exposeInMainWorld("electronAPI", {
-  mainProcessLoaded: (callback: () => void) =>
-    ipcRenderer.on("main-process-loaded", () => callback()),
+  mainProcessLoaded: (callback: () => void) => ipcRenderer.on("main-process-loaded", () => callback()),
 
   // 通知主进程
-  feedBackSuccess: (callback: () => void) =>
-    ipcRenderer.on("feedback:success", () => callback()),
+  feedBackSuccess: (callback: () => void) => ipcRenderer.on("feedback:success", () => callback()),
 });
 
 // ********************************
@@ -58,15 +52,11 @@ contextBridge.exposeInMainWorld("electronAPI", {
 // ********************************
 contextBridge.exposeInMainWorld("tools", {
   // 获取已有 java 版本列表
-  getJavaVersionList: () =>
-    ipcRenderer.invoke("ToolsController:getJavaVersionList"),
+  getJavaVersionList: () => ipcRenderer.invoke("ToolsController:getJavaVersionList"),
   // 设置java版本列表统一存储目录
-  setJavaVersionFolder: (data: any) =>
-    ipcRenderer.invoke("ToolsController:setJavaVersionFolder", data),
+  setJavaVersionFolder: (data: any) => ipcRenderer.invoke("ToolsController:setJavaVersionFolder", data),
   // 设置制定java版本为环境变量
-  setJavaVersionAsEnv: (data: any) =>
-    ipcRenderer.invoke("ToolsController:setJavaVersionAsEnv", data),
+  setJavaVersionAsEnv: (data: any) => ipcRenderer.invoke("ToolsController:setJavaVersionAsEnv", data),
   // 适用指定的java版本生成密钥库文件
-  generateKeyStoreFile: (data: any) =>
-    ipcRenderer.invoke("ToolsController:generateKeyStoreFile", data),
+  generateKeyStoreFile: (data: any) => ipcRenderer.invoke("ToolsController:generateKeyStoreFile", data),
 });

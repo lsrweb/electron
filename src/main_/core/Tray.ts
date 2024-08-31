@@ -26,7 +26,13 @@ const createTray = (mainWindow: BrowserWindow) => {
   tray.setContextMenu(contextMenu);
 
   tray.on("click", () => {
-    mainWindow.show();
+    if (mainWindow.isVisible()) {
+      mainWindow.hide();
+      mainWindow.setSkipTaskbar(false);
+    } else {
+      mainWindow.show();
+      mainWindow.setSkipTaskbar(true);
+    }
   });
 };
 

@@ -4,7 +4,7 @@ import { IpcMainBaseController } from "./base";
 import { APPDIR, JAVA_VERSION_MANAGER_PATH, SETTING_JSONFILE, UNI_BUILD_VERSION_MANAGER_PATH, GRADLE_VERSION_MANAGER_PATH, GLOBAL_CACHE_SETTING, HOME } from "../constants";
 import { fromJson, toJson } from "../utils";
 import { existsSync } from "fs-extra";
-import { executePowerShellScript } from "../utils/exec";
+import { executeCommand, executePowerShellScript } from "../utils/exec";
 import { pathTrans } from "@/render_/utils";
 
 export class StoreController extends IpcMainBaseController {
@@ -93,11 +93,6 @@ export class StoreController extends IpcMainBaseController {
     }
   }
 
-  /**
-   * init
-   */
-  public init() {}
-
   // 获取JSON指定key
   public getJsonKey(event: IpcMainEvent, key: string) {}
 
@@ -111,5 +106,16 @@ export class StoreController extends IpcMainBaseController {
 
       return this.fileSystem.readDirTree(UNI_BUILD_VERSION_MANAGER_PATH, 1, true);
     } catch (error) {}
+  }
+
+  // 传入路径,使用资源管理器打开
+  public openExplorer(event: IpcMainEvent, path: string) {
+    console.log("openExplorer", path);
+    if (!existsSync(path)) {
+      console.error("路径不存在", path);
+      return;
+    }
+
+    executeCommand(`start explorer ${pathTrans(path)}`);
   }
 }

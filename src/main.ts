@@ -13,8 +13,7 @@ if (process.env.NODE_ENV === "production") {
   import("source-map-support").then((mapper) => mapper.default.install());
 }
 
-const isDebug =
-  process.env.NODE_ENV === "development" || process.env.DEBUG_PROD === "true";
+const isDebug = process.env.NODE_ENV === "development" || process.env.DEBUG_PROD === "true";
 if (isDebug) {
   import("electron-debug").then(({ default: debug }) => debug());
 }
@@ -80,9 +79,7 @@ const createWindow = async () => {
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
     mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
   } else {
-    mainWindow.loadFile(
-      path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`)
-    );
+    mainWindow.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`));
   }
 
   if (isDebug) {
@@ -92,6 +89,13 @@ const createWindow = async () => {
 
   mainWindow.once("ready-to-show", () => {
     mainWindow.show();
+  });
+
+  mainWindow.on("close", (event) => {
+    mainWindow.hide();
+    mainWindow.setSkipTaskbar(true);
+
+    event.preventDefault();
   });
 };
 
