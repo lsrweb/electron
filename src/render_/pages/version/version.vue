@@ -2,6 +2,7 @@
 import Button from "@r/components/Button.vue";
 import dataTable from "@r/components/ui/data-table";
 import IpcMainMess from "@r/utils/ipc";
+import CreateProject from "./create-project.vue";
 
 const columns = ref([
   {
@@ -19,7 +20,6 @@ const columns = ref([
     props: {
       //
       showOverflowTooltip: true,
-      width: "400px",
     },
     buttonProps: {
       variant: "link",
@@ -38,8 +38,6 @@ const columns = ref([
 const versionArray = ref([]);
 onMounted(async () => {
   const getResult = await IpcMainMess.sendSync("cache.readVersionFolderData");
-  console.log(getResult);
-
   versionArray.value = getResult.map((item: string) => {
     const arr = item.split("\\");
     return {
@@ -58,15 +56,21 @@ function handleDelete(row: any) {
 function clickRow({ cwd }: any) {
   IpcMainMess.sendSync("cache.openExplorer", { cwd });
 }
+
+// 创建项目
+const showCreateProject = ref(false);
+const rowInfo = ref<{ version?: string; cwd?: string }>({});
 </script>
 
 <template>
   <div>
     <data-table :data="versionArray" :columns="columns" @deleteRow="handleDelete" :action-props="{ width: '300px' }" @clickRow="clickRow">
-      <template #action>
-        <Button type="text" class="text-ellipsis">查看下属项目</Button>
+      <template #action="{ row }">
+        <Button type="text" class="text-ellipsis" @click="(showCreateProject = true), (rowInfo = row)">添加项目</Button>
       </template>
     </data-table>
+
+    <CreateProject v-model:visible="showCreateProject" :version="rowInfo.version" />
   </div>
 </template>
 

@@ -64,7 +64,7 @@ let mainWindow: BrowserWindow;
 
 const createWindow = async () => {
   mainWindow = new BrowserWindow({
-    width: 1300,
+    width: 1160,
     height: 900,
     minWidth: 900,
     webPreferences: {

@@ -64,6 +64,8 @@ export class StoreController extends IpcMainBaseController {
       this.fileSystem.createDir(GRADLE_VERSION_MANAGER_PATH(this.GLOBAL_DIR));
     } catch (error) {
       console.error("Failed to get environment variable:", error);
+
+      return errorToast("初始化缓存数据失败");
     }
   }
 
@@ -75,6 +77,7 @@ export class StoreController extends IpcMainBaseController {
       return await this.fileSystem.readFile(SETTING_JSONFILE(this.GLOBAL_DIR));
     } catch (error) {
       console.error("Failed to get environment variable:", error);
+      return errorToast("获取缓存数据失败");
     }
   }
 
@@ -88,9 +91,8 @@ export class StoreController extends IpcMainBaseController {
       await this.fileSystem.updateFile(GLOBAL_CACHE_SETTING, {
         APP_HOME_CACHE_PATH,
       });
-      this.window.reload();
     } catch (error) {
-      return false;
+      return errorToast("设置缓存数据失败");
     }
   }
 

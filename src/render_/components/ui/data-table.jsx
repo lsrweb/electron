@@ -68,7 +68,7 @@ export default defineComponent({
                   </>
                 );
               }
-              return column[row[column.key]];
+              return column[row[column.key]] || row[column.key] || "--";
             }}
           </ElTableColumn>
         ))}
