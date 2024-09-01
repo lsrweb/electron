@@ -1,4 +1,4 @@
-import { readJSONSync, writeJSONSync, writeFileSync, readFileSync, existsSync, readdirSync, statSync, mkdirSync } from "fs-extra";
+import { readJSONSync, writeJSONSync, writeFileSync, readFileSync, existsSync, readdirSync, statSync, mkdirSync, unlinkSync } from "fs-extra";
 import * as path from "path";
 import { app, dialog, type BrowserWindow } from "electron";
 import { APPDIR } from "../constants";
@@ -332,6 +332,20 @@ class FileStore {
       } catch (error) {
         console.log(error);
         reject(new Error(error instanceof Error ? error.message : "读取文件失败"));
+      }
+    });
+  }
+
+  public deleteFile(filePath: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      try {
+        if (existsSync(filePath)) {
+          unlinkSync(filePath);
+        }
+        resolve();
+      } catch (error) {
+        console.log(error);
+        reject(new Error("删除文件失败"));
       }
     });
   }

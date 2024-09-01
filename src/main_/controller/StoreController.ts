@@ -295,6 +295,7 @@ export class StoreController extends IpcMainBaseController {
         keypass,
         validity,
         dname,
+        cwdPath: `${KEYSTORE_MANAGER_PATH}\\${keystore}`,
       });
     } catch (error) {
       return errorToast("生成密钥库文件失败");
@@ -323,11 +324,22 @@ export class StoreController extends IpcMainBaseController {
   // 读取密钥库列表
   public async readKeyStoreList(event: IpcMainEvent, data: any) {
     try {
-      const { KEYSTORE_MANAGER_PATH } = this.GLOBAL_SETTING;
-
-      return this.fileSystem.readDirTreeFile(KEYSTORE_MANAGER_PATH, /.*\.keystore/);
+      return this.fileSystem.readFile(KEYSTORE_MANAGER_SETTINGFILE(this.GLOBAL_DIR));
     } catch (error) {
       return errorToast("读取密钥库列表失败");
+    }
+  }
+
+  // 删除指定密钥库
+  public async deleteKeyStore(event: IpcMainEvent, data: any) {
+    try {
+      const { KEYSTORE_MANAGER_PATH } = this.GLOBAL_SETTING;
+
+      const { keystore } = fromJson(data);
+
+      await this.fileSystem.deleteFile(KEYSTORE_MANAGER_PATH + "\\" + keystore);
+    } catch (error) {
+      return errorToast("删除密钥库失败");
     }
   }
 }

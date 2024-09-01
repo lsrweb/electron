@@ -22,6 +22,7 @@ declare global {
       generateKeyStoreFile: (data: any) => Promise<void>;
       readKeyStoreFile: (data: any) => Promise<void>;
       readKeyStoreList: () => Promise<any>;
+      deleteKeyStore: (data: any) => Promise<void>;
     };
 
     system: {
