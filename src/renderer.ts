@@ -3,6 +3,7 @@ import App from "./render_/App.vue";
 import "./index.css";
 import router from "./render_/router/index";
 import { io } from "socket.io-client";
+import { ElMessage, ElNotification } from "element-plus";
 
 function bootstrap() {
   const app = createApp(App);
@@ -20,17 +21,23 @@ nextTick(() => {
 // 创建 Socket.IO 客户端
 const socket = io("ws://127.0.0.1:8080");
 
-socket.on("connect", () => {
-  console.log("Socket.IO is connected");
-  // 向服务器发送消息
-  socket.emit("message", "Main process Socket.IO server is connected");
-});
+socket.on("connect", () => {});
 
 socket.on("message", (message) => {
   console.log(`get message: ${message}`);
   // 处理收到的消息
+  try {
+    const parseMessage = JSON.parse(message);
+    if (parseMessage.type === "error") {
+      ElMessage({
+        type: "error",
+        message: parseMessage.message,
+        grouping: true,
+      });
+    }
+  } catch (error) {
+    console.info(error);
+  }
 });
 
-socket.on("disconnect", () => {
-  console.log("Socket.IO is disconnected");
-});
+socket.on("disconnect", () => {});

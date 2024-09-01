@@ -52,7 +52,6 @@ class IpcMainMess {
   async sendSync(channel: string, data?: any) {
     try {
       const result = await this.chainCall(channel, this.formatData(data));
-      console.log("sendSync result: ", channel, result);
       if (typeof result == "object" && result.hasOwnProperty("type")) {
         if (this.elNotification) {
           this.elNotification.close();

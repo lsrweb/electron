@@ -12,12 +12,6 @@ export const keytoolShowScript = path.resolve(shellPath, "keytools-show.ps1");
 
 export const GLOBAL_CACHE_SETTING = join(app.getPath("home"), ".unipack.config.json"); // 全局配置文件
 
-// 读取全局存储目录
-function GET_GLOBAL_CACHE_SETTING() {
-  if (!existsSync(GLOBAL_CACHE_SETTING)) return false;
-  app.setPath("documents", readJSONSync(GLOBAL_CACHE_SETTING).HOME);
-}
-
 export const HOME = app.getPath("documents"); // base
 
 export const APPDIR = join(HOME, ".unipack"); // 项目全局存储目录

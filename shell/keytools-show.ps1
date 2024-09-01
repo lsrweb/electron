@@ -21,9 +21,17 @@ $keytool = "$env:JAVA_HOME\bin\keytool.exe"
 
 try {
     $cmd = "$keytool -list -v -keystore $keystore -storepass $storepass"
-    Write-Host $cmd
-    Invoke-Expression $cmd
+    # 以表格形式显示
+    Invoke-Expression $cmd | Out-String
+    if ($LASTEXITCODE -eq 0) {
+        Write-Host "Query keystore information success."
+        exit 0
+    } else {
+        Write-Host "Query keystore information failed."
+        exit 1
+    }
 } catch {
     Write-Host $_.Exception.Message
     Write-Host "Failed to query keystore information."
+    exit 1
 }

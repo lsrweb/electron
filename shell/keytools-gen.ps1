@@ -23,7 +23,6 @@ if (-not $env:JAVA_HOME) {
     exit
 }
 
-
 $keytool = "$env:JAVA_HOME\bin\keytool.exe"
 # 捕获命令执行结果
 # $cmd = "$keytool -genkeypair -keystore $keystore -alias $alias -keyalg $keyalg -keysize $keysize -validity $validity -storepass $storepass -keypass $keypass -dname $dname"
@@ -31,13 +30,14 @@ try {
     $cmd = "$keytool -genkey -v -keystore $keystore -alias $alias -keyalg $keyalg -keysize $keysize -validity $validity -storepass $storepass -keypass $keypass -dname $dname"
     # 输出组装好的
     Write-Host $cmd
-    Invoke-Expression $cmd
+    Invoke-Expression $cmd 2>&1 | Write-Host
     # 判断命令执行结果
     if ($LASTEXITCODE -eq 0) {
         Write-Host "Generate key success."
         exit 0
     } else {
         Write-Host "Generate key failed."
+        # 原样输出错误信息
         Write-Host $_.Exception.Message
         exit $LASTEXITCODE
     }

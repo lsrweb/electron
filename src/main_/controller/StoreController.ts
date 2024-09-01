@@ -15,6 +15,7 @@ import {
   JAVA_VERSION_MANAGER_SETTINGFILE,
   UNI_BUILD_VERSION_MANAGER_SETTINGFILE,
   keytoolGenerateScript,
+  keytoolShowScript,
 } from "../constants";
 import { fromJson, toJson } from "../utils";
 import { existsSync, readFileSync } from "fs-extra";
@@ -50,6 +51,8 @@ export class StoreController extends IpcMainBaseController {
           keypass: "123456",
           validity: "365",
           dname: "CN=www.test.com,OU=ID,O=TEST,L=BJ,ST=BJ,C=CN",
+          // keystore: "test.keystore",
+          // storepass: "123456",
         })
       );
     })();
@@ -283,8 +286,6 @@ export class StoreController extends IpcMainBaseController {
         dname,
       ]);
     } catch (error) {
-      console.log(error, "=====================");
-
       return errorToast("生成密钥库文件失败");
     }
   }
@@ -295,10 +296,14 @@ export class StoreController extends IpcMainBaseController {
       const { KEYSTORE_MANAGER_PATH } = this.GLOBAL_SETTING;
 
       const { keystore, storepass } = fromJson(data);
+      const resultExec = await executePowerShellScript(keytoolShowScript, [
+        "-keystore",
+        pathTrans(KEYSTORE_MANAGER_PATH) + "\\" + keystore,
+        "-storepass",
+        storepass,
+      ]);
 
-      const keytool = `keytool -list -v -keystore ${pathTrans(KEYSTORE_MANAGER_PATH)}\\${keystore} -storepass ${storepass}`;
-
-      return executeCommand(keytool);
+      return resultExec;
     } catch (error) {
       return errorToast("读取密钥库文件失败");
     }

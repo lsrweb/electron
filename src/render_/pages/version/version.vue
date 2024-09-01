@@ -3,6 +3,7 @@ import Button from "@r/components/Button.vue";
 import dataTable from "@r/components/ui/data-table";
 import IpcMainMess from "@r/utils/ipc";
 import CreateProject from "./create-project.vue";
+import { parseKeystoreInfo } from "@r/pages/tools/utils/index";
 
 const columns = ref([
   {
@@ -46,6 +47,15 @@ onMounted(async () => {
       version: arr[arr.length - 1].split("@")[1],
     };
   });
+
+  console.log(
+    parseKeystoreInfo(
+      await IpcMainMess.sendSync("cache.readKeyStoreFile", {
+        keystore: "test.keystore",
+        storepass: "123456",
+      })
+    )
+  );
 });
 
 //

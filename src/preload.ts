@@ -17,6 +17,14 @@ contextBridge.exposeInMainWorld("cache", {
   // program
   // ********************************
   createProject: (data: any) => ipcRenderer.invoke("StoreController:createProject", data),
+
+  // ********************************
+  // keystore
+  // ********************************
+  // 生成密钥库
+  generateKeyStoreFile: (data: any) => ipcRenderer.invoke("StoreController:generateKeyStoreFile", data),
+  // 显示密钥库
+  readKeyStoreFile: (data: any) => ipcRenderer.invoke("StoreController:readKeyStoreFile", data),
 });
 
 contextBridge.exposeInMainWorld("system", {
