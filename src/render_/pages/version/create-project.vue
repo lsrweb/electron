@@ -38,8 +38,7 @@
 
         <ElFormItem label="密钥库" prop="keystore">
           <ElSelect v-model="form.keystore" placeholder="请选择">
-            <ElOption label="生成随机密钥" value="1" />
-            <ElOption label="选择已有密钥" value="2" />
+            <ElOption v-for="item in keyStoreList" :key="item" :label="item" :value="item" />
           </ElSelect>
         </ElFormItem>
       </ElForm>
@@ -67,8 +66,13 @@ const props = withDefaults(
   }
 );
 
+// 密钥库列表
+const keyStoreList = ref<string[]>([]);
 onMounted(() => {
   // 初始化获取密钥库列表
+  IpcMainMess.sendSync("cache.readKeyStoreList").then((res) => {
+    keyStoreList.value = res;
+  });
 });
 
 const formRef = ref(null);

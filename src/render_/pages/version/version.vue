@@ -48,14 +48,14 @@ onMounted(async () => {
     };
   });
 
-  console.log(
-    parseKeystoreInfo(
-      await IpcMainMess.sendSync("cache.readKeyStoreFile", {
-        keystore: "test.keystore",
-        storepass: "123456",
-      })
-    )
-  );
+  // console.log(
+  //   parseKeystoreInfo(
+  //     await IpcMainMess.sendSync("cache.readKeyStoreFile", {
+  //       keystore: "test.keystore",
+  //       storepass: "123456",
+  //     })
+  //   )
+  // );
 });
 
 //

@@ -199,6 +199,32 @@ class FileStore {
     return flatten ? flatResult : result;
   }
 
+  // 读取传入指定绝对路径下正则表达式匹配的文件名称树
+  public readDirTreeFile(dir: string, filterRegex: RegExp | null = /\.json$/): Record<string, any> | string[] {
+    if (!existsSync(dir)) return [];
+    const result: Record<string, any> = {};
+    const dirName = path.basename(dir);
+    result[dirName] = {};
+
+    const items = readdirSync(dir);
+    const flatResult: string[] = [];
+
+    items.forEach((item: string) => {
+      const itemPath = path.join(dir, item);
+
+      // 检查当前目录是否匹配正则表达式
+      if (statSync(itemPath).isFile() && (!filterRegex || filterRegex.test(item))) {
+        if (filterRegex && filterRegex.test(item)) {
+          if (filterRegex.test(item)) {
+            flatResult.push(itemPath);
+          }
+        }
+      }
+    });
+
+    return flatResult;
+  }
+
   // 创建文件夹
   public createDir(dir: string): Promise<void> {
     return new Promise((resolve, reject) => {
@@ -217,12 +243,13 @@ class FileStore {
   public createFile(filePath: string, data?: object): Promise<void> {
     return new Promise((resolve, reject) => {
       try {
-        if (filePath.includes(".json")) {
+        if (filePath.includes(".json") && !existsSync(filePath)) {
           writeJSONSync(filePath, data || {}, {
             spaces: 2,
             EOL: "\r\n",
           });
         } else {
+          if (existsSync(filePath)) return resolve();
           writeFileSync(filePath, toJson(data) || "", {
             encoding: "utf-8",
           });
@@ -242,6 +269,40 @@ class FileStore {
           const cacheData = readJSONSync(filePath);
           if (!cacheData || !data) return;
           const newData = { ...cacheData, ...data };
+
+          writeJSONSync(filePath, newData, {
+            spaces: 2,
+            EOL: "\r\n",
+          });
+        } else {
+          writeFileSync(filePath, toJson(data) || "", {
+            encoding: "utf-8",
+          });
+        }
+        resolve();
+      } catch (error) {
+        console.log(error);
+        reject(new Error("更新文件失败"));
+      }
+    });
+  }
+
+  public pushDataToFile(filePath: string, data: object): Promise<void> {
+    return new Promise((resolve, reject) => {
+      try {
+        if (filePath.includes(".json")) {
+          let cacheData = readJSONSync(filePath);
+
+          if (!Array.isArray(cacheData)) {
+            cacheData = [];
+          }
+
+          if (!data) {
+            resolve();
+            return;
+          }
+
+          const newData = Array.isArray(data) ? [...cacheData, ...data] : [...cacheData, data];
 
           writeJSONSync(filePath, newData, {
             spaces: 2,

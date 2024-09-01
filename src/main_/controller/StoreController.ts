@@ -45,8 +45,8 @@ export class StoreController extends IpcMainBaseController {
       this.generateKeyStoreFile(
         null,
         JSON.stringify({
-          alias: "test",
-          keystore: "test.keystore",
+          alias: "test1",
+          keystore: "test1.keystore",
           storepass: "123456",
           keypass: "123456",
           validity: "365",
@@ -107,7 +107,7 @@ export class StoreController extends IpcMainBaseController {
       await this.fileSystem.createFile(GRADLE_VERSION_MANAGER_SETTINGFILE(this.GLOBAL_DIR), {});
 
       await this.fileSystem.createDir(KEYSTORE_MANAGER_PATH(this.GLOBAL_DIR));
-      await this.fileSystem.createFile(KEYSTORE_MANAGER_SETTINGFILE(this.GLOBAL_DIR), {});
+      await this.fileSystem.createFile(KEYSTORE_MANAGER_SETTINGFILE(this.GLOBAL_DIR), []);
 
       // ------------------------------
     } catch (error) {
@@ -259,6 +259,7 @@ export class StoreController extends IpcMainBaseController {
       const { KEYSTORE_MANAGER_PATH } = this.GLOBAL_SETTING;
 
       const { alias, keystore, storepass, keypass, validity, dname } = fromJson(data);
+
       // 参数验证
       const validate = [alias, keystore, storepass, keypass, validity, dname];
       for (const item of validate) {
@@ -285,6 +286,16 @@ export class StoreController extends IpcMainBaseController {
         "-dname",
         dname,
       ]);
+
+      // 创建成功后在配置文件里记录生成的信息,数组集合
+      this.fileSystem.pushDataToFile(KEYSTORE_MANAGER_SETTINGFILE(this.GLOBAL_DIR), {
+        alias,
+        keystore,
+        storepass,
+        keypass,
+        validity,
+        dname,
+      });
     } catch (error) {
       return errorToast("生成密钥库文件失败");
     }
@@ -306,6 +317,17 @@ export class StoreController extends IpcMainBaseController {
       return resultExec;
     } catch (error) {
       return errorToast("读取密钥库文件失败");
+    }
+  }
+
+  // 读取密钥库列表
+  public async readKeyStoreList(event: IpcMainEvent, data: any) {
+    try {
+      const { KEYSTORE_MANAGER_PATH } = this.GLOBAL_SETTING;
+
+      return this.fileSystem.readDirTreeFile(KEYSTORE_MANAGER_PATH, /.*\.keystore/);
+    } catch (error) {
+      return errorToast("读取密钥库列表失败");
     }
   }
 }

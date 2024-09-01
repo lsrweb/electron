@@ -18,6 +18,10 @@ declare global {
       readVersionFolderData: () => Promise<any>;
       openExplorer: (data: string) => Promise<void>;
       createProject: (data: any) => Promise<void>;
+
+      generateKeyStoreFile: (data: any) => Promise<void>;
+      readKeyStoreFile: (data: any) => Promise<void>;
+      readKeyStoreList: () => Promise<any>;
     };
 
     system: {

@@ -25,6 +25,8 @@ contextBridge.exposeInMainWorld("cache", {
   generateKeyStoreFile: (data: any) => ipcRenderer.invoke("StoreController:generateKeyStoreFile", data),
   // 显示密钥库
   readKeyStoreFile: (data: any) => ipcRenderer.invoke("StoreController:readKeyStoreFile", data),
+  // 读取密钥库列表
+  readKeyStoreList: () => ipcRenderer.invoke("StoreController:readKeyStoreList"),
 });
 
 contextBridge.exposeInMainWorld("system", {

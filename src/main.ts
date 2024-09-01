@@ -7,6 +7,7 @@ import { checkFolderExist } from "./main_/utils/folder";
 import { Server } from "socket.io";
 import http from "http";
 import type { CustomApp } from "./types/electron-app";
+import { toJson } from "./render_/utils";
 
 if (process.env.NODE_ENV === "production") {
   // @ts-ignore
@@ -39,17 +40,11 @@ const io = new Server(server, {
 });
 
 io.on("connection", (socket) => {
-  console.log("Socket.IO is connected");
+  socket.on("message", (message) => {});
 
-  socket.on("message", (message) => {
-    console.log(`Main get message: ${message}`);
-  });
+  socket.on("disconnect", () => {});
 
-  socket.on("disconnect", () => {
-    console.log("Socket.IO is disconnected");
-  });
-
-  socket.emit("message", "Main process Socket.IO server is connected");
+  socket.emit("message", toJson({ type: "init", message: "Socket.IO is running on ws://127.0.0.1:8080" }));
 });
 
 server.listen(8080, () => {
