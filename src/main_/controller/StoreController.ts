@@ -9,6 +9,12 @@ import {
   GRADLE_VERSION_MANAGER_PATH,
   GLOBAL_CACHE_SETTING,
   HOME,
+  KEYSTORE_MANAGER_PATH,
+  KEYSTORE_MANAGER_SETTINGFILE,
+  GRADLE_VERSION_MANAGER_SETTINGFILE,
+  JAVA_VERSION_MANAGER_SETTINGFILE,
+  UNI_BUILD_VERSION_MANAGER_SETTINGFILE,
+  keytoolGenerateScript,
 } from "../constants";
 import { fromJson, toJson } from "../utils";
 import { existsSync, readFileSync } from "fs-extra";
@@ -17,6 +23,7 @@ import { pathReTrans, pathTrans } from "@/render_/utils";
 import { errorToast } from "./errorBase";
 // @ts-ignore
 import xml2js from "xml2js";
+import consola from "consola";
 
 export class StoreController extends IpcMainBaseController {
   fileSystem: FileStore;
@@ -24,18 +31,33 @@ export class StoreController extends IpcMainBaseController {
   private GLOBAL_DIR: any;
   private GLOBAL_SETTING: any;
 
-  constructor(windowCtx: BrowserWindow) {
+  constructor(windowCtx?: BrowserWindow) {
     super("StoreController");
 
     this.fileSystem = new FileStore(windowCtx);
 
-    this.window = windowCtx;
+    this.window = windowCtx as BrowserWindow | undefined;
 
     // 初始化配置文件
+    (async () => {
+      await this.initCache();
+      this.generateKeyStoreFile(
+        null,
+        JSON.stringify({
+          alias: "test",
+          keystore: "test.keystore",
+          storepass: "123456",
+          keypass: "123456",
+          validity: "365",
+          dname: "CN=www.test.com,OU=ID,O=TEST,L=BJ,ST=BJ,C=CN",
+        })
+      );
+    })();
 
-    this.initCache();
+    // this.initCache().then(() => {
+    //   // this.createProject();
 
-    this.createProject();
+    // });
   }
 
   /**
@@ -68,12 +90,23 @@ export class StoreController extends IpcMainBaseController {
         UNI_BUILD_VERSION_MANAGER_PATH: UNI_BUILD_VERSION_MANAGER_PATH(this.GLOBAL_DIR),
         JAVA_VERSION_MANAGER_PATH: JAVA_VERSION_MANAGER_PATH(this.GLOBAL_DIR),
         GRADLE_VERSION_MANAGER_PATH: GRADLE_VERSION_MANAGER_PATH(this.GLOBAL_DIR),
+        KEYSTORE_MANAGER_PATH: KEYSTORE_MANAGER_PATH(this.GLOBAL_DIR),
       });
 
       // 3.配置文件初始化之后,分别创建对应的文件夹
       await this.fileSystem.createDir(UNI_BUILD_VERSION_MANAGER_PATH(this.GLOBAL_DIR));
-      this.fileSystem.createDir(JAVA_VERSION_MANAGER_PATH(this.GLOBAL_DIR));
-      this.fileSystem.createDir(GRADLE_VERSION_MANAGER_PATH(this.GLOBAL_DIR));
+      await this.fileSystem.createFile(UNI_BUILD_VERSION_MANAGER_SETTINGFILE(this.GLOBAL_DIR), {});
+
+      await this.fileSystem.createDir(JAVA_VERSION_MANAGER_PATH(this.GLOBAL_DIR));
+      await this.fileSystem.createFile(JAVA_VERSION_MANAGER_SETTINGFILE(this.GLOBAL_DIR), {});
+
+      await this.fileSystem.createDir(GRADLE_VERSION_MANAGER_PATH(this.GLOBAL_DIR));
+      await this.fileSystem.createFile(GRADLE_VERSION_MANAGER_SETTINGFILE(this.GLOBAL_DIR), {});
+
+      await this.fileSystem.createDir(KEYSTORE_MANAGER_PATH(this.GLOBAL_DIR));
+      await this.fileSystem.createFile(KEYSTORE_MANAGER_SETTINGFILE(this.GLOBAL_DIR), {});
+
+      // ------------------------------
     } catch (error) {
       console.error("Failed to get environment variable:", error);
 
@@ -183,11 +216,12 @@ export class StoreController extends IpcMainBaseController {
       const builder = new xml2js.Builder();
 
       // G:\uniHelperBuiler\UNI_BUILD_VERSION\Android-SDK@4.24.82145_20240723\HBuilder-Integrate-AS\simpleDemo\src\main\assets\data\dcloud_control.xml
-      const { CATCH } = fromJson(data);
+      const CATCH_DATA = fromJson(data);
       // 判断传入 CATCH 是否存在
-      if (!existsSync(CATCH)) {
+      if (!existsSync(CATCH_DATA.CATCH)) {
         return errorToast("路径不存在");
       }
+      console.log(CATCH_DATA);
 
       //
 
@@ -212,4 +246,61 @@ export class StoreController extends IpcMainBaseController {
 
   // 构建apk包
   public async buildApkFile(event: IpcMainEvent, data: any) {}
+
+  // ********************************
+  // KEYSTORE
+  // ********************************
+  // 生成密钥库文件
+  public async generateKeyStoreFile(event: IpcMainEvent, data: any) {
+    try {
+      const { KEYSTORE_MANAGER_PATH } = this.GLOBAL_SETTING;
+
+      const { alias, keystore, storepass, keypass, validity, dname } = fromJson(data);
+      // 参数验证
+      const validate = [alias, keystore, storepass, keypass, validity, dname];
+      for (const item of validate) {
+        if (!item) {
+          return errorToast(`参数 ${item} 不能为空`);
+        }
+      }
+
+      await executePowerShellScript(keytoolGenerateScript, [
+        "-keystore",
+        pathTrans(KEYSTORE_MANAGER_PATH) + "\\" + keystore,
+        "-alias",
+        alias,
+        "-keyalg",
+        "RSA",
+        "-keysize",
+        "2048",
+        "-validity",
+        validity,
+        "-storepass",
+        storepass,
+        "-keypass",
+        keypass,
+        "-dname",
+        dname,
+      ]);
+    } catch (error) {
+      console.log(error, "=====================");
+
+      return errorToast("生成密钥库文件失败");
+    }
+  }
+
+  // 读取密钥库文件
+  public async readKeyStoreFile(event: IpcMainEvent, data: any) {
+    try {
+      const { KEYSTORE_MANAGER_PATH } = this.GLOBAL_SETTING;
+
+      const { keystore, storepass } = fromJson(data);
+
+      const keytool = `keytool -list -v -keystore ${pathTrans(KEYSTORE_MANAGER_PATH)}\\${keystore} -storepass ${storepass}`;
+
+      return executeCommand(keytool);
+    } catch (error) {
+      return errorToast("读取密钥库文件失败");
+    }
+  }
 }

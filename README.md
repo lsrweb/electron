@@ -5,6 +5,15 @@
 
 <!-- https://pic.20988.xyz/2024-07-05/1720196267-239253-wallhaven-zyv3wg.png -->
 
+0: 成功（Success）
+1: 一般错误（General error）
+2: 错误的用法（Misuse of shell builtins）
+126: 命令不可执行（Command invoked cannot execute）
+127: 命令未找到（Command not found）
+128: 无效的退出参数（Invalid exit argument）
+130: 脚本被用户中断（Script terminated by Control-C）
+255: 退出状态超出范围（Exit status out of range）
+
 // 以下内容都是 Github copilot 写的..
 
 ```markdown
