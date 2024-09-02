@@ -5,9 +5,16 @@ import router from "./render_/router/index";
 import { io } from "socket.io-client";
 import { ElMessage, ElNotification } from "element-plus";
 
+import Terminal from "vue-web-terminal";
+//  亮色主题：vue-web-terminal/lib/theme/light.css
+import "vue-web-terminal/lib/theme/dark.css";
+
 function bootstrap() {
   const app = createApp(App);
   app.use(router);
+  app.use((app: any) => {
+    app.use(Terminal);
+  });
   app.mount("#app");
 }
 

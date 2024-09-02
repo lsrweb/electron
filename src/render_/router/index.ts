@@ -1,8 +1,4 @@
-import {
-  createRouter,
-  createMemoryHistory,
-  createWebHashHistory,
-} from "vue-router";
+import { createRouter, createMemoryHistory, createWebHashHistory } from "vue-router";
 import layout from "@r/layout/index.vue";
 const router = createRouter({
   history: createWebHashHistory(),
@@ -37,19 +33,22 @@ const router = createRouter({
             {
               path: "/setting-java",
               name: "setting-java",
-              component: () =>
-                import("@r/pages/tools/children/setting-java.vue"),
+              component: () => import("@r/pages/tools/children/setting-java.vue"),
             },
             {
               path: "/setting-gradle",
               name: "setting-gradle",
-              component: () =>
-                import("@r/pages/tools/children/setting-gradle.vue"),
+              component: () => import("@r/pages/tools/children/setting-gradle.vue"),
             },
             {
               path: "/secret-genderal",
               name: "secret-genderal",
               component: () => import("@r/pages/tools/children/secret-key.vue"),
+            },
+            {
+              path: "/senv-manager",
+              name: "senv-manager",
+              component: () => import("@r/pages/tools/children/senv-manager.vue"),
             },
           ],
         },

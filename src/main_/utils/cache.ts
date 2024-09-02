@@ -349,6 +349,34 @@ class FileStore {
       }
     });
   }
+
+  /**
+   * 将上传的文件保存到指定路径
+   * @param filePath
+   * @param data
+   */
+  private zipExr = ["zip", "rar", "7z", "tar", "gz"];
+  public uploadFile(filePath: string, data: object): Promise<void> {
+    // 如果是zip文件,则解压缩到指定路径
+    // 如果是json文件,则直接保存到指定路径
+    return new Promise((resolve, reject) => {
+      try {
+        // 压缩包
+        if (this.zipExr.includes(path.extname(filePath))) {
+          // 解压缩
+          // 解压缩到指定路径
+        } else {
+          // 直接保存到指定路径
+          writeFileSync(filePath, toJson(data) || "", {
+            encoding: "utf-8",
+          });
+        }
+      } catch (error) {
+        console.log(error);
+        reject(new Error("上传文件失败"));
+      }
+    });
+  }
 }
 
 export default FileStore;

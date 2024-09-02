@@ -154,7 +154,6 @@ export class StoreController extends IpcMainBaseController {
   public readVersionFolderData(event: IpcMainEvent, data: any): any {
     try {
       const { UNI_BUILD_VERSION_MANAGER_PATH } = this.GLOBAL_SETTING;
-
       return this.fileSystem.readDirTree(UNI_BUILD_VERSION_MANAGER_PATH, 1, true);
     } catch (error) {
       return errorToast("读取版本列表失败");
@@ -253,6 +252,7 @@ export class StoreController extends IpcMainBaseController {
   // ********************************
   // KEYSTORE
   // ********************************
+  // #region KEYSTORE
   // 生成密钥库文件
   public async generateKeyStoreFile(event: IpcMainEvent, data: any) {
     try {
@@ -342,4 +342,38 @@ export class StoreController extends IpcMainBaseController {
       return errorToast("删除密钥库失败");
     }
   }
+  // #endregion
+
+  // ********************************
+  // JAVA MANAGER
+  // ********************************
+  // #region JAVA manager
+
+  /**
+   * 上传 java 压缩包
+   * @param event
+   * @param data
+   */
+  public async uplodJavaVersion(event: IpcMainEvent, data: any) {
+    try {
+      const { JAVA_VERSION_MANAGER_PATH } = this.GLOBAL_SETTING;
+
+      const { path } = fromJson(data);
+
+      // 上传文件
+      await this.fileSystem.uploadFile(pathReTrans(path), JAVA_VERSION_MANAGER_PATH);
+    } catch (error) {
+      return errorToast("上传Java版本失败");
+    }
+  }
+
+  public async readJavaVersionList(event: IpcMainEvent, data: any) {
+    try {
+      return this.fileSystem.readDirTree(JAVA_VERSION_MANAGER_PATH(this.GLOBAL_DIR), 1, true, /java/);
+    } catch (error) {
+      return errorToast("读取Java版本列表失败");
+    }
+  }
+
+  // #endregion
 }
