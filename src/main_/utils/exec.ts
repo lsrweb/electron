@@ -27,15 +27,31 @@ export function executePowerShellScript(scriptPath: string, args: string[]): Pro
   });
 }
 
-export function executeCommand(command: string): Promise<string> {
-  return new Promise((resolve, reject) => {
-    try {
-      const childProcess = execSync(command, {});
-      resolve(iconv.decode(childProcess.toString("binary"), "cp936"));
-    } catch (e) {
-      // @ts-ignore
-      app["ws"].send(iconv.decode(e.output[1].toString("binary"), "cp936"));
-      reject(e);
-    }
+export function executeCommand(command: string, callback?: (data: string) => void): Promise<string> {
+  return new Promise(async (resolve, reject) => {
+    const result = exec(command, { encoding: "binary" }, (error, stdout, stderr) => {
+      if (error) {
+        reject(error);
+      } else {
+        if (callback) {
+          callback(stdout);
+        }
+        resolve(stdout);
+      }
+    });
+
+    result.stdout?.on("data", (data) => {
+      resolve(data);
+    });
+
+    result.stderr?.on("data", (data) => {
+      resolve(data);
+    });
+
+    result.on("close", (code) => {
+      if (code !== 0) {
+        reject(code);
+      }
+    });
   });
 }

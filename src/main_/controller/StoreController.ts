@@ -369,9 +369,33 @@ export class StoreController extends IpcMainBaseController {
 
   public async readJavaVersionList(event: IpcMainEvent, data: any) {
     try {
-      console.log(JAVA_VERSION_MANAGER_PATH(this.GLOBAL_DIR));
+      let result = this.fileSystem.readDirTree(JAVA_VERSION_MANAGER_PATH(this.GLOBAL_DIR), 1, true, null);
 
-      return this.fileSystem.readDirTree(JAVA_VERSION_MANAGER_PATH(this.GLOBAL_DIR), 1, true, null);
+      let resultExec = [];
+
+      // 进入目录,执行 bin/java -version
+      for (const item of Array.from(Object.values(result))) {
+        const javaPath = `${item}\\bin\\java.exe`;
+        const resultExecresult = await executeCommand(`"${javaPath}" -version`);
+        console.log(resultExecresult, "resultExecresultresultExecresultresultExecresultresultExecresultresultExecresult");
+
+        // 匹配字符串中的 java version 或 openjdk version
+        const matchVersion = /(?:java|openjdk) version "([\d._]+)"/i.exec(resultExecresult);
+
+        const version = matchVersion ? matchVersion[1] : "未知版本";
+        console.log(version);
+
+        resultExec.push({
+          javaPath,
+          version,
+          // 追加原始路径,不拼接 bin/java.exe
+          originalPath: item,
+        });
+      }
+
+      this.fileSystem.updateFile(JAVA_VERSION_MANAGER_SETTINGFILE(this.GLOBAL_DIR), resultExec);
+
+      return resultExec;
     } catch (error) {
       return errorToast("读取Java版本列表失败");
     }

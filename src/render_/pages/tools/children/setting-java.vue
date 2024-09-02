@@ -1,12 +1,11 @@
 <template>
   <div class="setting-java__wrapper">
-    <!-- 此页面负责检测java环境变量,java环境目录 -->
     <el-card class="box-card">
-      <!--  java版本列表  -->
       <el-row>
-        <el-col :span="24">
-          <h3 class="mb-2">Java版本列表</h3>
-          <data-table :data="javaList" :columns="columns" @clickRow="clickRow"> </data-table>
+        <el-col :span="24" class="overflow-auto">
+          <h3 class="float-start">Java版本列表</h3>
+          <Button class="float-end">上传新版本</Button>
+          <data-table :data="javaList" :columns="columns" @clickRow="clickRow" class="!mt-7"> </data-table>
         </el-col>
       </el-row>
     </el-card>
@@ -18,12 +17,13 @@
 import { ref } from "vue";
 import dataTable from "@r/components/ui/data-table";
 import IpcMainMess from "@r/utils/ipc";
+import Button from "@r/components/Button.vue";
 
 const javaList = ref([]);
 const columns = ref([
   {
     label: "目录名称",
-    key: "version",
+    key: "originalFloder",
     props: {
       showOverflowTooltip: true,
       width: "200px",
@@ -31,7 +31,7 @@ const columns = ref([
   },
   {
     label: "路径",
-    key: "cwd",
+    key: "originalPath",
     type: "button",
     props: {
       showOverflowTooltip: true,
@@ -52,7 +52,7 @@ const columns = ref([
   },
   {
     label: "版本",
-    key: "realVersion",
+    key: "version",
     props: {
       width: "100px",
     },
@@ -77,12 +77,10 @@ function handleDrop(event: DragEvent) {
 
 onMounted(async () => {
   const result = await IpcMainMess.sendSync("cache.readJavaVersionList");
-  // "G:\\uniHelperBuiler\\JAVA_VERSION\\java22.0.2"
-  javaList.value = result.map((item: string) => {
-    const version = item.split("\\").pop();
+  javaList.value = result.map((item: any) => {
     return {
-      version,
-      cwd: item,
+      ...(typeof item === "object" ? item : {}),
+      originalFloder: item.originalPath.split("\\").pop(),
       status: "",
       realVersion: "",
     };
