@@ -375,7 +375,6 @@ export class StoreController extends IpcMainBaseController {
 
       // 获取当前系统的 JAVA_HOME
       const resultJavaHome = process.env.JAVA_HOME || null;
-      console.log(resultJavaHome, "resultJavaHome");
 
       // 进入目录,执行 bin/java -version
       for (const item of Array.from(Object.values(result))) {
