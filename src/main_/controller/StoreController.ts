@@ -373,11 +373,14 @@ export class StoreController extends IpcMainBaseController {
 
       let resultExec = [];
 
+      // 获取当前系统的 JAVA_HOME
+      const resultJavaHome = process.env.JAVA_HOME || null;
+      console.log(resultJavaHome, "resultJavaHome");
+
       // 进入目录,执行 bin/java -version
       for (const item of Array.from(Object.values(result))) {
         const javaPath = `${item}\\bin\\java.exe`;
         const resultExecresult = await executeCommand(`"${javaPath}" -version`);
-        console.log(resultExecresult, "resultExecresultresultExecresultresultExecresultresultExecresultresultExecresult");
 
         // 匹配字符串中的 java version 或 openjdk version
         const matchVersion = /(?:java|openjdk) version "([\d._]+)"/i.exec(resultExecresult);
@@ -390,6 +393,7 @@ export class StoreController extends IpcMainBaseController {
           version,
           // 追加原始路径,不拼接 bin/java.exe
           originalPath: item,
+          active: resultJavaHome === item,
         });
       }
 

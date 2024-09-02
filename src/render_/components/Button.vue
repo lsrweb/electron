@@ -39,6 +39,7 @@ withDefaults(
     size?: ButtonProps["size"];
     animate?: ButtonProps["animate"];
     disabled?: boolean;
+    icon?: string;
   }>(),
   {
     variant: "default",
@@ -63,6 +64,7 @@ withDefaults(
     "
     type="button"
   >
+    <component v-if="icon" :is="icon + 'Icon'" />
     <slot />
   </button>
 </template>
@@ -132,6 +134,11 @@ withDefaults(
 
   &.animate-false {
     @apply transition-none;
+  }
+
+  // icon svg
+  svg {
+    @apply h-4 w-4;
   }
 }
 </style>

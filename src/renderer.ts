@@ -8,6 +8,7 @@ import { ElMessage, ElNotification } from "element-plus";
 import Terminal from "vue-web-terminal";
 //  亮色主题：vue-web-terminal/lib/theme/light.css
 import "vue-web-terminal/lib/theme/dark.css";
+import * as IconList from "@heroicons/vue/24/solid";
 
 function bootstrap() {
   const app = createApp(App);
@@ -15,12 +16,19 @@ function bootstrap() {
   app.use((app: any) => {
     app.use(Terminal);
   });
+
+  // 注册所有图标
+  for (const key in IconList) {
+    app.component(key, IconList[key as keyof typeof IconList]);
+  }
+
   app.mount("#app");
 }
 
 nextTick(() => {
   setTimeout(() => {
     bootstrap();
+
     // 练习两年半后,关掉定时器
   }, 1250);
 });

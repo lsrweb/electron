@@ -5,7 +5,27 @@
         <el-col :span="24" class="overflow-auto">
           <h3 class="float-start">Java版本列表</h3>
           <Button class="float-end">上传新版本</Button>
-          <data-table :data="javaList" :columns="columns" @clickRow="clickRow" class="!mt-7"> </data-table>
+          <data-table
+            :data="javaList"
+            :columns="columns"
+            @clickRow="clickRow"
+            class="!mt-7"
+            :actionProps="{
+              class: 'text-center',
+              width: '100px',
+            }"
+          >
+            <template #action>
+              <ElDropdown placement="left-start">
+                <Button icon="cog"></Button>
+                <template #dropdown>
+                  <el-dropdown-menu>
+                    <el-dropdown-item>应用 </el-dropdown-item>
+                  </el-dropdown-menu>
+                </template>
+              </ElDropdown>
+            </template>
+          </data-table>
         </el-col>
       </el-row>
     </el-card>
@@ -85,6 +105,8 @@ onMounted(async () => {
       realVersion: "",
     };
   });
+
+  console.log(javaList.value);
 });
 </script>
 
