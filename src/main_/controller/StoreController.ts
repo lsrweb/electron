@@ -16,6 +16,7 @@ import {
   UNI_BUILD_VERSION_MANAGER_SETTINGFILE,
   keytoolGenerateScript,
   keytoolShowScript,
+  setEnvironmentScript,
 } from "../constants";
 import { fromJson, toJson } from "../utils";
 import { existsSync, readFileSync } from "fs-extra";
@@ -79,6 +80,10 @@ export class StoreController extends IpcMainBaseController {
         // @ts-ignore
         const APP_CACHE: any = await this.fileSystem.readFile(GLOBAL_CACHE_SETTING);
         this.GLOBAL_DIR = APP_CACHE["APP_HOME_CACHE_PATH"];
+        // 判断GLOBAL_DIR是否存在,不存在则使用默认路径
+        if (!existsSync(this.GLOBAL_DIR)) {
+          this.GLOBAL_DIR = APPDIR;
+        }
 
         this.GLOBAL_SETTING = await this.fileSystem.readFile(SETTING_JSONFILE(this.GLOBAL_DIR));
       }
@@ -368,6 +373,12 @@ export class StoreController extends IpcMainBaseController {
     }
   }
 
+  /**
+   * 读取Java版本列表
+   * @param event
+   * @param data
+   * @returns
+   */
   public async readJavaVersionList(event: IpcMainEvent, data: any) {
     try {
       let result = this.fileSystem.readDirTree(JAVA_VERSION_MANAGER_PATH(this.GLOBAL_DIR), 1, true, null);
@@ -376,6 +387,7 @@ export class StoreController extends IpcMainBaseController {
 
       // 获取当前系统的 JAVA_HOME
       const resultJavaHome = process.env.JAVA_HOME || null;
+      console.log(resultJavaHome, "resultJavaHome");
 
       // 进入目录,执行 bin/java -version
       for (const item of Array.from(Object.values(result))) {
@@ -393,7 +405,7 @@ export class StoreController extends IpcMainBaseController {
           version,
           // 追加原始路径,不拼接 bin/java.exe
           originalPath: item,
-          active: resultJavaHome === item,
+          active: pathTrans(resultJavaHome) === pathTrans(item),
         });
       }
 
@@ -402,6 +414,28 @@ export class StoreController extends IpcMainBaseController {
       return resultExec;
     } catch (error) {
       return errorToast("读取Java版本列表失败");
+    }
+  }
+
+  /**
+   * 设置Java版本到环境变量
+   * @param event
+   * @param data
+   */
+  public async setActiveJava(event: IpcMainEvent, data: any) {
+    try {
+      const { originalPath } = fromJson(data);
+      if (!originalPath) {
+        return Promise.reject("路径不存在");
+      }
+      // 验证传入的路径是否存在
+      if (!existsSync(originalPath)) {
+        return Promise.reject("路径不存在");
+      }
+      // 设置环境变量
+      await executePowerShellScript(setEnvironmentScript, ["-name", "JAVA_HOME", "-value", originalPath, "-user"]);
+    } catch (error) {
+      return errorToast("设置Java版本失败");
     }
   }
 

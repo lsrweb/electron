@@ -39,6 +39,8 @@ contextBridge.exposeInMainWorld("cache", {
   readJavaVersionList: () => ipcRenderer.invoke("StoreController:readJavaVersionList"),
   // 上传Java版本
   uplodJavaVersion: (data: any) => ipcRenderer.invoke("StoreController:uplodJavaVersion", data),
+  // 设置Java版本为环境变量
+  setActiveJava: (data: any) => ipcRenderer.invoke("StoreController:setActiveJava", data),
 });
 
 contextBridge.exposeInMainWorld("system", {

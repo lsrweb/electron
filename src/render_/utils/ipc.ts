@@ -69,6 +69,17 @@ class IpcMainMess {
       }
       return result;
     } catch (err) {
+      if (this.elNotification) {
+        this.elNotification.close();
+        await nextTick();
+      }
+      this.elNotification = ElNotification({
+        title: err.title,
+        message: err.message,
+        type: "error",
+        duration: err.duration,
+        position: "bottom-right",
+      });
       console.error(err);
       return Promise.reject(err);
     }

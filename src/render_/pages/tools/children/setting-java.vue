@@ -17,11 +17,11 @@
             }"
           >
             <template #action="{ row }">
-              <ElDropdown placement="left-start">
+              <ElDropdown placement="left-start" class="loading-menu">
                 <Button icon="cog"></Button>
                 <template #dropdown>
                   <ElDropdownMenu>
-                    <el-dropdown-item :disabled="row.active">
+                    <el-dropdown-item :disabled="row.active" @click="setActiveJava(row)">
                       {{ row.active ? "已激活" : "激活" }}
                     </el-dropdown-item>
                   </ElDropdownMenu>
@@ -43,6 +43,7 @@ import dataTable from "@r/components/ui/data-table";
 import IpcMainMess from "@r/utils/ipc";
 import Button from "@r/components/Button.vue";
 import SettingJava_upload from "./setting-java_upload.vue";
+import { ElLoading, ElNotification } from "element-plus";
 
 const javaList = ref([]);
 const columns = ref([
@@ -106,6 +107,21 @@ const javaUpload = ref(null);
 
 function setUploadJavaShow() {
   javaUpload.value.showCreate = true;
+}
+
+async function setActiveJava(row: any) {
+  const { originalPath, version } = row;
+  ElLoading.service({ fullscreen: true, text: "正在激活环境变量..." });
+  if (!originalPath) return;
+  await IpcMainMess.sendSync("cache.setActiveJava", { originalPath });
+  ElLoading.service().close();
+  ElNotification({
+    title: "激活成功",
+    dangerouslyUseHTMLString: true,
+    message: `已激活 <span class="text-blue-500">${version}</span>,建议重启应用或电脑应用生效`,
+    type: "success",
+    position: "bottom-left",
+  });
 }
 </script>
 
