@@ -30,6 +30,8 @@ export default defineComponent({
   },
   emits: ["editRow", "deleteRow", "clickRow"],
   setup(props, { slots, emit }) {
+    console.log(slots);
+
     return () => (
       <ElTable
         data={props.data}
@@ -50,8 +52,12 @@ export default defineComponent({
           //   {...column.props}
           // />
           // type = link | button | text
+
           <ElTableColumn key={column.key} prop={column.key} label={column.label} headerAlign="center" align="center" {...column.props}>
             {({ row }) => {
+              if (slots[column.key]) {
+                return slots[column.key]({ row });
+              }
               if (column.type === "link") {
                 return (
                   <a href={column.link(row)} target="_blank" rel="noopener noreferrer">
@@ -68,6 +74,7 @@ export default defineComponent({
                   </>
                 );
               }
+
               return column[row[column.key]] || row[column.key] || "--";
             }}
           </ElTableColumn>
@@ -84,7 +91,7 @@ export default defineComponent({
                 <Button onClick={() => emit("editRow", row)}>编辑</Button>
                 <Button onClick={() => emit("deleteRow", row)}>删除</Button>
 
-                <div class={"inline-flex"}>{...slots.action && slots.action({ row })}</div>
+                <div class={"inline-flex"}>{slots.action && { ...slots.action } && slots.action({ row })}</div>
               </>
             )}
           </ElTableColumn>

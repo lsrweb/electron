@@ -29,6 +29,12 @@ contextBridge.exposeInMainWorld("cache", {
   readKeyStoreList: () => ipcRenderer.invoke("StoreController:readKeyStoreList"),
   // 删除密钥库
   deleteKeyStore: (data: any) => ipcRenderer.invoke("StoreController:deleteKeyStore", data),
+
+  // ********************************
+  // Java
+  // ********************************
+  // 读取Java版本列表
+  readJavaVersionList: () => ipcRenderer.invoke("StoreController:readJavaVersionList"),
 });
 
 contextBridge.exposeInMainWorld("system", {

@@ -66,15 +66,20 @@
     "electron-builder": "^24.13.3",
     "electron-squirrel-startup": "^1.0.1",
     "element-plus": "^2.8.0",
+    "extract-zip": "^2.0.1",
     "iconv-lite": "^0.6.3",
+    "node-7z": "^3.0.0",
+    "node-unrar": "^0.1.6",
     "pinia": "^2.2.2",
     "sass": "^1.77.8",
     "socket.io": "^4.7.5",
     "socket.io-client": "^4.7.5",
     "tailwind-merge": "^2.5.2",
+    "tar": "^7.4.3",
     "vue": "^3.4.38",
     "vue-router": "^4.4.3",
     "vue-web-terminal": "3",
-    "xml2js": "^0.6.2"
+    "xml2js": "^0.6.2",
+    "zlib": "^1.0.5"
   }
 }

@@ -24,7 +24,6 @@ import { pathReTrans, pathTrans } from "@/render_/utils";
 import { errorToast } from "./errorBase";
 // @ts-ignore
 import xml2js from "xml2js";
-import consola from "consola";
 
 export class StoreController extends IpcMainBaseController {
   fileSystem: FileStore;
@@ -42,19 +41,19 @@ export class StoreController extends IpcMainBaseController {
     // 初始化配置文件
     (async () => {
       await this.initCache();
-      this.generateKeyStoreFile(
-        null,
-        JSON.stringify({
-          alias: "test1",
-          keystore: "test1.keystore",
-          storepass: "123456",
-          keypass: "123456",
-          validity: "365",
-          dname: "CN=www.test.com,OU=ID,O=TEST,L=BJ,ST=BJ,C=CN",
-          // keystore: "test.keystore",
-          // storepass: "123456",
-        })
-      );
+      // this.generateKeyStoreFile(
+      //   null,
+      //   JSON.stringify({
+      //     alias: "test1",
+      //     keystore: "test1.keystore",
+      //     storepass: "123456",
+      //     keypass: "123456",
+      //     validity: "365",
+      //     dname: "CN=www.test.com,OU=ID,O=TEST,L=BJ,ST=BJ,C=CN",
+      //     // keystore: "test.keystore",
+      //     // storepass: "123456",
+      //   })
+      // );
     })();
 
     // this.initCache().then(() => {
@@ -154,6 +153,7 @@ export class StoreController extends IpcMainBaseController {
   public readVersionFolderData(event: IpcMainEvent, data: any): any {
     try {
       const { UNI_BUILD_VERSION_MANAGER_PATH } = this.GLOBAL_SETTING;
+
       return this.fileSystem.readDirTree(UNI_BUILD_VERSION_MANAGER_PATH, 1, true);
     } catch (error) {
       return errorToast("读取版本列表失败");
@@ -369,7 +369,9 @@ export class StoreController extends IpcMainBaseController {
 
   public async readJavaVersionList(event: IpcMainEvent, data: any) {
     try {
-      return this.fileSystem.readDirTree(JAVA_VERSION_MANAGER_PATH(this.GLOBAL_DIR), 1, true, /java/);
+      console.log(JAVA_VERSION_MANAGER_PATH(this.GLOBAL_DIR));
+
+      return this.fileSystem.readDirTree(JAVA_VERSION_MANAGER_PATH(this.GLOBAL_DIR), 1, true, null);
     } catch (error) {
       return errorToast("读取Java版本列表失败");
     }

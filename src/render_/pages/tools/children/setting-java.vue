@@ -6,37 +6,23 @@
       <el-row>
         <el-col :span="24">
           <h3 class="mb-2">Java版本列表</h3>
-          <!-- <el-table :data="[]" style="width: 100%" stripe border height="400">
-            <el-table-column
-              prop="name"
-              label="名称"
-              width="180"
-            ></el-table-column>
-            <el-table-column prop="path" label="路径"></el-table-column>
-            <el-table-column prop="version" label="版本"></el-table-column>
-            <el-table-column prop="status" label="状态"></el-table-column>
-            <el-table-column fixed="right" label="操作" width="180">
-              <template #default="{ row }">
-                <el-button type="text" size="small">编辑</el-button>
-                <el-button type="text" size="small">删除</el-button>
-              </template>
-            </el-table-column>
-          </el-table> -->
-          <data-table :data="javaList" :columns="columns"></data-table>
+          <data-table :data="javaList" :columns="columns" @clickRow="clickRow"> </data-table>
         </el-col>
       </el-row>
     </el-card>
+    <div class="drop-area" @dragover.prevent @drop="handleDrop">拖拽文件到此处上传</div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { ref } from "vue";
 import dataTable from "@r/components/ui/data-table";
 import IpcMainMess from "@r/utils/ipc";
 
 const javaList = ref([]);
 const columns = ref([
   {
-    label: "版本名称",
+    label: "目录名称",
     key: "version",
     props: {
       showOverflowTooltip: true,
@@ -48,12 +34,27 @@ const columns = ref([
     key: "cwd",
     type: "button",
     props: {
-      //
       showOverflowTooltip: true,
     },
     buttonProps: {
       variant: "link",
       class: "!text-blue-500 !w-full !text-ellipsis !overflow-hidden !whitespace-nowrap !overflow-ellipsis !block",
+    },
+  },
+  {
+    label: "状态",
+    key: "status",
+    props: {
+      width: "140px",
+    },
+    type: "button",
+    buttonProps: {},
+  },
+  {
+    label: "版本",
+    key: "realVersion",
+    props: {
+      width: "100px",
     },
   },
 ]);
@@ -62,8 +63,30 @@ function clickRow({ cwd }: any) {
   IpcMainMess.sendSync("cache.openExplorer", { cwd });
 }
 
-onMounted(() => {
-  // 页面初始化的时候检测java环境变量
+function handleDrop(event: DragEvent) {
+  // event.preventDefault();
+  // const files = event.dataTransfer?.files;
+  // if (files) {
+  //   for (let i = 0; i < files.length; i++) {
+  //     const file = files[i];
+  //     console.log("File dropped:", file.name);
+  //     // 处理文件上传逻辑
+  //   }
+  // }
+}
+
+onMounted(async () => {
+  const result = await IpcMainMess.sendSync("cache.readJavaVersionList");
+  // "G:\\uniHelperBuiler\\JAVA_VERSION\\java22.0.2"
+  javaList.value = result.map((item: string) => {
+    const version = item.split("\\").pop();
+    return {
+      version,
+      cwd: item,
+      status: "",
+      realVersion: "",
+    };
+  });
 });
 </script>
 
@@ -73,5 +96,11 @@ onMounted(() => {
   h1 {
     @apply mb-2;
   }
+}
+.drop-area {
+  border: 2px dashed #ccc;
+  padding: 20px;
+  text-align: center;
+  margin-top: 20px;
 }
 </style>

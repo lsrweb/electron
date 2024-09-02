@@ -6,6 +6,7 @@ import { feedBack } from "./feedback";
 import type { CustomApp } from "@/types/electron-app";
 import { pathReTrans } from "@/render_/utils";
 import { toJson } from ".";
+import extractFile from "./extractFile";
 
 class FileStore {
   private window: BrowserWindow;
@@ -193,6 +194,15 @@ class FileStore {
         if (flatten) {
           flatResult.push(itemPath);
         }
+      } else if (!filterRegex && statSync(itemPath).isDirectory()) {
+        if (depth > 0) {
+          const subTree = this.readDirTree(itemPath, depth - 1, flatten, filterRegex);
+          if (flatten && Array.isArray(subTree)) {
+            flatResult.push(...subTree);
+          } else {
+            result[dirName][item] = subTree;
+          }
+        }
       }
     });
 
@@ -365,11 +375,14 @@ class FileStore {
         if (this.zipExr.includes(path.extname(filePath))) {
           // 解压缩
           // 解压缩到指定路径
+          console.log(filePath, path.dirname(filePath));
+
+          // extractFile(filePath, path.dirname(filePath));
         } else {
           // 直接保存到指定路径
-          writeFileSync(filePath, toJson(data) || "", {
-            encoding: "utf-8",
-          });
+          // writeFileSync(filePath, toJson(data) || "", {
+          //   encoding: "utf-8",
+          // });
         }
       } catch (error) {
         console.log(error);
