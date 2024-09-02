@@ -21,7 +21,7 @@
                 <Button icon="cog"></Button>
                 <template #dropdown>
                   <ElDropdownMenu>
-                    <el-dropdown-item :disabled="row.active" @click="setActiveJava(row)">
+                    <el-dropdown-item @click="setActiveJava(row)">
                       {{ row.active ? "已激活" : "激活" }}
                     </el-dropdown-item>
                   </ElDropdownMenu>
