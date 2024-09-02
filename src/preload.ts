@@ -1,4 +1,6 @@
 import { contextBridge, ipcRenderer } from "electron";
+import path from "path";
+
 contextBridge.exposeInMainWorld("cache", {
   // 获取缓存数据
   getData: () => ipcRenderer.invoke("StoreController:getCacheJsonFile"),
@@ -35,6 +37,8 @@ contextBridge.exposeInMainWorld("cache", {
   // ********************************
   // 读取Java版本列表
   readJavaVersionList: () => ipcRenderer.invoke("StoreController:readJavaVersionList"),
+  // 上传Java版本
+  uplodJavaVersion: (data: any) => ipcRenderer.invoke("StoreController:uplodJavaVersion", data),
 });
 
 contextBridge.exposeInMainWorld("system", {
@@ -46,6 +50,8 @@ contextBridge.exposeInMainWorld("system", {
   minimizeApp: () => ipcRenderer.invoke("ScreenController:minimizeApp"),
   // 最大化应用
   maximizeApp: () => ipcRenderer.invoke("ScreenController:maximizeApp"),
+
+  startDrag: (fileName: any) => ipcRenderer.send("ondragstart", path.join(__dirname, fileName)),
 });
 
 // 渲染端设置

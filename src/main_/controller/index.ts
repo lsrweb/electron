@@ -5,13 +5,11 @@ import { ScreenController } from "./ScreenController";
 import { StoreController } from "./StoreController";
 import { ExecController } from "./ExecController";
 import { ToolsController } from "./ToolsController";
+import path from "path";
 
-export const enumControllerMethods = <T extends IpcMainBaseController>(
-  clsInstance: T
-) => {
+export const enumControllerMethods = <T extends IpcMainBaseController>(clsInstance: T) => {
   // eslint-disable-next-line no-unused-vars
-  const result: { [key: string]: (...args: unknown[]) => any } =
-    Object.create(null);
+  const result: { [key: string]: (...args: unknown[]) => any } = Object.create(null);
   const filterKeys = ["constructor"];
   const keys = Object.getOwnPropertyNames(clsInstance.constructor.prototype);
 
@@ -53,6 +51,14 @@ export const registerMainHandlers = (mainWindow: BrowserWindow) => {
       //
       appPath: app.getAppPath(),
     };
+  });
+
+  ipcMain.on("ondragstart", (event, filePath) => {
+    // event.sender.startDrag({
+    //   file: path.join(__dirname, filePath),
+    //   icon: path.join(__dirname, "assets", "icon.png"),
+    // });
+    console.log("ondragstart", filePath);
   });
 
   return {

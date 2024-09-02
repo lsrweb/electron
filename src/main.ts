@@ -59,7 +59,7 @@ let mainWindow: BrowserWindow;
 
 const createWindow = async () => {
   mainWindow = new BrowserWindow({
-    width: 1160,
+    width: 1860,
     height: 900,
     minWidth: 900,
     webPreferences: {
@@ -80,7 +80,7 @@ const createWindow = async () => {
   if (isDebug) {
     await installExtensions();
   }
-  if (isDebug) mainWindow.webContents.openDevTools({ mode: "undocked" });
+  if (isDebug) mainWindow.webContents.openDevTools({ mode: "right" });
 
   mainWindow.once("ready-to-show", () => {
     mainWindow.show();

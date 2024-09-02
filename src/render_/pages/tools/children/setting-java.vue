@@ -3,25 +3,28 @@
     <el-card class="box-card">
       <el-row>
         <el-col :span="24" class="overflow-auto">
-          <h3 class="float-start">Java版本列表</h3>
-          <Button class="float-end">上传新版本</Button>
+          <div class="mb-3 flex items-center justify-between">
+            <h3>Java版本列表</h3>
+            <Button @click="setUploadJavaShow">上传新版本</Button>
+          </div>
           <data-table
             :data="javaList"
             :columns="columns"
             @clickRow="clickRow"
-            class="!mt-7"
             :actionProps="{
               class: 'text-center',
               width: '100px',
             }"
           >
-            <template #action>
+            <template #action="{ row }">
               <ElDropdown placement="left-start">
                 <Button icon="cog"></Button>
                 <template #dropdown>
-                  <el-dropdown-menu>
-                    <el-dropdown-item>应用 </el-dropdown-item>
-                  </el-dropdown-menu>
+                  <ElDropdownMenu>
+                    <el-dropdown-item :disabled="row.active">
+                      {{ row.active ? "已激活" : "激活" }}
+                    </el-dropdown-item>
+                  </ElDropdownMenu>
                 </template>
               </ElDropdown>
             </template>
@@ -29,7 +32,8 @@
         </el-col>
       </el-row>
     </el-card>
-    <div class="drop-area" @dragover.prevent @drop="handleDrop">拖拽文件到此处上传</div>
+
+    <SettingJava_upload ref="javaUpload" />
   </div>
 </template>
 
@@ -38,6 +42,7 @@ import { ref } from "vue";
 import dataTable from "@r/components/ui/data-table";
 import IpcMainMess from "@r/utils/ipc";
 import Button from "@r/components/Button.vue";
+import SettingJava_upload from "./setting-java_upload.vue";
 
 const javaList = ref([]);
 const columns = ref([
@@ -83,18 +88,6 @@ function clickRow({ cwd }: any) {
   IpcMainMess.sendSync("cache.openExplorer", { cwd });
 }
 
-function handleDrop(event: DragEvent) {
-  // event.preventDefault();
-  // const files = event.dataTransfer?.files;
-  // if (files) {
-  //   for (let i = 0; i < files.length; i++) {
-  //     const file = files[i];
-  //     console.log("File dropped:", file.name);
-  //     // 处理文件上传逻辑
-  //   }
-  // }
-}
-
 onMounted(async () => {
   const result = await IpcMainMess.sendSync("cache.readJavaVersionList");
   javaList.value = result.map((item: any) => {
@@ -108,6 +101,12 @@ onMounted(async () => {
 
   console.log(javaList.value);
 });
+
+const javaUpload = ref(null);
+
+function setUploadJavaShow() {
+  javaUpload.value.showCreate = true;
+}
 </script>
 
 <style scoped lang="scss">
@@ -116,11 +115,5 @@ onMounted(async () => {
   h1 {
     @apply mb-2;
   }
-}
-.drop-area {
-  border: 2px dashed #ccc;
-  padding: 20px;
-  text-align: center;
-  margin-top: 20px;
 }
 </style>

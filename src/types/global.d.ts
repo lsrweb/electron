@@ -30,6 +30,8 @@ declare global {
       quit: () => Promise<void>;
       minimizeApp: () => Promise<void>;
       maximizeApp: () => Promise<void>;
+
+      startDrag: (fileName: any) => void;
     };
 
     renderSetting: {};

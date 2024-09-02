@@ -358,11 +358,12 @@ export class StoreController extends IpcMainBaseController {
     try {
       const { JAVA_VERSION_MANAGER_PATH } = this.GLOBAL_SETTING;
 
-      const { path } = fromJson(data);
+      console.log(Buffer.from(data.data));
 
       // 上传文件
-      await this.fileSystem.uploadFile(pathReTrans(path), JAVA_VERSION_MANAGER_PATH);
     } catch (error) {
+      console.log(error);
+
       return errorToast("上传Java版本失败");
     }
   }
