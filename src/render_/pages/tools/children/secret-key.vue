@@ -7,6 +7,7 @@
             <h3>密钥库生成</h3>
             <div>
               <!--  -->
+              <Button type="primary" @click="showCreate">生成密钥库</Button>
             </div>
           </div>
           <data-table
@@ -35,6 +36,8 @@
         </el-col>
       </el-row>
     </el-card>
+
+    <SecretKeyCreate v-model:visible="SecretKeyCreateRefShow" />
   </div>
 </template>
 
@@ -43,6 +46,7 @@ import { ref } from "vue";
 import dataTable from "@r/components/ui/data-table";
 import IpcMainMess from "@r/utils/ipc";
 import Button from "@r/components/Button.vue";
+import SecretKeyCreate from "./secret-key-create.vue";
 
 const storeList = ref([]);
 const columns = ref([
@@ -76,6 +80,12 @@ function deleteKey(name: string) {
 
 function previewKey(name: string) {
   IpcMainMess.sendSync("cache.previewKeyStore", { name });
+}
+
+//
+const SecretKeyCreateRefShow = ref();
+function showCreate() {
+  SecretKeyCreateRefShow.value = !SecretKeyCreateRefShow.value;
 }
 </script>
 

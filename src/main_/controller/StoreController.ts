@@ -45,19 +45,19 @@ export class StoreController extends IpcMainBaseController {
     // 初始化配置文件
     (async () => {
       await this.initCache();
-      // this.generateKeyStoreFile(
-      //   null,
-      //   JSON.stringify({
-      //     alias: "test1",
-      //     keystore: "test1.keystore",
-      //     storepass: "123456",
-      //     keypass: "123456",
-      //     validity: "365",
-      //     dname: "CN=www.test.com,OU=ID,O=TEST,L=BJ,ST=BJ,C=CN",
-      //     // keystore: "test.keystore",
-      //     // storepass: "123456",
-      //   })
-      // );
+      this.generateKeyStoreFile(
+        null,
+        JSON.stringify({
+          alias: "test1",
+          keystore: "test1.keystore",
+          storepass: "123456",
+          keypass: "123456",
+          validity: "365",
+          dname: "CN=www.test.com,OU=ID,O=TEST,L=BJ,ST=BJ,C=CN",
+          // keystore: "test.keystore",
+          // storepass: "123456",
+        })
+      );
     })();
 
     // this.initCache().then(() => {
@@ -282,9 +282,10 @@ export class StoreController extends IpcMainBaseController {
       const validate = [alias, keystore, storepass, keypass, validity, dname];
       for (const item of validate) {
         if (!item) {
-          return errorToast(`参数 ${item} 不能为空`);
+          return errorToast(`the ${item} is required`);
         }
       }
+      console.log(fromJson(data));
 
       await executePowerShellScript(keytoolGenerateScript, [
         "-keystore",
@@ -316,6 +317,8 @@ export class StoreController extends IpcMainBaseController {
         cwdPath: `${KEYSTORE_MANAGER_PATH}\\${keystore}`,
       });
     } catch (error) {
+      console.log(error);
+
       return errorToast("生成密钥库文件失败");
     }
   }

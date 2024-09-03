@@ -1,5 +1,15 @@
 <template>
-  <ElDrawer :title="title" :direction="direction" :size="size" v-model:model-value="visable" :close-on-click-modal="false">
+  <ElDrawer
+    :title="title"
+    :direction="direction"
+    :size="size"
+    v-model:model-value="visable"
+    :close-on-click-modal="false"
+  >
+    <template #header>
+      <slot name="title" v-if="$slots.title"></slot>
+    </template>
+
     <div class="p-2">
       <slot></slot>
     </div>

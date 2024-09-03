@@ -14,19 +14,27 @@ $requiredParams = @("keystore", "alias", "keyalg", "keysize", "validity", "store
 foreach ($param in $requiredParams) {
     if (-not $param) {
         Write-Host "$param is required."
-        exit
+        exit 1
     }
 }
 
 if (-not $env:JAVA_HOME) {
     Write-Host "JAVA_HOME is not set, please set JAVA_HOME first."
-    exit
+    exit 2000
 }
 
 $keytool = "$env:JAVA_HOME\bin\keytool.exe"
+if (-not (Test-Path $keytool)) {
+    Write-Host "keytool not found in $env:JAVA_HOME\bin\keytool.exe"
+    exit 2001
+}
+
 # 捕获命令执行结果
 # $cmd = "$keytool -genkeypair -keystore $keystore -alias $alias -keyalg $keyalg -keysize $keysize -validity $validity -storepass $storepass -keypass $keypass -dname $dname"
 try {
+    # 测试一下 keytool 命令是否可用
+    $cmd = "$keytool -help"
+    Invoke-Expression $cmd 2>&1 | Write-Host
     $cmd = "$keytool -genkey -v -keystore $keystore -alias $alias -keyalg $keyalg -keysize $keysize -validity $validity -storepass $storepass -keypass $keypass -dname $dname"
     # 输出组装好的
     Write-Host $cmd
@@ -39,13 +47,11 @@ try {
         Write-Host "Generate key failed."
         # 原样输出错误信息
         Write-Host $_.Exception.Message
-        exit $LASTEXITCODE
     }
     
 } catch {
     Write-Host $_.Exception.Message
     Write-Host "Generate key failed."
-    exit 1
 }
 
 

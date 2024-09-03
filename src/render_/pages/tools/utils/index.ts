@@ -82,3 +82,60 @@ export function parseKeystoreInfo(input: string): object {
     topLevelInfo,
   };
 }
+
+// 生成随机 dname, 用于生成自签名证书
+export function generateRandomDname(): object {
+  let result: { [key: string]: string } = {};
+
+  const o = "abcdefghijklmnopqrstuvwxyz";
+  const n = "0123456789";
+
+  const random = (str: string) => str[Math.floor(Math.random() * str.length)];
+
+  // 生成长度为 len 的随机字符串
+  const randomStr = (len: number, str: string) => {
+    let result = "";
+    for (let i = 0; i < len; i++) {
+      result += random(str);
+    }
+    return result;
+  };
+
+  // 生成随机字符串
+  const randomString = (len: number) => randomStr(len, o + n);
+
+  // 生成随机数字
+  const randomNumber = (len: number) => randomStr(len, n);
+
+  // 生成随机字符串, 但首字母为 o
+  const randomStringWithO = (len: number) => {
+    let result = randomString(len - 1);
+    return "o" + result;
+  };
+
+  // 生成随机字符串, 但首字母为 n
+  const randomStringWithN = (len: number) => {
+    let result = randomString(len - 1);
+    return "n" + result;
+  };
+
+  // 生成纯字母
+  const randomStringWithLetter = (len: number) => randomStr(len, o);
+
+  result["CN"] = randomString(5) + "." + randomString(5) + ".com";
+  result["OU"] = randomStringWithLetter(5);
+  result["O"] = randomStringWithLetter(5);
+  result["L"] = randomStringWithLetter(5);
+  result["ST"] = randomStringWithLetter(5);
+  result["C"] = randomStringWithLetter(2);
+  // result["STREET"] = randomString(5);
+  // result["DC"] = randomString(5);
+  // result["UID"] = randomString(5);
+
+  return {
+    ...result,
+    dname: Object.entries(result)
+      .map(([k, v]) => `${k}=${v}`)
+      .join(","),
+  };
+}

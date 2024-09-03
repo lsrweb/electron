@@ -1,5 +1,6 @@
 import { toJson } from "@/render_/utils";
 import { exec, execSync, spawn } from "child_process";
+import { error } from "console";
 import { app, dialog } from "electron";
 const iconv = require("iconv-lite");
 
@@ -60,7 +61,8 @@ export function executePowerShellScript(scriptPath: string, args: string[]): Pro
       });
 
       terminal.on("close", (code) => {
-        console.log(`子进程退出，退出码 ${code}`);
+        // console.log(`子进程退出，退出码 ${code}`);
+        error(`child process exited with code ${code},===========`);
         if (code === 0) {
           resolve(iconv.decode(result, "cp936"));
         } else {
