@@ -52,6 +52,7 @@ export function executePowerShellScript(scriptPath: string, args: string[]): Pro
 
       terminal.stderr.on("data", (data) => {
         console.error(`stderr: ${data}`);
+        // @ts-ignore
         app["ws"].send(
           toJson({
             type: "error",
@@ -66,9 +67,11 @@ export function executePowerShellScript(scriptPath: string, args: string[]): Pro
         if (code === 0) {
           resolve(iconv.decode(result, "cp936"));
         } else {
+          // @ts-ignore
           app["ws"].send(
             toJson({
               type: "error",
+              // @ts-ignore
               message: iconv.decode(data.toString("binary"), "cp936"),
             })
           );
