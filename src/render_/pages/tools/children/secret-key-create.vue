@@ -1,6 +1,25 @@
 <template>
   <Dialog v-model="visible" title="生成密钥库">
     <ElForm :model="form" label-width="84px" :rules="formRules" v-model="form" ref="ElFormRef">
+      <!-- 指定java版本 -->
+      <ElFormItem label="JAVA" prop="java">
+        <ElSelect v-model="form.java" placeholder="请选择JAVA版本">
+          <ElOption
+            v-for="item in javaList"
+            :key="item.originalFloder"
+            :label="item.version"
+            :value="item.originalPath"
+          >
+            <span>{{ item.version }}</span>
+            <span class="text-gray-500">({{ item.originalFloder }})</span>
+          </ElOption>
+        </ElSelect>
+      </ElFormItem>
+      <!-- 分割线 -->
+      <div class="mb-4 flex justify-between items-center w-full border-b border-gray-300 pb-3">
+        <span class="text-gray-500">证书信息-01</span>
+        <Button type="button" @click="generalInfo('01')">随机生成</Button>
+      </div>
       <ElFormItem label="秘钥名称" prop="keystore">
         <ElInput v-model="form.keystore" placeholder="请输入秘钥名称" />
       </ElFormItem>
@@ -18,8 +37,8 @@
       </ElFormItem>
       <!-- 分割线 -->
       <div class="mb-4 flex justify-between items-center w-full border-b border-gray-300 pb-3">
-        <span class="text-gray-500">证书信息</span>
-        <Button type="button" @click="generalInfo()">随机生成</Button>
+        <span class="text-gray-500">证书信息-02</span>
+        <Button type="button" @click="generalInfo('02')">随机生成</Button>
       </div>
       <!-- CN=www.test.com,OU=ID,O=TEST,L=BJ,ST=BJ,C=CN  -->
       <ElFormItem label="CN" prop="CN">
@@ -48,8 +67,8 @@
 
 <script setup lang="ts">
 import Dialog from "@r/components/ui/Dialog.vue";
-import { ElForm, FormRules } from "element-plus";
-import { generateRandomDname } from "../utils";
+import { ElForm, ElLoading, ElNotification, FormRules } from "element-plus";
+import { generateRandomAlias, generateRandomDname, generateRandomKeyFileName, generateRandomValidity } from "../utils";
 import IpcMainMess from "@r/utils/ipc";
 
 const props = withDefaults(
@@ -61,13 +80,14 @@ const props = withDefaults(
   }
 );
 
-const emit = defineEmits(["update:visible"]);
+const emit = defineEmits(["update:visible", "updateList"]);
 const visible = computed({
   get: () => props.visible,
   set: (val) => emit("update:visible", val),
 });
 
 const form = reactive({
+  java: "",
   keystore: "",
   alias: "",
   validity: "",
@@ -81,12 +101,8 @@ const form = reactive({
   C: "",
 });
 
-//   dname: "",
-const dname = computed(() => {
-  return `CN=${form.CN},OU=${form.OU},O=${form.O},L=${form.L},ST=${form.ST},C=${form.C}`;
-});
-
 const formRules = reactive<FormRules>({
+  java: [{ required: true, message: "请选择JAVA版本", trigger: "change" }],
   keystore: [
     {
       required: true,
@@ -150,26 +166,55 @@ const formRules = reactive<FormRules>({
   ],
 });
 
-function generalInfo() {
+function generalInfo(type: "01" | "02") {
   const dname = generateRandomDname();
-  Object.assign(form, dname);
+  Object.assign(
+    form,
+    type == "01"
+      ? {
+          keystore: generateRandomKeyFileName(),
+          alias: generateRandomAlias(),
+          validity: generateRandomValidity(),
+        }
+      : dname
+  );
 }
 
 const ElFormRef = ref();
 function confirmCreate() {
   ElFormRef.value.validate(async (valid: boolean) => {
     if (valid) {
-      // validity 需要计算出天数
+      ElLoading.service({ fullscreen: true });
       const formResult = {
         ...form,
         keystore: form.keystore + ".keystore",
       };
       const result = await IpcMainMess.sendSync("cache.generateKeyStoreFile", formResult);
+      ElLoading.service().close();
+      ElNotification({
+        title: "密钥生成成功",
+        message: result,
+        type: "success",
+        position: "bottom-left",
+      });
+      visible.value = false;
+      emit("updateList");
     }
   });
 }
 
 defineExpose({ visible });
+
+const javaList = ref([]);
+onMounted(async () => {
+  const result = await IpcMainMess.sendSync("cache.readJavaVersionList");
+  javaList.value = result.map((item: any) => {
+    return {
+      ...(typeof item === "object" ? item : {}),
+      originalFloder: item.originalPath.split("\\").pop(),
+    };
+  });
+});
 </script>
 
 <style scoped></style>

@@ -139,3 +139,18 @@ export function generateRandomDname(): object {
       .join(","),
   };
 }
+
+// 生成随机的秘钥库文件名
+export function generateRandomKeyFileName(): string {
+  return `key-${[...Array(4)].map(() => Math.random().toString(36)[2]).join("")}`;
+}
+
+// 生成随机的证书别名
+export function generateRandomAlias(): string {
+  return `alias-${[...Array(4)].map(() => Math.random().toString(36)[2]).join("")}`;
+}
+
+// 生成随机有效期
+export function generateRandomValidity(): string {
+  return `${Math.floor(Math.random() * 1000)}`;
+}

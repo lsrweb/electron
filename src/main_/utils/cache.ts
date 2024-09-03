@@ -288,14 +288,14 @@ class FileStore {
     });
   }
 
-  public updateFile(filePath: string, data: object): Promise<void> {
+  public updateFile(filePath: string, data: object, keep: boolean = true): Promise<void> {
     return new Promise((resolve, reject) => {
       try {
         if (filePath.includes(".json")) {
           const cacheData = readJSONSync(filePath);
           if (!cacheData || !data) return;
-          const newData = { ...cacheData, ...data };
-
+          // const newData = { ...cacheData, ...data };
+          const newData = keep ? { ...cacheData, ...data } : data;
           writeJSONSync(filePath, newData, {
             spaces: 2,
             EOL: "\r\n",

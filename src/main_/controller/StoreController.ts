@@ -45,25 +45,7 @@ export class StoreController extends IpcMainBaseController {
     // 初始化配置文件
     (async () => {
       await this.initCache();
-      this.generateKeyStoreFile(
-        null,
-        JSON.stringify({
-          alias: "test1",
-          keystore: "test1.keystore",
-          storepass: "123456",
-          keypass: "123456",
-          validity: "365",
-          dname: "CN=www.test.com,OU=ID,O=TEST,L=BJ,ST=BJ,C=CN",
-          // keystore: "test.keystore",
-          // storepass: "123456",
-        })
-      );
     })();
-
-    // this.initCache().then(() => {
-    //   // this.createProject();
-
-    // });
   }
 
   /**
@@ -117,6 +99,7 @@ export class StoreController extends IpcMainBaseController {
       await this.fileSystem.createFile(KEYSTORE_MANAGER_SETTINGFILE(this.GLOBAL_DIR), []);
 
       // ------------------------------
+      await this.readKeyStoreSettingFile();
     } catch (error) {
       console.error("Failed to get environment variable:", error);
 
@@ -276,7 +259,7 @@ export class StoreController extends IpcMainBaseController {
     try {
       const { KEYSTORE_MANAGER_PATH } = this.GLOBAL_SETTING;
 
-      const { alias, keystore, storepass, keypass, validity, dname } = fromJson(data);
+      const { alias, keystore, storepass, keypass, validity, dname, java } = fromJson(data);
 
       // 参数验证
       const validate = [alias, keystore, storepass, keypass, validity, dname];
@@ -304,10 +287,12 @@ export class StoreController extends IpcMainBaseController {
         keypass,
         "-dname",
         dname,
+        "-javapath",
+        pathReTrans(java),
       ]);
 
       // 创建成功后在配置文件里记录生成的信息,数组集合
-      this.fileSystem.pushDataToFile(KEYSTORE_MANAGER_SETTINGFILE(this.GLOBAL_DIR), {
+      await this.fileSystem.pushDataToFile(KEYSTORE_MANAGER_SETTINGFILE(this.GLOBAL_DIR), {
         alias,
         keystore,
         storepass,
@@ -316,10 +301,34 @@ export class StoreController extends IpcMainBaseController {
         dname,
         cwdPath: `${KEYSTORE_MANAGER_PATH}\\${keystore}`,
       });
+
+      return "生成密钥库文件成功";
     } catch (error) {
       console.log(error);
 
       return errorToast("生成密钥库文件失败");
+    }
+  }
+
+  // 读取密钥库配置文件,剔除掉不存在的秘钥库文件,并更新配置文件
+  private async readKeyStoreSettingFile() {
+    try {
+      const { KEYSTORE_MANAGER_PATH } = this.GLOBAL_SETTING;
+      const result = Array.from(
+        Object.values(await this.fileSystem.readFile(KEYSTORE_MANAGER_SETTINGFILE(this.GLOBAL_DIR)))
+      );
+
+      const resultExec = [];
+      // 检测密钥库是否存在
+      for (const item of result) {
+        if (existsSync(item.cwdPath)) {
+          resultExec.push(item);
+        }
+      }
+      await sleep(600);
+      await this.fileSystem.updateFile(KEYSTORE_MANAGER_SETTINGFILE(this.GLOBAL_DIR), resultExec, false);
+    } catch (error) {
+      return errorToast("读取密钥库配置文件失败");
     }
   }
 
@@ -424,7 +433,7 @@ export class StoreController extends IpcMainBaseController {
           javaPath,
           version,
           // 追加原始路径,不拼接 bin/java.exe
-          originalPath: pathTrans(item),
+          originalPath: item,
           active,
         });
       }

@@ -37,7 +37,7 @@
       </el-row>
     </el-card>
 
-    <SecretKeyCreate v-model:visible="SecretKeyCreateRefShow" />
+    <SecretKeyCreate v-model:visible="SecretKeyCreateRefShow" @updateList="updateList" />
   </div>
 </template>
 
@@ -63,7 +63,7 @@ function clickRow({ originalPath }: any) {
   IpcMainMess.sendSync("cache.openExplorer", { cwd: originalPath });
 }
 
-onMounted(async () => {
+async function init() {
   let result = await IpcMainMess.sendSync("cache.readKeyStoreList");
   // name
   storeList.value = result.map((item: any) => {
@@ -71,6 +71,10 @@ onMounted(async () => {
       name: item,
     };
   });
+}
+
+onMounted(async () => {
+  init();
 });
 
 function deleteKey(name: string) {
@@ -86,6 +90,11 @@ function previewKey(name: string) {
 const SecretKeyCreateRefShow = ref();
 function showCreate() {
   SecretKeyCreateRefShow.value = !SecretKeyCreateRefShow.value;
+}
+
+//
+function updateList() {
+  init();
 }
 </script>
 
