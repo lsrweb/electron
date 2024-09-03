@@ -410,9 +410,9 @@ export class StoreController extends IpcMainBaseController {
    */
   public async readJavaVersionList(event: IpcMainEvent, data: any) {
     try {
-      let result = this.fileSystem.readDirTree(JAVA_VERSION_MANAGER_PATH(this.GLOBAL_DIR), 1, true, null);
+      const result = this.fileSystem.readDirTree(JAVA_VERSION_MANAGER_PATH(this.GLOBAL_DIR), 1, true, null);
 
-      let resultExec = [];
+      const resultExec = [];
 
       // 获取当前系统的 JAVA_HOME
       const resultJavaHome = await executeCommand("echo %JAVA_HOME%");

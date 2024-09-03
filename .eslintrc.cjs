@@ -45,6 +45,7 @@ module.exports = {
     "@typescript-eslint/no-empty-function": 1,
     "@typescript-eslint/no-explicit-any": 1,
     "@typescript-eslint/no-require-imports": 0,
+    "@typescript-eslint/ban-ts-comment": 0,
   },
   globals: {
     MAIN_WINDOW_VITE_DEV_SERVER_URL: "readonly",
