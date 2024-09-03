@@ -71,6 +71,7 @@ const createWindow = async () => {
       preload: path.join(__dirname, "preload.js"),
       sandbox: false,
       spellcheck: false,
+      contextIsolation: true,
     },
     titleBarStyle: "hidden",
     icon: path.join(__dirname, "../../images/icon.png"),

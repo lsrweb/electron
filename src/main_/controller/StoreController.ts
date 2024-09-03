@@ -19,7 +19,7 @@ import {
   setEnvironmentScript,
   setEnvironmentPathScript,
 } from "../constants";
-import { fromJson, toJson } from "../utils";
+import { compareString, fromJson, toJson } from "../utils";
 import { existsSync, readFileSync } from "fs-extra";
 import { executeCommand, executePowerShellScript } from "../utils/exec";
 import { pathReTrans, pathTrans } from "@/render_/utils";
@@ -171,8 +171,6 @@ export class StoreController extends IpcMainBaseController {
   // 传入路径,使用资源管理器打开
   public async openExplorer(event: IpcMainEvent, path: string) {
     try {
-      console.log(path);
-
       if (!existsSync(fromJson(path).cwd)) {
         return errorToast("路径不存在");
       }
@@ -344,7 +342,8 @@ export class StoreController extends IpcMainBaseController {
   // 读取密钥库列表
   public async readKeyStoreList(event: IpcMainEvent, data: any) {
     try {
-      return this.fileSystem.readFile(KEYSTORE_MANAGER_SETTINGFILE(this.GLOBAL_DIR));
+      // test1.keystore
+      return this.fileSystem.readDirTreeFile(KEYSTORE_MANAGER_PATH(this.GLOBAL_DIR), /\.keystore$/);
     } catch (error) {
       return errorToast("读取密钥库列表失败");
     }
@@ -357,7 +356,12 @@ export class StoreController extends IpcMainBaseController {
 
       const { keystore } = fromJson(data);
 
-      await this.fileSystem.deleteFile(KEYSTORE_MANAGER_PATH + "\\" + keystore);
+      if (!keystore) {
+        return errorToast("密钥库文件不存在");
+      }
+
+      // 删除文件
+      await this.fileSystem.deleteFile(`${keystore}`);
     } catch (error) {
       return errorToast("删除密钥库失败");
     }
@@ -377,8 +381,6 @@ export class StoreController extends IpcMainBaseController {
   public async uplodJavaVersion(event: IpcMainEvent, data: any) {
     try {
       const { JAVA_VERSION_MANAGER_PATH } = this.GLOBAL_SETTING;
-
-      console.log(Buffer.from(data.data));
 
       // 上传文件
     } catch (error) {
@@ -402,23 +404,25 @@ export class StoreController extends IpcMainBaseController {
 
       // 获取当前系统的 JAVA_HOME
       const resultJavaHome = await executeCommand("echo %JAVA_HOME%");
-      log(resultJavaHome, "resultJavaHome");
+
       // 进入目录,执行 bin/java -version
       for (const item of Array.from(Object.values(result))) {
+        // 去除全部路径中的转义字符和空格
         const javaPath = `${item}\\bin\\java.exe`;
         const resultExecresult = await executeCommand(`"${javaPath}" -version`);
-
         // 匹配字符串中的 java version 或 openjdk version
         const matchVersion = /(?:java|openjdk) version "([\d._]+)"/i.exec(resultExecresult);
 
         const version = matchVersion ? matchVersion[1] : "未知版本";
 
+        const active = compareString(pathTrans(resultJavaHome), pathTrans(item));
+
         resultExec.push({
           javaPath,
           version,
           // 追加原始路径,不拼接 bin/java.exe
-          originalPath: item,
-          active: pathTrans(resultJavaHome) === pathTrans(item),
+          originalPath: pathTrans(item),
+          active,
         });
       }
 

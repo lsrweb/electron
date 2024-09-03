@@ -16,6 +16,11 @@ const modelSelect = ref<string>("0");
 const labelArray = ["Java设置", "Gradle设置", "密钥设置", "环境变量管理"] as const;
 const pathArray: string[] = ["setting-java", "setting-gradle", "secret-genderal", "senv-manager"] as const;
 
+onMounted(() => {
+  const index = pathArray.findIndex((item) => item === route.path.slice(1));
+  modelSelect.value = index.toString();
+});
+
 watch(
   () => modelSelect.value,
   (val) => {

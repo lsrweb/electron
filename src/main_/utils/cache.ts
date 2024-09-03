@@ -1,4 +1,14 @@
-import { readJSONSync, writeJSONSync, writeFileSync, readFileSync, existsSync, readdirSync, statSync, mkdirSync, unlinkSync } from "fs-extra";
+import {
+  readJSONSync,
+  writeJSONSync,
+  writeFileSync,
+  readFileSync,
+  existsSync,
+  readdirSync,
+  statSync,
+  mkdirSync,
+  unlinkSync,
+} from "fs-extra";
 import * as path from "path";
 import { app, dialog, type BrowserWindow } from "electron";
 import { APPDIR } from "../constants";
@@ -167,7 +177,12 @@ class FileStore {
   }
 
   // 读取传入指定绝对路径下指定层数文件夹名称树
-  public readDirTree(dir: string, depth: number, flatten: boolean = false, filterRegex: RegExp | null = /^Android/): Record<string, any> | string[] {
+  public readDirTree(
+    dir: string,
+    depth: number,
+    flatten: boolean = false,
+    filterRegex: RegExp | null = /^Android/
+  ): Record<string, any> | string[] {
     if (!existsSync(dir)) return flatten ? [] : {};
     const result: Record<string, any> = {};
     const dirName = path.basename(dir);
@@ -223,11 +238,12 @@ class FileStore {
       const itemPath = path.join(dir, item);
 
       // 检查当前目录是否匹配正则表达式
+      console.log(itemPath, filterRegex, filterRegex?.test(item));
       if (statSync(itemPath).isFile() && (!filterRegex || filterRegex.test(item))) {
-        if (filterRegex && filterRegex.test(item)) {
-          if (filterRegex.test(item)) {
-            flatResult.push(itemPath);
-          }
+        if (filterRegex) {
+          flatResult.push(itemPath);
+        } else {
+          result[dirName][item] = itemPath;
         }
       }
     });

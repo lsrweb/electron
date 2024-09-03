@@ -24,7 +24,7 @@
                 <Button icon="cog"></Button>
                 <template #dropdown>
                   <ElDropdownMenu>
-                    <el-dropdown-item @click="setActiveJava(row)">
+                    <el-dropdown-item @click="setActiveJava(row)" :disabled="row.active">
                       {{ row.active ? "已激活" : "激活" }}
                     </el-dropdown-item>
                   </ElDropdownMenu>
@@ -70,15 +70,7 @@ const columns = ref([
       class: "!text-blue-500 !w-full !text-ellipsis !overflow-hidden !whitespace-nowrap !overflow-ellipsis !block",
     },
   },
-  {
-    label: "状态",
-    key: "status",
-    props: {
-      width: "140px",
-    },
-    type: "button",
-    buttonProps: {},
-  },
+
   {
     label: "版本",
     key: "version",
@@ -98,8 +90,6 @@ onMounted(async () => {
     return {
       ...(typeof item === "object" ? item : {}),
       originalFloder: item.originalPath.split("\\").pop(),
-      status: "",
-      realVersion: "",
     };
   });
 
