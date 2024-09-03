@@ -20,6 +20,7 @@ if ($user -and $system) {
 if ($user) {
     [System.Environment]::SetEnvironmentVariable($name, $value, [System.EnvironmentVariableTarget]::User)
     Write-Output "User environment variable $name has been set to $value"
+    exit 0
 } elseif ($system) {
     if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
         Write-Error "Administrator permission is required to set system environment variables."
@@ -27,10 +28,14 @@ if ($user) {
     }
     [System.Environment]::SetEnvironmentVariable($name, $value, [System.EnvironmentVariableTarget]::Machine)
     Write-Output "System environment variable $name has been set to $value"
+    exit 0
 } else {
     Write-Error "You must specify either -user or -system parameter."
     exit 1
 }
+
+
+
 
 # 
 # $OutputEncoding = [System.Text.Encoding]::UTF8

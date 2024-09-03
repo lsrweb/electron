@@ -5,7 +5,10 @@
         <el-col :span="24" class="overflow-auto">
           <div class="mb-3 flex items-center justify-between">
             <h3>Java版本列表</h3>
-            <Button @click="setUploadJavaShow">上传新版本</Button>
+            <div>
+              <Button @click="setUploadJavaShow">上传新版本</Button>
+              <Button @click="openTermius"> 打开终端 </Button>
+            </div>
           </div>
           <data-table
             :data="javaList"
@@ -110,18 +113,32 @@ function setUploadJavaShow() {
 }
 
 async function setActiveJava(row: any) {
-  const { originalPath, version } = row;
-  ElLoading.service({ fullscreen: true, text: "正在激活环境变量..." });
-  if (!originalPath) return;
-  await IpcMainMess.sendSync("cache.setActiveJava", { originalPath });
-  ElLoading.service().close();
-  ElNotification({
-    title: "激活成功",
-    dangerouslyUseHTMLString: true,
-    message: `已激活 <span class="text-blue-500">${version}</span>,建议重启应用或电脑应用生效`,
-    type: "success",
-    position: "bottom-left",
-  });
+  try {
+    const { originalPath, version } = row;
+    ElLoading.service({ fullscreen: true, text: "正在激活环境变量..." });
+    if (!originalPath) return;
+    await IpcMainMess.sendSync("cache.setActiveJava", { originalPath });
+    ElLoading.service().close();
+    ElNotification({
+      title: "激活成功",
+      dangerouslyUseHTMLString: true,
+      message: `已激活 <span class="text-blue-500">${version}</span>,建议重启应用或电脑应用生效`,
+      type: "success",
+      position: "bottom-left",
+    });
+  } catch (error) {
+    ElLoading.service().close();
+    ElNotification({
+      title: "激活失败",
+      message: error.message,
+      type: "error",
+      position: "bottom-left",
+    });
+  }
+}
+
+function openTermius() {
+  IpcMainMess.sendSync("cache.openTermius");
 }
 </script>
 

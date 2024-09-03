@@ -17,6 +17,7 @@ import {
   keytoolGenerateScript,
   keytoolShowScript,
   setEnvironmentScript,
+  setEnvironmentPathScript,
 } from "../constants";
 import { fromJson, toJson } from "../utils";
 import { existsSync, readFileSync } from "fs-extra";
@@ -25,6 +26,8 @@ import { pathReTrans, pathTrans } from "@/render_/utils";
 import { errorToast } from "./errorBase";
 // @ts-ignore
 import xml2js from "xml2js";
+import { log } from "node:console";
+import { sleep } from "@/compo/env";
 
 export class StoreController extends IpcMainBaseController {
   fileSystem: FileStore;
@@ -251,6 +254,16 @@ export class StoreController extends IpcMainBaseController {
     }
   }
 
+  // 打开系统终端 openTermius powershell
+  public async openTermius(event: IpcMainEvent, data: any) {
+    try {
+      // powershell
+      return executeCommand("start powershell -NoExit -NoLogo -NoProfile");
+    } catch (error) {
+      return errorToast("打开Termius失败");
+    }
+  }
+
   // 构建apk包
   public async buildApkFile(event: IpcMainEvent, data: any) {}
 
@@ -386,9 +399,8 @@ export class StoreController extends IpcMainBaseController {
       let resultExec = [];
 
       // 获取当前系统的 JAVA_HOME
-      const resultJavaHome = process.env.JAVA_HOME || null;
-      console.log(resultJavaHome, "resultJavaHome");
-
+      const resultJavaHome = await executeCommand("echo %JAVA_HOME%");
+      log(resultJavaHome, "resultJavaHome");
       // 进入目录,执行 bin/java -version
       for (const item of Array.from(Object.values(result))) {
         const javaPath = `${item}\\bin\\java.exe`;
@@ -398,7 +410,6 @@ export class StoreController extends IpcMainBaseController {
         const matchVersion = /(?:java|openjdk) version "([\d._]+)"/i.exec(resultExecresult);
 
         const version = matchVersion ? matchVersion[1] : "未知版本";
-        console.log(version);
 
         resultExec.push({
           javaPath,
@@ -434,6 +445,8 @@ export class StoreController extends IpcMainBaseController {
       }
       // 设置环境变量
       await executePowerShellScript(setEnvironmentScript, ["-name", "JAVA_HOME", "-value", originalPath, "-user"]);
+      await sleep(1000);
+      await executePowerShellScript(setEnvironmentPathScript, ["-Var", "JAVA_HOME", "-Sub", "\\bin"]);
     } catch (error) {
       return errorToast("设置Java版本失败");
     }

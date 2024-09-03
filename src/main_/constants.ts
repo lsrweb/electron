@@ -1,12 +1,13 @@
 import path, { join } from "node:path";
 import { app } from "electron";
 import { existsSync, mkdirSync, readJSONSync } from "fs-extra";
-// 判断是否是开发环境
-export const isDev = process.env.NODE_ENV === "development";
+import { isDev } from "@/compo/env";
 
-export const shellPath = path.resolve(__dirname, !isDev ? "../../../shell" : "../../shell");
+export const shellPath = path.resolve(__dirname, !isDev() ? "../../../shell" : "../../shell");
 export const getEnvironmentScript = path.resolve(shellPath, "get-environment.ps1");
 export const setEnvironmentScript = path.resolve(shellPath, "set-environment.ps1");
+export const setEnvironmentPathScript = path.resolve(shellPath, "set-environment-path.ps1");
+
 export const curlScript = path.resolve(shellPath, "curl.ps1");
 export const installGradleScript = path.resolve(shellPath, "install-gradle.ps1");
 export const keytoolGenerateScript = path.resolve(shellPath, "keytools-gen.ps1");

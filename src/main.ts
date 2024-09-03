@@ -8,6 +8,7 @@ import { Server } from "socket.io";
 import http from "http";
 import type { CustomApp } from "./types/electron-app";
 import { toJson } from "./render_/utils";
+import { isDev } from "./compo/env";
 
 if (process.env.NODE_ENV === "production") {
   // @ts-ignore
@@ -45,6 +46,10 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {});
 
   socket.emit("message", toJson({ type: "init", message: "Socket.IO is running on ws://127.0.0.1:8080" }));
+  socket.emit(
+    "message",
+    toJson({ type: "init,message", message: `Running in ${isDev() ? "development" : "production"}  environment` })
+  );
 });
 
 server.listen(8080, () => {

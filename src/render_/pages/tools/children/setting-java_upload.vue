@@ -1,6 +1,6 @@
 <template>
   <Dialog v-model="showCreate" :title="'上传新版本抓哇'">
-    <div class="drop-area" @dragover.prevent @drop="handleDrop" @click="selecFile">拖拽文件到 / 或点击此处上传</div>
+    <div class="drop-area" @dragover.prevent @drop="handleDrop" @click="selecFile">拖拽文件到此处</div>
   </Dialog>
 </template>
 

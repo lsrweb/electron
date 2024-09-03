@@ -19,6 +19,7 @@ contextBridge.exposeInMainWorld("cache", {
   // program
   // ********************************
   createProject: (data: any) => ipcRenderer.invoke("StoreController:createProject", data),
+  openTermius: (data: any) => ipcRenderer.invoke("StoreController:openTermius", data),
 
   // ********************************
   // keystore
