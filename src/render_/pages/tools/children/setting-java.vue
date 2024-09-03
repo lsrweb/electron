@@ -88,8 +88,8 @@ const columns = ref([
   },
 ]);
 
-function clickRow({ cwd }: any) {
-  IpcMainMess.sendSync("cache.openExplorer", { cwd });
+function clickRow({ originalPath }: any) {
+  IpcMainMess.sendSync("cache.openExplorer", { cwd: originalPath });
 }
 
 onMounted(async () => {

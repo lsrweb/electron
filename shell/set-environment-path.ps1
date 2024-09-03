@@ -24,7 +24,7 @@ if ($currentVal) {
 if ($Sub) {
     $currentPath = [System.Environment]::GetEnvironmentVariable("PATH", [System.EnvironmentVariableTarget]::User)
     # 如果path是 \\, 则替换为 \
-    $Sub = $Sub -replace '\\\\', '\\'
+    $Sub = $Sub -replace '\\', '\'
     $newPath = if ($Var) { "%$Var%\$Sub" } else { $Sub }
 
     if ($currentPath -like "*$newPath*") {

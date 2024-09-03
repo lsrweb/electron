@@ -171,6 +171,8 @@ export class StoreController extends IpcMainBaseController {
   // 传入路径,使用资源管理器打开
   public async openExplorer(event: IpcMainEvent, path: string) {
     try {
+      console.log(path);
+
       if (!existsSync(fromJson(path).cwd)) {
         return errorToast("路径不存在");
       }
