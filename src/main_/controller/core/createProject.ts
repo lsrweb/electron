@@ -1,22 +1,9 @@
 import { fromJson, toJson } from "@/render_/utils";
 import type { IpcMainEvent } from "electron";
 import { existsSync, readFile, readFileSync } from "fs";
-// @ts-ignore
-import xml2js from "xml2js";
 import { errorToast } from "../errorBase";
 import type { StoreController } from "../StoreController";
 import { PROJECT_MANAGER_PATH } from "@/main_/constants";
-
-const parserXml = new xml2js.Parser({
-  explicitArray: false,
-  explicitCharkey: false,
-  ignoreAttrs: false,
-  mergeAttrs: true,
-  trim: true,
-  normalize: true,
-  normalizeTags: true,
-});
-const builder = new xml2js.Builder();
 
 // 构建 deve_dcloud_control_xml
 async function buildDeveDcloudControlXml(dir: string, data: object, ctx: StoreController, tempDir: string) {
@@ -25,23 +12,15 @@ async function buildDeveDcloudControlXml(dir: string, data: object, ctx: StoreCo
     console.log(dir);
     console.log(`===========deve_dcloud_control_xml================`);
 
-    // 读取 deve_dcloud_control_xml
-    let xmlOld = await parserXml.parseStringPromise(readFileSync(dir, "utf-8"));
-    //     <hbuilder>
-    // <apps>
-    //     <app appid="__UNI__A" appver=""/>
-    // </apps>
-    // </hbuilder>
-    console.log(toJson(xmlOld), "xmlOld");
+    const writeText = `
+<hbuilder>
+    <apps>
+        <app appid="__UNI__A" appver=""/>
+    </apps>
+</hbuilder>
+    `;
 
-    // {"hbuilder":{"apps":{"app":{"appid":"__UNI__A","appver":""}}}} xmlOld
-    // 修改 deve_dcloud_control_xml appid
-    xmlOld.hbuilder.apps.app.appid = data.dcloud_appid;
-    // 打印修改后的 deve_dcloud_control_xml
-    console.log(toJson(xmlOld));
-
-    // // 将文件保存在路径下,不要 出现转义符
-    ctx.fileSystem.createFile(`${tempDir}\\dcloud_control.xml`, builder.buildObject(xmlOld));
+    ctx.fileSystem.createFile(`${tempDir}\\dcloud_control_xml.xml`, writeText);
   } catch (error) {
     console.log(error);
 

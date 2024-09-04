@@ -266,7 +266,7 @@ class FileStore {
     });
   }
 
-  public createFile(filePath: string, data?: object): Promise<void> {
+  public createFile(filePath: string, data?: object | string): Promise<void> {
     return new Promise((resolve, reject) => {
       try {
         if (filePath.includes(".json") && !existsSync(filePath)) {
@@ -276,6 +276,14 @@ class FileStore {
           });
         } else {
           if (existsSync(filePath)) return resolve();
+          // 如果文件数据为 string 类型,则直接写入文件
+          if (typeof data === "string") {
+            writeFileSync(filePath, data, {
+              encoding: "utf-8",
+            });
+            return resolve();
+          }
+
           writeFileSync(filePath, toJson(data) || "", {
             encoding: "utf-8",
           });

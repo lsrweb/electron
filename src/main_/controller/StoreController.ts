@@ -27,7 +27,6 @@ import { executeCommand, executePowerShellScript } from "../utils/exec";
 import { pathReTrans, pathTrans } from "@/render_/utils";
 import { errorToast } from "./errorBase";
 // @ts-ignore
-import xml2js from "xml2js";
 import { log } from "node:console";
 import { sleep } from "@/compo/env";
 import { createProjectCore } from "./core/createProject";
