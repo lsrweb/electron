@@ -2,11 +2,10 @@
   <div class="setting-java__wrapper">
     <el-card class="box-card">
       <el-row>
-        <el-col :span="24" class="overflow-auto">
+        <ElCol class="overflow-auto">
           <div class="mb-3 flex items-center justify-between">
             <h3>密钥库生成</h3>
             <div>
-              <!--  -->
               <Button type="primary" @click="showCreate">生成密钥库</Button>
             </div>
           </div>
@@ -33,7 +32,7 @@
               </ElDropdown>
             </template>
           </data-table>
-        </el-col>
+        </ElCol>
       </el-row>
     </el-card>
 
@@ -82,8 +81,15 @@ function deleteKey(name: string) {
   storeList.value = storeList.value.filter((item: any) => item.name !== name);
 }
 
-function previewKey(name: string) {
-  IpcMainMess.sendSync("cache.previewKeyStore", { name });
+async function previewKey(name: string) {
+  try {
+    const { keypass, storepass } = await IpcMainMess.sendSync("cache.readKeyStoreInfo", { keystore: name });
+    ElMessageBox.alert(`秘钥名称：${name}\n秘钥密码：${keypass}\n秘钥库密码：${storepass}`, "秘钥信息", {
+      customClass: "canSelect",
+    });
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 //

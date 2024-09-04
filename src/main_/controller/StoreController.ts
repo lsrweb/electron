@@ -351,6 +351,25 @@ export class StoreController extends IpcMainBaseController {
     }
   }
 
+  // 传入密钥库文件,从配置文件中读取密钥库信息
+  public async readKeyStoreInfo(event: IpcMainEvent, data: any) {
+    try {
+      const { KEYSTORE_MANAGER_PATH } = this.GLOBAL_SETTING;
+
+      const { keystore } = fromJson(data);
+
+      const result = Array.from(
+        Object.values(await this.fileSystem.readFile(KEYSTORE_MANAGER_SETTINGFILE(this.GLOBAL_DIR)))
+      );
+
+      const resultExec = result.find((item) => item.cwdPath === keystore);
+
+      return resultExec;
+    } catch (error) {
+      return errorToast("读取密钥库信息失败");
+    }
+  }
+
   // 读取密钥库列表
   public async readKeyStoreList(event: IpcMainEvent, data: any) {
     try {

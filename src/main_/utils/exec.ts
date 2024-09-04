@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { toJson } from "@/render_/utils";
 import { exec, execSync, spawn } from "child_process";
 import { error } from "console";
@@ -16,21 +18,29 @@ export function executePowerShellScript(scriptPath: string, args: string[]): Pro
         }
       );
 
-      let result = "";
+      const result = "";
 
       terminal.stdout.on("data", (data) => {
         console.log(`stdout: ${data}`);
       });
       terminal.stderr.on("data", (data) => {
         console.log(`stderr: ${data}`);
+        app["ws"].send(
+          toJson({
+            type: "error",
+            // @ts-ignore
+            message: iconv.decode(data.toString("binary"), "cp936"),
+          })
+        );
       });
 
       terminal.on("close", (code) => {
         // console.log(`子进程退出，退出码 ${code}`);
-        error(`child process exited with code ${code},===========`);
         if (code === 0) {
           resolve(iconv.decode(result, "cp936"));
         } else {
+          console.log("error", "child process exited with code", code);
+
           // @ts-ignore
           app["ws"].send(
             toJson({

@@ -32,6 +32,8 @@ contextBridge.exposeInMainWorld("cache", {
   readKeyStoreList: () => ipcRenderer.invoke("StoreController:readKeyStoreList"),
   // 删除密钥库
   deleteKeyStore: (data: any) => ipcRenderer.invoke("StoreController:deleteKeyStore", data),
+  // 读取密钥库秘钥配置信息
+  readKeyStoreInfo: (data: any) => ipcRenderer.invoke("StoreController:readKeyStoreInfo", data),
 
   // ********************************
   // Java

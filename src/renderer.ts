@@ -43,11 +43,16 @@ socket.on("message", (message) => {
   // 处理收到的消息
   try {
     const parseMessage = JSON.parse(message);
+    // 替换掉内容仅是 \r\n 的消息
+    if (parseMessage.message === "\r\n") {
+      return;
+    }
     if (parseMessage.type === "error") {
       ElMessage({
         type: "error",
         message: parseMessage.message,
         grouping: true,
+        customClass: "canSelect",
       });
     }
   } catch (error) {
