@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { cn } from "@r/utils";
 import { cva, type VariantProps } from "class-variance-authority";
-
+import Spinner from "./Spinner.vue";
 const button = cva("ry-button", {
   variants: {
     variant: {
@@ -40,12 +40,14 @@ withDefaults(
     animate?: ButtonProps["animate"];
     disabled?: boolean;
     icon?: string;
+    loading?: boolean;
   }>(),
   {
     variant: "default",
     size: "md",
     animate: false,
     disabled: false,
+    loading: false,
   }
 );
 </script>
@@ -64,7 +66,14 @@ withDefaults(
     "
     type="button"
   >
-    <component v-if="icon" :is="icon + 'Icon'" />
+    <!-- 如果有 loading  -->
+    <div>
+      <div v-if="loading || disabled" class="absolute inset-0 flex items-center justify-center">
+        <Spinner />
+      </div>
+    </div>
+    <component v-if="icon && !loading" :is="icon + 'Icon'" />
+
     <slot />
   </button>
 </template>

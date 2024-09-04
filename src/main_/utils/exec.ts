@@ -15,29 +15,24 @@ export function executePowerShellScript(scriptPath: string, args: string[]): Pro
         ["-NoLogo", "-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-File", scriptPath, args.join(" ")],
         {
           shell: true,
+          encoding: "binary",
         }
       );
 
-      const result = "";
+      let result = "";
 
       terminal.stdout.on("data", (data) => {
         console.log(`stdout: ${data}`);
+        result += iconv.decode(data, "cp936");
       });
       terminal.stderr.on("data", (data) => {
-        console.log(`stderr: ${data}`);
-        app["ws"].send(
-          toJson({
-            type: "error",
-            // @ts-ignore
-            message: iconv.decode(data.toString("binary"), "cp936"),
-          })
-        );
+        // 判断是否是错误信息
       });
 
       terminal.on("close", (code) => {
         // console.log(`子进程退出，退出码 ${code}`);
         if (code === 0) {
-          resolve(iconv.decode(result, "cp936"));
+          resolve(result);
         } else {
           console.log("error", "child process exited with code", code);
 
@@ -46,7 +41,7 @@ export function executePowerShellScript(scriptPath: string, args: string[]): Pro
             toJson({
               type: "error",
               // @ts-ignore
-              message: iconv.decode(data.toString("binary"), "cp936"),
+              message: result,
             })
           );
           reject(new Error(`PowerShell 脚本执行失败，退出码 ${code}`));

@@ -10,7 +10,7 @@
       <slot name="title" v-if="$slots.title"></slot>
     </template>
 
-    <div class="p-2">
+    <div class="p-2 canSelect">
       <slot></slot>
     </div>
   </ElDrawer>

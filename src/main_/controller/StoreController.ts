@@ -300,6 +300,7 @@ export class StoreController extends IpcMainBaseController {
         validity,
         dname,
         cwdPath: `${KEYSTORE_MANAGER_PATH}\\${keystore}`,
+        java,
       });
 
       return "生成密钥库文件成功";
@@ -313,7 +314,6 @@ export class StoreController extends IpcMainBaseController {
   // 读取密钥库配置文件,剔除掉不存在的秘钥库文件,并更新配置文件
   private async readKeyStoreSettingFile() {
     try {
-      const { KEYSTORE_MANAGER_PATH } = this.GLOBAL_SETTING;
       const result = Array.from(
         Object.values(await this.fileSystem.readFile(KEYSTORE_MANAGER_SETTINGFILE(this.GLOBAL_DIR)))
       );
@@ -335,14 +335,15 @@ export class StoreController extends IpcMainBaseController {
   // 读取密钥库文件
   public async readKeyStoreFile(event: IpcMainEvent, data: any) {
     try {
-      const { KEYSTORE_MANAGER_PATH } = this.GLOBAL_SETTING;
+      const { storepass, cwdPath, java } = fromJson(data);
 
-      const { keystore, storepass } = fromJson(data);
       const resultExec = await executePowerShellScript(keytoolShowScript, [
         "-keystore",
-        pathTrans(KEYSTORE_MANAGER_PATH) + "\\" + keystore,
+        cwdPath,
         "-storepass",
         storepass,
+        "-javapath",
+        pathReTrans(java),
       ]);
 
       return resultExec;
@@ -354,8 +355,6 @@ export class StoreController extends IpcMainBaseController {
   // 传入密钥库文件,从配置文件中读取密钥库信息
   public async readKeyStoreInfo(event: IpcMainEvent, data: any) {
     try {
-      const { KEYSTORE_MANAGER_PATH } = this.GLOBAL_SETTING;
-
       const { keystore } = fromJson(data);
 
       const result = Array.from(

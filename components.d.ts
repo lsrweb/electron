@@ -27,5 +27,6 @@ declare module 'vue' {
     ElTabs: typeof import('element-plus/es')['ElTabs']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    Spinner: typeof import('./src/render_/components/Spinner.vue')['default']
   }
 }

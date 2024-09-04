@@ -1,28 +1,30 @@
 param (
     [string]$keystore = $null,
-    [string]$storepass = $null
+    [string]$storepass = $null,
+    [string]$javapath = $null
 )
 
 $requiredParams = @("keystore", "storepass")
 
 foreach ($param in $requiredParams) {
-    if (-not $param) {
+    if (-not $PSCmdlet.MyInvocation.BoundParameters[$param]) {
         Write-Host "$param is required."
         exit 1
     }
 }
 
-if (-not $env:JAVA_HOME) {
+if ($javapath) {
+    $keytool = "$javapath\bin\keytool.exe"
+} elseif ($env:JAVA_HOME) {
+    $keytool = "$env:JAVA_HOME\bin\keytool.exe"
+} else {
     Write-Host "JAVA_HOME is not set, please set JAVA_HOME first."
     exit 1
 }
 
-$keytool = "$env:JAVA_HOME\bin\keytool.exe"
-
 try {
     $cmd = "$keytool -list -v -keystore $keystore -storepass $storepass"
     Write-Host "Query keystore information: $cmd"
-    # 以表格形式显示
     Invoke-Expression $cmd | Out-String
     if ($LASTEXITCODE -eq 0) {
         Write-Host "Query keystore information success."
