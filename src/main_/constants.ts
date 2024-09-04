@@ -31,6 +31,9 @@ export const GRADLE_VERSION_MANAGER_SETTINGFILE = (path?: string) => join(path |
 // 密钥库管理目录
 export const KEYSTORE_MANAGER_PATH = (path?: string) => join(path || APPDIR, "KEYSTORE");
 export const KEYSTORE_MANAGER_SETTINGFILE = (path?: string) => join(path || APPDIR, "keystore.json");
+// 项目文件管理目录
+export const PROJECT_MANAGER_PATH = (path?: string) => join(path || APPDIR, "PROJECT");
+export const PROJECT_MANAGER_SETTINGFILE = (path?: string) => join(path || APPDIR, "project.json");
 
 export const VERSIONS_FILENAME = join(APPDIR, "versions.json");
 export const SETTING_JSONFILE = (path?: string) => join(path || APPDIR, "settings.json");

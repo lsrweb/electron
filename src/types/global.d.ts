@@ -1,4 +1,5 @@
 declare module "element-plus/dist/locale/zh-cn.min.mjs";
+declare module "xml2js";
 
 type ResponseChannel = {
   responseChannel: string;

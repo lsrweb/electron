@@ -39,7 +39,7 @@
     </el-card>
 
     <SecretKeyCreate v-model:visible="SecretKeyCreateRefShow" @updateList="updateList" />
-    <Dialog v-model="showKeyDetail" size="800px" title="密钥库信息">
+    <Dialog v-model="showKeyDetail" size="800px" title="密钥库信息" v-if="showKeyDetail">
       <!-- JAVA -->
       <div class="flex items-center">
         <span class="mr-2">JAVA:</span>
@@ -79,7 +79,23 @@ const storeList = ref([]);
 const columns = ref([
   {
     label: "秘钥名称",
-    key: "name",
+    key: "keystore",
+    props: {
+      showOverflowTooltip: true,
+    },
+  },
+  // cwdPath
+  {
+    label: "路径",
+    key: "cwdPath",
+    props: {
+      showOverflowTooltip: true,
+    },
+  },
+  // alias
+  {
+    label: "别名",
+    key: "alias",
     props: {
       showOverflowTooltip: true,
     },
@@ -91,13 +107,8 @@ function clickRow({ originalPath }: any) {
 }
 
 async function init() {
-  let result = await IpcMainMess.sendSync("cache.readKeyStoreList");
-  // name
-  storeList.value = result.map((item: any) => {
-    return {
-      name: item,
-    };
-  });
+  storeList.value = await IpcMainMess.sendSync("cache.readKeyStoreList");
+  console.log(storeList.value);
 }
 
 onMounted(async () => {
@@ -139,7 +150,6 @@ async function readKeyStoreFile(name: string, row: any) {
       java,
     });
     keyDetail.value = `${result}`;
-    console.log(keyDetail.value);
 
     showKeyDetail.value = true;
     keyDetailObj = Object.assign(

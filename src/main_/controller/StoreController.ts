@@ -18,6 +18,8 @@ import {
   keytoolShowScript,
   setEnvironmentScript,
   setEnvironmentPathScript,
+  PROJECT_MANAGER_PATH,
+  PROJECT_MANAGER_SETTINGFILE,
 } from "../constants";
 import { compareString, fromJson, toJson } from "../utils";
 import { existsSync, readFileSync } from "fs-extra";
@@ -28,11 +30,12 @@ import { errorToast } from "./errorBase";
 import xml2js from "xml2js";
 import { log } from "node:console";
 import { sleep } from "@/compo/env";
+import { createProjectCore } from "./core/createProject";
 
 export class StoreController extends IpcMainBaseController {
   fileSystem: FileStore;
   private window: BrowserWindow;
-  private GLOBAL_DIR: any;
+  GLOBAL_DIR: any;
   private GLOBAL_SETTING: any;
 
   constructor(windowCtx?: BrowserWindow) {
@@ -97,6 +100,9 @@ export class StoreController extends IpcMainBaseController {
 
       await this.fileSystem.createDir(KEYSTORE_MANAGER_PATH(this.GLOBAL_DIR));
       await this.fileSystem.createFile(KEYSTORE_MANAGER_SETTINGFILE(this.GLOBAL_DIR), []);
+
+      await this.fileSystem.createDir(PROJECT_MANAGER_PATH(this.GLOBAL_DIR));
+      await this.fileSystem.createFile(PROJECT_MANAGER_SETTINGFILE(this.GLOBAL_DIR), []);
 
       // ------------------------------
       await this.readKeyStoreSettingFile();
@@ -165,19 +171,30 @@ export class StoreController extends IpcMainBaseController {
   }
 
   // dev
-  private deve_dcloud_control_xml = `<CATCH>\\HBuilder-Integrate-AS\\simpleDemo\\src\\main\\assets\\data\\dcloud_control.xml`;
-  private deve_dcloud_values_string_xml = `<CATCH>\\HBuilder-Integrate-AS\\simpleDemo\\src\\main\\res\\values\\strings.xml`;
-  private deve_AndroidManifest_xml = `<CATCH>\\HBuilder-Integrate-AS\\simpleDemo\\src\\main\\AndroidManifest.xml`;
-  private deve_build_gradle = `<CATCH>\\HBuilder-Integrate-AS\\simpleDemo\\build.gradle`;
+  public deve_dcloud_control_xml = `<CATCH>\\HBuilder-Integrate-AS\\simpleDemo\\src\\main\\assets\\data\\dcloud_control.xml`;
+  public deve_dcloud_values_string_xml = `<CATCH>\\HBuilder-Integrate-AS\\simpleDemo\\src\\main\\res\\values\\strings.xml`;
+  public deve_AndroidManifest_xml = `<CATCH>\\HBuilder-Integrate-AS\\simpleDemo\\src\\main\\AndroidManifest.xml`;
+  public deve_build_gradle = `<CATCH>\\HBuilder-Integrate-AS\\simpleDemo\\build.gradle`;
 
   // prod
-  private prod_dcloud_control_xml = `<CATCH>\\HBuilder-HelloUniApp\\app\\src\\main\\assets\\data\\dcloud_control.xml`;
-  private prod_dcloud_values_string_xml = `<CATCH>\\HBuilder-HelloUniApp\\app\\src\\main\\res\\values\\strings.xml`;
-  private prod_AndroidManifest_xml = `<CATCH>\\HBuilder-HelloUniApp\\app\\src\\main\\AndroidManifest.xml`;
-  private prod_build_gradle = `<CATCH>\\HBuilder-HelloUniApp\\app\\build.gradle`;
+  public prod_dcloud_control_xml = `<CATCH>\\HBuilder-HelloUniApp\\app\\src\\main\\assets\\data\\dcloud_control.xml`;
+  public prod_dcloud_values_string_xml = `<CATCH>\\HBuilder-HelloUniApp\\app\\src\\main\\res\\values\\strings.xml`;
+  public prod_AndroidManifest_xml = `<CATCH>\\HBuilder-HelloUniApp\\app\\src\\main\\AndroidManifest.xml`;
+  public prod_build_gradle = `<CATCH>\\HBuilder-HelloUniApp\\app\\build.gradle`;
 
   // 将路径中的 <CATCH> 替换为传入的路径组成新的路径返回
-  private CATCH_REPLACE_REG(CATCH: string, path: string) {
+  public CATCH_REPLACE_REG(
+    CATCH: string,
+    path:
+      | "deve_dcloud_control_xml"
+      | "deve_dcloud_values_string_xml"
+      | "deve_AndroidManifest_xml"
+      | "deve_build_gradle"
+      | "prod_dcloud_control_xml"
+      | "prod_dcloud_values_string_xml"
+      | "prod_AndroidManifest_xml"
+      | "prod_build_gradle"
+  ) {
     // return this.dcloud_control_xml.replace(/<CATCH>/, CATCH);
     switch (path) {
       case "deve_dcloud_control_xml":
@@ -202,39 +219,8 @@ export class StoreController extends IpcMainBaseController {
   }
 
   // 创建一个项目
-  public async createProject(event?: IpcMainEvent, data?: any) {
-    try {
-      // 存在则创建项目
-      const parserXml = new xml2js.Parser();
-      const builder = new xml2js.Builder();
-
-      // G:\uniHelperBuiler\UNI_BUILD_VERSION\Android-SDK@4.24.82145_20240723\HBuilder-Integrate-AS\simpleDemo\src\main\assets\data\dcloud_control.xml
-      const CATCH_DATA = fromJson(data);
-      // 判断传入 CATCH 是否存在
-      if (!existsSync(CATCH_DATA.CATCH)) {
-        return errorToast("路径不存在");
-      }
-      console.log(CATCH_DATA);
-
-      //
-
-      // parserXml.parseString(
-      //   readFileSync(
-      //     // `\\HBuilder-Integrate-AS\\simpleDemo\\src\\main\\assets\\data\\dcloud_control.xml`
-      //     // 将路径中的标识符拼接上其他路径
-      //   ),
-      //   (err: any, result: any) => {
-      //     console.log(err, JSON.stringify(result));
-      //     //  { hbuilder: { apps: [{ app: [{ $: { appid: "__UNI__A", appver: "" } }] }] } };
-      //     // 修改 appid 为 __UNI__B
-      //     result.hbuilder.apps[0].app[0].$.appid = "__UNI__B";
-      //     const xml = builder.buildObject(result);
-      //     console.log(xml);
-      //   }
-      // );
-    } catch (error) {
-      return errorToast("创建项目失败");
-    }
+  public createProject(event: IpcMainEvent, data: any) {
+    return createProjectCore(event, data, this);
   }
 
   // 打开系统终端 openTermius powershell
@@ -372,8 +358,9 @@ export class StoreController extends IpcMainBaseController {
   // 读取密钥库列表
   public async readKeyStoreList(event: IpcMainEvent, data: any) {
     try {
+      await this.readKeyStoreSettingFile();
       // test1.keystore
-      return this.fileSystem.readDirTreeFile(KEYSTORE_MANAGER_PATH(this.GLOBAL_DIR), /\.keystore$/);
+      return this.fileSystem.readFile(KEYSTORE_MANAGER_SETTINGFILE(this.GLOBAL_DIR));
     } catch (error) {
       return errorToast("读取密钥库列表失败");
     }

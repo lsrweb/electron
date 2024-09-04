@@ -1,5 +1,11 @@
 <template>
-  <ElDrawer v-model:model-value="dialogVisible" :title="`添加项目${version}`" direction="rtl" size="500px" :close-on-click-modal="false">
+  <ElDrawer
+    v-model:model-value="dialogVisible"
+    :title="`添加项目${version}`"
+    direction="rtl"
+    size="500px"
+    :close-on-click-modal="false"
+  >
     <!-- dcloud_appid  开发者需登录https://dev.dcloud.net.cn/申请签名 -->
     <!-- package 包名 -->
     <!-- dcloud_appkey  开发者需登录https://dev.dcloud.net.cn/申请签名 -->
@@ -98,7 +104,11 @@ const rules = {
   dcloud_appid: [{ required: true, message: "请输入dcloud_appid", trigger: ["blur", "change"] }],
   package: [
     { required: true, message: "请输入package", trigger: ["blur", "change"] },
-    { pattern: /^[a-zA-Z0-9]+\.[a-zA-Z0-9]+\.[a-zA-Z0-9]+$/, message: "请输入正确的package", trigger: ["blur", "change"] },
+    {
+      pattern: /^[a-zA-Z0-9]+\.[a-zA-Z0-9]+\.[a-zA-Z0-9]+$/,
+      message: "请输入正确的package",
+      trigger: ["blur", "change"],
+    },
   ],
   dcloud_appkey: [{ required: true, message: "请输入dcloud_appkey", trigger: ["blur", "change"] }],
   appname: [{ required: true, message: "请输入appname", trigger: ["blur", "change"] }],
