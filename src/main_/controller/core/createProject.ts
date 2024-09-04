@@ -5,6 +5,10 @@ import { errorToast } from "../errorBase";
 import type { StoreController } from "../StoreController";
 import { PROJECT_MANAGER_PATH } from "@/main_/constants";
 
+function pritterXmlData(data: string) {
+  return data.replace(/>\s+</g, "><");
+}
+
 // 构建 deve_dcloud_control_xml
 async function buildDeveDcloudControlXml(dir: string, data: object, ctx: StoreController, tempDir: string) {
   try {
@@ -20,7 +24,7 @@ async function buildDeveDcloudControlXml(dir: string, data: object, ctx: StoreCo
 </hbuilder>
     `;
 
-    ctx.fileSystem.createFile(`${tempDir}\\dcloud_control_xml.xml`, writeText);
+    ctx.fileSystem.createFile(`${tempDir}\\dcloud_control_xml.xml`, pritterXmlData(writeText));
   } catch (error) {
     console.log(error);
 
