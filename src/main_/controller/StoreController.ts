@@ -419,7 +419,13 @@ export class StoreController extends IpcMainBaseController {
       const resultExec = [];
 
       // 获取当前系统的 JAVA_HOME
-      const resultJavaHome = await executeCommand("echo %JAVA_HOME%");
+      const resultJavaHome = await (await executeCommand("echo %JAVA_HOME%")).replace("\r\n", "");
+      // app["ws"].send(
+      //   toJson({
+      //     type: "info",
+      //     data: resultJavaHome,
+      //   })
+      // );
 
       // 进入目录,执行 bin/java -version
       for (const item of Array.from(Object.values(result))) {
@@ -432,6 +438,7 @@ export class StoreController extends IpcMainBaseController {
         const version = matchVersion ? matchVersion[1] : "未知版本";
 
         const active = compareString(pathTrans(resultJavaHome), pathTrans(item));
+        console.log(pathTrans(resultJavaHome), pathTrans(item), active);
 
         resultExec.push({
           javaPath,
