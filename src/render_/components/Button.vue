@@ -67,11 +67,11 @@ withDefaults(
     type="button"
   >
     <!-- 如果有 loading  -->
-    <!-- <div>
+    <div>
       <div v-if="loading || disabled" class="absolute inset-0 flex items-center justify-center">
         <Spinner />
       </div>
-    </div> -->
+    </div>
     <component v-if="icon" :is="icon + 'Icon'" />
 
     <slot />

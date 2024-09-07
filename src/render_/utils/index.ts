@@ -42,3 +42,8 @@ export function pathReTrans(path: string): string {
   console.log(`path retrans: ${path}`);
   return path.replace(/\\/g, "/");
 }
+
+// sleep
+export function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}

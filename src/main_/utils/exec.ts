@@ -4,12 +4,38 @@ import { toJson } from "@/render_/utils";
 import { exec, execSync, spawn } from "child_process";
 import { error } from "console";
 import { app, dialog } from "electron";
+import {
+  curlScript,
+  getEnvironmentScript,
+  installGradleScript,
+  keytoolGenerateScript,
+  keytoolShowScript,
+  setEnvironmentPathScript,
+  setEnvironmentScript,
+} from "../constants";
 const iconv = require("iconv-lite");
 
-export function executePowerShellScript(scriptPath: string, args: string[]): Promise<string> {
+// curl.ps1  ==> curlScript
+
+// 创建一个类型映射,传入脚本名称,返回脚本路径
+const scriptMapData = {
+  curl: curlScript,
+  getEnvironmentScript: getEnvironmentScript,
+  installGradleScript: installGradleScript,
+  keytoolGenerateScript: keytoolGenerateScript,
+  keytoolShowScript: keytoolShowScript,
+  setEnvironmentPathScript: setEnvironmentPathScript,
+  setEnvironmentScript: setEnvironmentScript,
+};
+
+type ScriptMap = keyof typeof scriptMapData;
+
+export function executePowerShellScript(scriptPath: ScriptMap | string, args: string[]): Promise<string> {
   return new Promise(async (resolve, reject) => {
     // 编码
     try {
+      scriptPath = scriptMapData[scriptPath] || scriptPath;
+
       const terminal = spawn(
         "powershell.exe",
         ["-NoLogo", "-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-File", scriptPath, args.join(" ")],

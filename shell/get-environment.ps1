@@ -11,10 +11,12 @@ if (-not $name) {
 $envValue = [System.Environment]::GetEnvironmentVariable($name, [System.EnvironmentVariableTarget]::User)
 if (-not $envValue) {
     $envValue = [System.Environment]::GetEnvironmentVariable($name, [System.EnvironmentVariableTarget]::Machine)
+    exit 1
 }
 
 if ($envValue) {
     Write-Output "$name=$envValue"
+    exit 0
 } else {
     Write-Error "Environment variable '$name' not found."
     exit 1

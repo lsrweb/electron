@@ -52,7 +52,7 @@
         </ElFormItem>
       </ElForm>
 
-      <Button type="primary" @click.stop="confirmCreate" class="mt-2">保存</Button>
+      <Button type="primary" @click.stop="confirmCreate" class="mt-2" :disabled="loading">保存</Button>
     </div>
   </ElDrawer>
 </template>
@@ -123,12 +123,24 @@ const dialogVisible = computed({
   },
 });
 
+const loading = ref(false);
 //
 function confirmCreate() {
   (formRef.value as any).validate(async (valid: boolean) => {
     if (valid) {
-      // 创建项目
-      IpcMainMess.sendSync("cache.createProject", { ...form, CATCH: props.CATCH });
+      try {
+        loading.value = true;
+        // 创建项目
+        // 获取秘钥的基本信息
+        const keystoreInfo = keyStoreList.value.find((item) => item.alias === form.keystore);
+
+        await IpcMainMess.sendSync("cache.createProject", { ...form, CATCH: props.CATCH, keystoreInfo });
+        loading.value = false;
+        await nextTick();
+        dialogVisible.value = false;
+      } catch (error) {
+        loading.value = false;
+      }
     }
   });
 }
