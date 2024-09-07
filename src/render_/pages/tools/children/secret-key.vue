@@ -26,9 +26,9 @@
                     <!-- 删除 -->
                     <ElDropdownItem @click="deleteKey(row.name)">删除秘钥</ElDropdownItem>
                     <!-- 查看秘钥信息 -->
-                    <ElDropdownItem @click="previewKey(row.name)">查看秘钥</ElDropdownItem>
+                    <ElDropdownItem @click="previewKey(row.cwdPath)">查看秘钥</ElDropdownItem>
                     <!-- 读取密钥库信息 -->
-                    <ElDropdownItem @click="readKeyStoreFile(row.name, row)">读取密钥库信息</ElDropdownItem>
+                    <ElDropdownItem @click="readKeyStoreFile(row.cwdPath, row)">读取密钥库信息</ElDropdownItem>
                   </ElDropdownMenu>
                 </template>
               </ElDropdown>
@@ -123,6 +123,7 @@ function deleteKey(name: string) {
 async function previewKey(name: string) {
   try {
     const { keypass, storepass } = await IpcMainMess.sendSync("cache.readKeyStoreInfo", { keystore: name });
+
     ElMessageBox.alert(`秘钥名称：${name}\n秘钥密码：${keypass}\n秘钥库密码：${storepass}`, "秘钥信息", {
       customClass: "canSelect",
     });
