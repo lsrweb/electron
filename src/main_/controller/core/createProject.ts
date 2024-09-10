@@ -380,9 +380,9 @@ export async function createProjectCore(event: IpcMainEvent, data: any, ctx: Sto
     console.time("createProjectCore");
 
     // 使用 dcloud_appid 创建项目文件夹
-    ctx.fileSystem.createDir(tempDir);
-    ctx.fileSystem.createDir(`${tempDir}\\dev`);
-    ctx.fileSystem.createDir(`${tempDir}\\uniapp`);
+    await ctx.fileSystem.createDir(tempDir);
+    await ctx.fileSystem.createDir(`${tempDir}\\dev`);
+    await ctx.fileSystem.createDir(`${tempDir}\\uniapp`);
 
     // 创建项目必要文件
     await (async () => {
