@@ -468,7 +468,7 @@ export async function createProjectCore(event: IpcMainEvent, data: any, ctx: Sto
         tempDir
       );
 
-      ctx.fileSystem.updateFile(`${tempDir}\\uniapp\\map.json`, {
+      await ctx.fileSystem.updateFile(`${tempDir}\\uniapp\\map.json`, {
         prod_dcloud_control_xml: `${ctx.CATCH_REPLACE_REG(CATCH_DATA.CATCH, "prod_dcloud_control_xml")}`,
         prod_dcloud_values_string_xml: `${ctx.CATCH_REPLACE_REG(CATCH_DATA.CATCH, "prod_dcloud_values_string_xml")}`,
         prod_AndroidManifest_xml: `${ctx.CATCH_REPLACE_REG(CATCH_DATA.CATCH, "prod_AndroidManifest_xml")}`,
