@@ -296,18 +296,19 @@ class FileStore {
     });
   }
 
-  public updateFile(filePath: string, data: object, keep: boolean = true): Promise<void> {
+  public updateFile(
+    filePath: string,
+    data: object,
+    keep: boolean = true, // 是否保留原数据
+    repeatKey?: string, // 主键
+    keepKey?: string | string[] // 子属性不变
+  ): Promise<void> {
     return new Promise((resolve, reject) => {
       try {
         if (filePath.includes(".json")) {
-          const cacheData = readJSONSync(filePath);
-          if (!cacheData || !data) return;
-          // const newData = { ...cacheData, ...data };
-          const newData = keep ? { ...cacheData, ...data } : data;
-          writeJSONSync(filePath, newData, {
-            spaces: 2,
-            EOL: "\r\n",
-          });
+          if (keep) {
+            const cacheData = readJSONSync(filePath);
+          }
         } else {
           writeFileSync(filePath, toJson(data) || "", {
             encoding: "utf-8",
@@ -321,8 +322,8 @@ class FileStore {
     });
   }
 
-  public pushDataToFile(filePath: string, data: object): Promise<void> {
-    return new Promise((resolve, reject) => {
+  public pushDataToFile(filePath: string, data: object, repeatKey?: string): Promise<void> {
+    return new Promise(async (resolve, reject) => {
       try {
         if (filePath.includes(".json")) {
           let cacheData = readJSONSync(filePath);
@@ -335,10 +336,22 @@ class FileStore {
             resolve();
             return;
           }
+          // let newData = Array.isArray(data) ? [...cacheData, ...data] : [...cacheData, data];
+          const newData = Array.isArray(data) ? [...cacheData, ...data] : [data];
 
-          const newData = Array.isArray(data) ? [...cacheData, ...data] : [...cacheData, data];
+          // 如果传入了repeatKey参数,则需要根据传入的repeatKey更新
+          if (repeatKey) {
+            const repeatIndex = cacheData.findIndex(
+              // @ts-ignore
+              (item: { [key: string]: any }) => item[repeatKey] === data[repeatKey]
+            );
 
-          writeJSONSync(filePath, newData, {
+            if (repeatIndex !== -1) {
+              newData[repeatIndex] = data;
+            }
+          }
+
+          await writeJSONSync(filePath, newData, {
             spaces: 2,
             EOL: "\r\n",
           });

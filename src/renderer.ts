@@ -67,7 +67,6 @@ socket.on("message", async (message) => {
         title: "提示",
         message: parseMessage.message,
         type: "info",
-        duration: 0,
         customClass: "canSelect",
         position: "bottom-left",
       });

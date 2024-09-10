@@ -5,7 +5,11 @@ import { app, type IpcMainEvent } from "electron";
 import { existsSync, fstat, fstatSync, readFile, readFileSync, writeFileSync } from "fs";
 import { errorToast } from "../errorBase";
 import type { StoreController } from "../StoreController";
-import { PROJECT_MANAGER_PATH, PROJECT_MANAGER_SETTINGFILE } from "@/main_/constants";
+import {
+  PROJECT_MANAGER_PATH,
+  PROJECT_MANAGER_SETTINGFILE,
+  UNI_BUILD_VERSION_MANAGER_SETTINGFILE,
+} from "@/main_/constants";
 const xml2js = require("xml2js");
 
 type DataType = {
@@ -16,6 +20,7 @@ type DataType = {
   appversion: string;
   keystore: string;
   CATCH: string;
+  version: string;
   keystoreInfo: {
     alias: string;
     keystore: string;
@@ -342,15 +347,20 @@ async function updateProjectJson(datag: DataType, ctx: StoreController, tempDir:
 
   // PROJECT_MANAGER_SETTINGFILE(ctx.GLOBAL_DIR)
   const projectSettingFile = `${PROJECT_MANAGER_SETTINGFILE(ctx.GLOBAL_DIR)}`;
-  ctx.fileSystem.pushDataToFile(projectSettingFile, {
-    dcloud_appid: datag.dcloud_appid,
-    package: datag.package,
-    dcloud_appkey: datag.dcloud_appkey,
-    appname: datag.appname,
-    appversion: datag.appversion,
-    keystore: datag.keystore,
-    keystoreInfo: datag.keystoreInfo,
-  });
+
+  await ctx.fileSystem.pushDataToFile(
+    projectSettingFile,
+    {
+      dcloud_appid: datag.dcloud_appid,
+      package: datag.package,
+      dcloud_appkey: datag.dcloud_appkey,
+      appname: datag.appname,
+      appversion: datag.appversion,
+      keystore: datag.keystore,
+      keystoreInfo: datag.keystoreInfo,
+    },
+    "dcloud_appid"
+  );
 }
 
 export async function createProjectCore(event: IpcMainEvent, data: any, ctx: StoreController) {
@@ -468,7 +478,29 @@ export async function createProjectCore(event: IpcMainEvent, data: any, ctx: Sto
 
     await updateProjectJson(CATCH_DATA, ctx, tempDir);
 
-    console.timeEnd("createProjectCore");
+    console.timeEnd("createProjectCore", "项目创建完成");
+
+    // 向项目文件夹中写入children
+    // UNI_BUILD_VERSION_MANAGER_SETTINGFILE(ctx.GLOBAL_DIR);
+    // 读取 uni-build.json
+    const uniBuildSettingFile = await ctx.fileSystem.readFile(
+      `${UNI_BUILD_VERSION_MANAGER_SETTINGFILE(ctx.GLOBAL_DIR)}`
+    );
+    // 查询 version 等于 CATCH_DATA.version
+    for (let iFind = 0; iFind < uniBuildSettingFile.length; iFind++) {
+      if (uniBuildSettingFile[iFind]["version"] == CATCH_DATA.version) {
+        uniBuildSettingFile[iFind]["children"].push(CATCH_DATA);
+        break;
+      }
+    }
+    console.log(uniBuildSettingFile);
+
+    // 更新文件
+    await ctx.fileSystem.updateFile(`${UNI_BUILD_VERSION_MANAGER_SETTINGFILE(ctx.GLOBAL_DIR)}`, uniBuildSettingFile);
+
+    // console.log(uniBuildSettingFile);
+
+    return Promise.resolve("项目创建完成");
   } catch (error) {
     console.log(error);
     return errorToast("构建失败");

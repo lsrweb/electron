@@ -58,6 +58,7 @@
 </template>
 
 <script setup lang="ts">
+import { ElNotification } from "element-plus";
 import { generateRandomPackageName } from "./utils";
 import IpcMainMess from "@r/utils/ipc";
 
@@ -134,10 +135,19 @@ function confirmCreate() {
         // 获取秘钥的基本信息
         const keystoreInfo = keyStoreList.value.find((item) => item.alias === form.keystore);
 
-        await IpcMainMess.sendSync("cache.createProject", { ...form, CATCH: props.CATCH, keystoreInfo });
+        await IpcMainMess.sendSync("cache.createProject", {
+          ...form,
+          CATCH: props.CATCH,
+          keystoreInfo,
+          version: props.version,
+        });
         loading.value = false;
         await nextTick();
         dialogVisible.value = false;
+        ElNotification.success({
+          title: "成功",
+          message: "项目创建成功",
+        });
       } catch (error) {
         loading.value = false;
       }

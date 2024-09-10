@@ -32,7 +32,7 @@ import { sleep } from "@/compo/env";
 import { createProjectCore } from "./core/createProject";
 
 export class StoreController extends IpcMainBaseController {
-  fileSystem: FileStore;
+  public fileSystem: FileStore;
   private window: BrowserWindow;
   GLOBAL_DIR: any;
   private GLOBAL_SETTING: any;
@@ -89,7 +89,7 @@ export class StoreController extends IpcMainBaseController {
 
       // 3.配置文件初始化之后,分别创建对应的文件夹
       await this.fileSystem.createDir(UNI_BUILD_VERSION_MANAGER_PATH(this.GLOBAL_DIR));
-      await this.fileSystem.createFile(UNI_BUILD_VERSION_MANAGER_SETTINGFILE(this.GLOBAL_DIR), {});
+      await this.fileSystem.createFile(UNI_BUILD_VERSION_MANAGER_SETTINGFILE(this.GLOBAL_DIR), []);
 
       await this.fileSystem.createDir(JAVA_VERSION_MANAGER_PATH(this.GLOBAL_DIR));
       await this.fileSystem.createFile(JAVA_VERSION_MANAGER_SETTINGFILE(this.GLOBAL_DIR), {});
@@ -150,7 +150,20 @@ export class StoreController extends IpcMainBaseController {
     try {
       const { UNI_BUILD_VERSION_MANAGER_PATH } = this.GLOBAL_SETTING;
 
-      return this.fileSystem.readDirTree(UNI_BUILD_VERSION_MANAGER_PATH, 1, true);
+      const resultGet = this.fileSystem.readDirTree(UNI_BUILD_VERSION_MANAGER_PATH, 1, true);
+      const resultEnd = resultGet.map((item: string) => {
+        return {
+          children: [] as any[],
+          version: /@(.*)/.exec(item)?.[1] || "未知版本",
+          originalPath: item,
+        };
+      });
+
+      // UNI_BUILD_VERSION_MANAGER_SETTINGFILE(this.GLOBAL_DIR);
+      // 将读取的版本列表写入配置文件
+      this.fileSystem.updateFile(UNI_BUILD_VERSION_MANAGER_SETTINGFILE(this.GLOBAL_DIR), resultEnd);
+
+      return resultEnd;
     } catch (error) {
       return errorToast("读取版本列表失败");
     }
@@ -159,11 +172,11 @@ export class StoreController extends IpcMainBaseController {
   // 传入路径,使用资源管理器打开
   public async openExplorer(event: IpcMainEvent, path: string) {
     try {
-      if (!existsSync(fromJson(path).cwd)) {
+      if (!existsSync(fromJson(path).originalPath)) {
         return errorToast("路径不存在");
       }
 
-      return executeCommand(`start explorer ${fromJson(path).cwd}`);
+      return executeCommand(`start explorer ${fromJson(path).originalPath}`);
     } catch (error) {
       return errorToast("打开资源管理器失败");
     }
@@ -419,10 +432,11 @@ export class StoreController extends IpcMainBaseController {
       const resultExec = [];
 
       // 获取当前系统的 JAVA_HOME
-      const resultJavaHome = (await executePowerShellScript("getEnvironmentScript", ["-name", "JAVA_HOME"])).replace(
-        /[\r\n]/g,
-        ""
-      );
+      const resultJavaHome = await executePowerShellScript("getEnvironmentScript", ["-name", "JAVA_HOME"]);
+      // 'JAVA_HOME=G:\\uniHelperBuiler\\JAVA_VERSION\\java21\r\n'
+      // 去掉 前缀,匹配路径
+      const matchJavaHome = /JAVA_HOME=(.*)/.exec(resultJavaHome) || [];
+      const resultJavaHomePath = matchJavaHome[1] ? matchJavaHome[1] : "";
 
       // 进入目录,执行 bin/java -version
       for (const item of Array.from(Object.values(result))) {
@@ -434,8 +448,8 @@ export class StoreController extends IpcMainBaseController {
 
         const version = matchVersion ? matchVersion[1] : "未知版本";
 
-        const active = compareString(pathTrans(resultJavaHome), pathTrans(item));
-        (app as any)["ws"].send(toJson({ active, resultJavaHome }));
+        const active = compareString(pathTrans(resultJavaHomePath), pathTrans(item));
+        (app as any)["ws"].send(toJson({ active, resultJavaHomePath }));
 
         resultExec.push({
           javaPath,
