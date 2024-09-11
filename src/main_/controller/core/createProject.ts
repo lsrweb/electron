@@ -10,6 +10,7 @@ import {
   PROJECT_MANAGER_SETTINGFILE,
   UNI_BUILD_VERSION_MANAGER_SETTINGFILE,
 } from "@/main_/constants";
+import { sleep } from "@/compo/env";
 const xml2js = require("xml2js");
 
 type DataType = {
@@ -495,6 +496,7 @@ export async function createProjectCore(event: IpcMainEvent, data: any, ctx: Sto
     }
     console.log(uniBuildSettingFile);
 
+    await sleep(2000);
     // 更新文件
     await ctx.fileSystem.updateFile(`${UNI_BUILD_VERSION_MANAGER_SETTINGFILE(ctx.GLOBAL_DIR)}`, uniBuildSettingFile);
 
