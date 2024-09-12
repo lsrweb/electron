@@ -270,6 +270,8 @@ class FileStore {
     return new Promise((resolve, reject) => {
       try {
         if (filePath.includes(".json") && !existsSync(filePath)) {
+          // 如果文件存在,则直接返回
+          if (existsSync(filePath)) return resolve();
           writeJSONSync(filePath, data || {}, {
             spaces: 2,
             EOL: "\r\n",
@@ -308,7 +310,60 @@ class FileStore {
         if (filePath.includes(".json")) {
           if (keep) {
             const cacheData = readJSONSync(filePath);
+            if (!cacheData || !data) return;
+            const newData = { ...cacheData, ...data };
+
+            // 如果传入了repeatKey参数,则需要根据传入的repeatKey进行唯一性判断,防止重复
+            // keepKey参数用于保留原数据的子属性,防止更新的时候丢失原数据
+            if (repeatKey) {
+              const repeatIndex = cacheData.findIndex(
+                // @ts-ignore
+                (item: { [key: string]: any }) => item[repeatKey] === data[repeatKey]
+              );
+
+              if (repeatIndex !== -1) {
+                newData[repeatIndex] = data;
+              }
+            }
+
+            if (keepKey) {
+              if (Array.isArray(keepKey)) {
+                keepKey.forEach((key) => {
+                  newData[key] = cacheData[key];
+                });
+              } else {
+                newData[keepKey] = cacheData[keepKey];
+              }
+            }
+
+            // 存入文件内的数据应该转化成数组,不能是 {'0': xxx}
+            // 开始转化
+            const newDataArr = Object.values(newData);
+            console.log(newDataArr);
+
+            writeJSONSync(filePath, newDataArr, {
+              spaces: 2,
+              EOL: "\r\n",
+            });
+            return resolve();
           }
+
+          // 如果不保留原数据,但是传入了keepKey,则指定的key数据不能修改
+          if (keepKey) {
+            const cacheData = readJSONSync(filePath);
+            if (Array.isArray(keepKey)) {
+              keepKey.forEach((key) => {
+                data[key] = cacheData[key];
+              });
+            } else {
+              data[keepKey] = cacheData[keepKey];
+            }
+          }
+
+          writeJSONSync(filePath, data, {
+            spaces: 2,
+            EOL: "\r\n",
+          });
         } else {
           writeFileSync(filePath, toJson(data) || "", {
             encoding: "utf-8",

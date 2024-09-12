@@ -161,7 +161,9 @@ export class StoreController extends IpcMainBaseController {
 
       // UNI_BUILD_VERSION_MANAGER_SETTINGFILE(this.GLOBAL_DIR);
       // 将读取的版本列表写入配置文件
-      this.fileSystem.updateFile(UNI_BUILD_VERSION_MANAGER_SETTINGFILE(this.GLOBAL_DIR), resultEnd);
+      this.fileSystem.updateFile(UNI_BUILD_VERSION_MANAGER_SETTINGFILE(this.GLOBAL_DIR), resultEnd, false, "", [
+        "children",
+      ]);
 
       return resultEnd;
     } catch (error) {
