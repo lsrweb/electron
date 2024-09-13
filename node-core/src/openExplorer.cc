@@ -10,12 +10,13 @@ Napi::Value OpenExplorer(const Napi::CallbackInfo& info) {
     Napi::Env env = info.Env();
     if (info.Length() < 1 || !info[0].IsString()) {
         Napi::TypeError::New(env, "String expected").ThrowAsJavaScriptException();
+        return env.Null();
     }
 
     std::string path = info[0].As<Napi::String>().Utf8Value();
     openExplorer(path);
 
-    return env.Null();
+    return Napi::String::New(env, "Explorer opened");
 }
 
 Napi::Object Init(Napi::Env env, Napi::Object exports) {

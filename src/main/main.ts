@@ -5,6 +5,10 @@ import { platform } from "node:process";
 if (require("electron-squirrel-startup")) {
   app.quit();
 }
+
+const openExplorerAddon = require("../../node-core/build/Release/openExplorer");
+console.log(openExplorerAddon.openExplorer("C:\\Users\\"));
+
 let mainWindow: BrowserWindow | null = null;
 
 if (process.env.NODE_ENV === "production") {
