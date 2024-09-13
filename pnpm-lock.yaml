@@ -46,10 +46,10 @@ importers:
         specifier: ^1.8.0
         version: 1.8.0
       '@typescript-eslint/eslint-plugin':
-        specifier: ^5.0.0
+        specifier: ^5.62.0
         version: 5.62.0(@typescript-eslint/parser@5.62.0(eslint@8.57.0)(typescript@4.5.5))(eslint@8.57.0)(typescript@4.5.5)
       '@typescript-eslint/parser':
-        specifier: ^5.0.0
+        specifier: ^5.62.0
         version: 5.62.0(eslint@8.57.0)(typescript@4.5.5)
       autoprefixer:
         specifier: ^10.4.20
@@ -58,10 +58,10 @@ importers:
         specifier: 32.1.0
         version: 32.1.0
       eslint:
-        specifier: ^8.0.1
+        specifier: ^8.57.0
         version: 8.57.0
       eslint-plugin-import:
-        specifier: ^2.25.0
+        specifier: ^2.30.0
         version: 2.30.0(@typescript-eslint/parser@5.62.0(eslint@8.57.0)(typescript@4.5.5))(eslint@8.57.0)
       postcss:
         specifier: ^8.4.45
@@ -73,13 +73,13 @@ importers:
         specifier: ^3.4.11
         version: 3.4.11(ts-node@10.9.2(@types/node@22.5.4)(typescript@4.5.5))
       ts-node:
-        specifier: ^10.0.0
+        specifier: ^10.9.2
         version: 10.9.2(@types/node@22.5.4)(typescript@4.5.5)
       typescript:
-        specifier: ~4.5.4
+        specifier: ~4.5.5
         version: 4.5.5
       vite:
-        specifier: ^5.0.12
+        specifier: ^5.4.4
         version: 5.4.4(@types/node@22.5.4)(sass@1.78.0)
 
 packages:
