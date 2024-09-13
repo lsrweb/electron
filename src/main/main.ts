@@ -7,7 +7,6 @@ if (require("electron-squirrel-startup")) {
 }
 
 const openExplorerAddon = require("../../node-core/build/Release/openExplorer");
-console.log(openExplorerAddon.openExplorer("C:\\Users\\"));
 
 let mainWindow: BrowserWindow | null = null;
 
