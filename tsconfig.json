@@ -10,6 +10,12 @@
     "baseUrl": ".",
     "outDir": "dist",
     "moduleResolution": "node",
-    "resolveJsonModule": true
-  }
+    "resolveJsonModule": true,
+
+    "paths": {
+      "@/m*": ["src/main/*"],
+      "@r/*": ["src/render/*"],
+    },
+  },
+  "exclude": ["node_modules", "dist", "public", "tests", ".vite"]
 }

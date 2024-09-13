@@ -1,0 +1,9 @@
+{
+    "typescript.tsdk": "node_modules\\typescript\\lib",
+    "scss.lint.unknownAtRules": "ignore",
+    "scss.lint.unknownProperties": "warning",
+    "scss.lint.argumentsInColorFunction": "ignore",
+    "editor.formatOnSave": true,
+    "files.encoding": "utf8"
+  }
+  

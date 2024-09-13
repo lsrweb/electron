@@ -1,18 +1,81 @@
-import { app, BrowserWindow } from 'electron';
-import path from 'path';
-
+import { app, BrowserWindow, ipcMain, nativeTheme } from "electron";
+import { join } from "node:path";
+import { platform } from "node:process";
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
-if (require('electron-squirrel-startup')) {
+if (require("electron-squirrel-startup")) {
   app.quit();
 }
+let mainWindow: BrowserWindow | null = null;
 
-const createWindow = () => {
-  // Create the browser window.
-  const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+if (process.env.NODE_ENV === "production") {
+  import("source-map-support").then((mapper) => mapper.default.install());
+}
+
+const isDebug =
+  process.env.NODE_ENV === "development" || process.env.DEBUG_PROD === "true";
+
+if (isDebug) {
+  import("electron-debug").then(({ default: debug }) => debug());
+}
+
+const installExtensions = async () => {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const devtools = require("electron-devtools-installer");
+  const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
+  const extensions = ["REACT_DEVELOPER_TOOLS"];
+
+  return devtools
+    .default(
+      extensions.map((name) => devtools[name]),
+      forceDownload
+    )
+    .catch(console.log);
+};
+
+nativeTheme.on("updated", () => {
+  mainWindow &&
+    mainWindow.webContents.send(
+      "native-theme:changed",
+      nativeTheme.shouldUseDarkColors ? "dark" : "light"
+    );
+});
+
+const createWindow = async (code?: number) => {
+  if (isDebug) {
+    await installExtensions();
+  }
+
+  const RESOURCES_PATH = app.isPackaged
+    ? join(process.resourcesPath, "assets")
+    : join(__dirname, "../../assets");
+
+  const getAssetPath = (...paths: string[]): string => {
+    return join(RESOURCES_PATH, ...paths);
+  };
+
+  mainWindow = new BrowserWindow({
+    show: false,
+    frame: false,
+    title: "unisdk-builder",
+    width: 1024,
+    maxWidth: 1024,
+    minWidth: 1024,
+    height: 728,
+    maxHeight: 728,
+    minHeight: 728,
+    center: true,
+    resizable: false,
+    icon: getAssetPath("icon.png"),
+    titleBarStyle: process.platform === "darwin" ? "hidden" : "default",
+    trafficLightPosition: {
+      x: 12,
+      y: 12,
+    },
+    opacity: 0,
+    backgroundColor: nativeTheme.shouldUseDarkColors ? "#121212" : "#f0f0f0",
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
+      nodeIntegration: true,
+      contextIsolation: false,
     },
   });
 
@@ -20,34 +83,77 @@ const createWindow = () => {
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
     mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
   } else {
-    mainWindow.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`));
+    mainWindow.loadFile(
+      join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`)
+    );
   }
 
-  // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  if (isDebug) mainWindow.webContents.openDevTools({ mode: "undocked" });
+
+  mainWindow.on("ready-to-show", () => {
+    if (!mainWindow) {
+      throw new Error('"mainWindow" is not defined');
+    }
+
+    if (process.env.START_MINIMIZED) {
+      mainWindow.minimize();
+    } else {
+      mainWindow.show();
+      setTimeout(() => mainWindow!.setOpacity(1), 60);
+
+      if (code !== void 0) {
+        setTimeout(() => {
+          mainWindow?.webContents.send("migration-error");
+        }, 800);
+      }
+    }
+  });
+
+  mainWindow.on("closed", () => {
+    mainWindow = null;
+  });
 };
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-app.on('ready', createWindow);
-
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
+app.on("window-all-closed", () => {
+  app.quit();
 });
 
-app.on('activate', () => {
-  // On OS X it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow();
-  }
-});
+const gotTheLock = app.requestSingleInstanceLock();
+if (!gotTheLock) {
+  app.quit();
+} else {
+  app.on("second-instance", () => {
+    /// Make the window take focus when trying to run a second instance
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.focus();
+    }
+  });
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and import them here.
+  app
+    .whenReady()
+    .then(async () => {
+      mainWindow === null && createWindow();
+      app.on("activate", () => {
+        // On macOS it's common to re-create a window in the app when the
+        // dock icon is clicked and there are no other windows open.
+        if (mainWindow === null || BrowserWindow.getAllWindows().length === 0)
+          createWindow();
+      });
+    })
+    .catch(console.log);
+}
+
+Promise.resolve()
+  .then(() => {
+    if (platform !== "darwin") {
+      ipcMain.on("window:close", (_event) => {
+        mainWindow && mainWindow.close();
+      });
+
+      ipcMain.on("window:minimize", (_event) => {
+        mainWindow && mainWindow.minimize();
+      });
+    }
+  })
+  .catch(console.error);
