@@ -1,6 +1,7 @@
 #include <napi.h>
 #include <windows.h>
 
+
 void openExplorer(const std::string& path) {
     std::string command = "explorer " + path;
     system(command.c_str());
@@ -13,7 +14,7 @@ Napi::Value OpenExplorer(const Napi::CallbackInfo& info) {
         return env.Null();
     }
 
-    std::string path = info[0].As<Napi::String>().Utf8Value();
+    const std::string path = info[0].As<Napi::String>().Utf8Value();
     openExplorer(path);
 
     return Napi::String::New(env, "Explorer opened");
@@ -24,4 +25,4 @@ Napi::Object Init(Napi::Env env, Napi::Object exports) {
     return exports;
 }
 
-NODE_API_MODULE(addon, Init)
+NODE_API_MODULE(openExplorer, Init)
