@@ -1,12 +1,11 @@
 {
   "name": "unihelper-core",
-  "version": "1.1.05",
+  "version": "1.1.07",
   "description": "",
-  "main": "lib/index.js",
   "scripts": {
     "install": "node-gyp rebuild",
-    "publish": "npm publish"
-
+    "publish": "npm publish",
+    "build": "vite build"
   },
   "keywords": [],
   "author": "siriforever.ltd@gmail.com",
@@ -24,6 +23,15 @@
     "binding.gyp"
   ],
   "exports": {
-    ".": "./Release/unihelper-core.node"
+    ".": {
+      "require": "./dist/unihelper-core.cjs",
+      "import": "./dist/unihelper-core.esm.js"
+    }
+  },
+  "main": "./dist/unihelper-core.cjs",
+  "module": "./dist/unihelper-core.esm.js",
+  "devDependencies": {
+    "rollup": "^4.21.3",
+    "vite": "^3.0.0"
   }
 }

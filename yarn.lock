@@ -6071,10 +6071,10 @@ undici-types@~6.19.2:
   resolved "https://registry.npmmirror.com/undici-types/-/undici-types-6.19.8.tgz#35111c9d1437ab83a7cdc0abae2f26d88eda0a02"
   integrity sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw==
 
-unihelper-core@^1.1.5:
-  version "1.1.5"
-  resolved "https://registry.npmjs.org/unihelper-core/-/unihelper-core-1.1.5.tgz#b18c5ee905240ac9a042b51351043df45e9338d6"
-  integrity sha512-j2QjGB+F3y+0QY1mRRahLUB+c0RFqc9wxyExc+YOPHlzqG2BncMSMoYU7d7BuqCTR3QXp3cyyUjykmnarFA+lA==
+unihelper-core@^1.1.7:
+  version "1.1.7"
+  resolved "https://registry.yarnpkg.com/unihelper-core/-/unihelper-core-1.1.7.tgz#ba1d8d3eb5696ef106878b9c80e192fc4aedc64e"
+  integrity sha512-0bem3SfRXFX2vE5nkA0IMbfWOmmi4t+EKkPBr0Hogrj0oJn03IdEycAZXkPw2osplGmilBAw3aBmVu0XWDWpmA==
   dependencies:
     node-addon-api "^8.1.0"
 
