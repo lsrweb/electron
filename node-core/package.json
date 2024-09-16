@@ -1,10 +1,9 @@
 {
   "name": "unihelper-core",
-  "version": "1.1.07",
+  "version": "1.1.13",
   "description": "",
   "scripts": {
     "install": "node-gyp rebuild",
-    "publish": "npm publish",
     "build": "vite build"
   },
   "keywords": [],
@@ -14,21 +13,23 @@
   "dependencies": {
     "node-addon-api": "^8.1.0"
   },
-  "types": "unihelper-cores.d.ts",
+  "types": "unihelper-core.d.ts",
   "files": [
     "src/",
+    "dist/",
     "Release/unihelper-core.node",
     "package.json",
     "README.md",
-    "binding.gyp"
+    "binding.gyp",
+    "unihelper-core.d.ts"
   ],
   "exports": {
     ".": {
-      "require": "./dist/unihelper-core.cjs",
+      "require": "./dist/unihelper-core.cjs.js",
       "import": "./dist/unihelper-core.esm.js"
     }
   },
-  "main": "./dist/unihelper-core.cjs",
+  "main": "./dist/unihelper-core.cjs.js",
   "module": "./dist/unihelper-core.esm.js",
   "devDependencies": {
     "rollup": "^4.21.3",

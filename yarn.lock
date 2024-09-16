@@ -4429,7 +4429,7 @@ node-addon-api@^7.0.0:
 
 node-addon-api@^8.1.0:
   version "8.1.0"
-  resolved "https://registry.npmjs.org/node-addon-api/-/node-addon-api-8.1.0.tgz#55a573685dd4bd053f189cffa4e6332d2b1f1645"
+  resolved "https://registry.yarnpkg.com/node-addon-api/-/node-addon-api-8.1.0.tgz#55a573685dd4bd053f189cffa4e6332d2b1f1645"
   integrity sha512-yBY+qqWSv3dWKGODD6OGE6GnTX7Q2r+4+DfpqxHSHh8x0B4EKP9+wVGLS6U/AM1vxSNNmUEuIV5EGhYwPpfOwQ==
 
 node-api-version@^0.2.0:
@@ -6071,10 +6071,10 @@ undici-types@~6.19.2:
   resolved "https://registry.npmmirror.com/undici-types/-/undici-types-6.19.8.tgz#35111c9d1437ab83a7cdc0abae2f26d88eda0a02"
   integrity sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw==
 
-unihelper-core@^1.1.7:
-  version "1.1.7"
-  resolved "https://registry.yarnpkg.com/unihelper-core/-/unihelper-core-1.1.7.tgz#ba1d8d3eb5696ef106878b9c80e192fc4aedc64e"
-  integrity sha512-0bem3SfRXFX2vE5nkA0IMbfWOmmi4t+EKkPBr0Hogrj0oJn03IdEycAZXkPw2osplGmilBAw3aBmVu0XWDWpmA==
+unihelper-core@^1.1.13:
+  version "1.1.13"
+  resolved "https://registry.yarnpkg.com/unihelper-core/-/unihelper-core-1.1.13.tgz#3a6bb16448e1e87a5fb3d0afdc3858f39273bb4f"
+  integrity sha512-7qI7MuZ9EcGFjsHp7y2Zhu3vG9rD7azb6anU46zd4JpJs+z7KbdwGr6l/RL5wdpmc1GQRFcaIpiU/7Jq1UXmoQ==
   dependencies:
     node-addon-api "^8.1.0"
 
