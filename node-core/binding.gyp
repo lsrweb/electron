@@ -1,8 +1,8 @@
 {
   "targets": [
     {
-      "target_name": "openExplorer",
-      "sources": [ "src/openExplorer.cc" ],
+      "target_name": "unihelper-core",
+      "sources": [ "src/unihelper-core.cc" ],
       "include_dirs": [
         "<!@(node -p \"require('node-addon-api').include\")"
       ],

@@ -39,6 +39,7 @@
     "tailwindcss": "^3.4.11",
     "ts-node": "^10.9.2",
     "typescript": "~4.5.5",
+    "unihelper-core": "^1.1.5",
     "unplugin-auto-import": "^0.18.3",
     "vite": "^5.4.4"
   },
