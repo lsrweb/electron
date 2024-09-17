@@ -68,7 +68,15 @@ void setEnvVar(const std::string &name, const std::string &value, const std::str
 {
     if (type == "system")
     {
-        SetEnvironmentVariableW(std::wstring(name.begin(), name.end()).c_str(), std::wstring(value.begin(), value.end()).c_str());
+        HKEY hKey;
+        LONG result = RegOpenKeyExW(HKEY_LOCAL_MACHINE, L"SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment", 0, KEY_SET_VALUE, &hKey);
+        if (result == ERROR_SUCCESS)
+        {
+            std::wstring wname(name.begin(), name.end());
+            std::wstring wvalue(value.begin(), value.end());
+            RegSetValueExW(hKey, wname.c_str(), 0, REG_EXPAND_SZ, (const BYTE *)wvalue.c_str(), (wvalue.size() + 1) * sizeof(wchar_t));
+            RegCloseKey(hKey);
+        }
     }
     else
     {
@@ -171,7 +179,6 @@ Napi::Value SetPathEnvVar(const Napi::CallbackInfo &info)
     if (info.Length() < 1 || !info[0].IsString())
     {
         Napi::TypeError::New(env, "need a string as the first argument").ThrowAsJavaScriptException();
-
         return env.Null();
     }
 
