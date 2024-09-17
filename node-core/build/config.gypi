@@ -422,6 +422,26 @@
     "nodedir": "C:\\Users\\29017\\AppData\\Local\\node-gyp\\Cache\\22.3.0",
     "python": "C:\\Users\\29017\\AppData\\Local\\Programs\\Python\\Python38\\python.exe",
     "standalone_static_library": 1,
-    "msbuild_path": "F:\\vsc-studio\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe"
+    "msbuild_path": "F:\\vsc-studio\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe",
+    "bin_links": "true",
+    "cache": "D:\\nodejs\\global_cache",
+    "fetch_retries": "5",
+    "fetch_timeout": "120000",
+    "home": "https://www.npmjs.org",
+    "ignore_optional": "",
+    "ignore_scripts": "",
+    "init_license": "MIT",
+    "init_version": "1.0.0",
+    "legacy_peer_deps": "true",
+    "prefix": "D:\\nodejs\\global",
+    "registry": "https://registry.yarnpkg.com",
+    "save_prefix": "^",
+    "strict_ssl": "true",
+    "user_agent": "yarn/1.22.22 npm/? node/v22.3.0 win32 x64",
+    "version_commit_hooks": "true",
+    "version_git_message": "v%s",
+    "version_git_sign": "",
+    "version_git_tag": "true",
+    "version_tag_prefix": "v"
   }
 }

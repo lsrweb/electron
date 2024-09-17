@@ -19,17 +19,7 @@
         "VCCLCompilerTool": {
           "ExceptionHandling": 1
         }
-      },
-      "postbuilds": [
-        {
-          "postbuild_name": "rollup",
-          "action": [
-            "node",
-            "node_modules/rollup/dist/bin/rollup",
-            "-c"
-          ]
-        }
-      ]
+      }
     }
   ]
 }
