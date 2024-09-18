@@ -7,10 +7,10 @@
     "clean": "node-gyp clean",
     "configure": "node-gyp configure",
     "build": "node-gyp build",
-
     "build:pack": "vite build",
 
-    "rebuild": "npm run clean && npm run install"
+    "rebuild": "npm run clean && npm run install",
+    "install:all": "npm install && npm run install"
   },
   "keywords": [],
   "author": "siriforever.ltd@gmail.com",
