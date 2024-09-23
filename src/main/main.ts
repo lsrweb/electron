@@ -1,8 +1,6 @@
 import { app, BrowserWindow, ipcMain, nativeTheme } from "electron";
 import { join } from "node:path";
 import { platform } from "node:process";
-import nodeCore from "unihelper-core";
-console.log(nodeCore);
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require("electron-squirrel-startup")) {
@@ -56,6 +54,7 @@ const createWindow = async (code?: number) => {
   const getAssetPath = (...paths: string[]): string => {
     return join(RESOURCES_PATH, ...paths);
   };
+  console.log(nativeTheme.shouldUseDarkColors);
 
   mainWindow = new BrowserWindow({
     show: false,
