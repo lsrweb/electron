@@ -222,6 +222,37 @@ Napi::Value SetPathEnvVar(const Napi::CallbackInfo &info)
     return Napi::String::New(env, "PATH environment variable set");
 }
 
+
+/**
+ * 执行传入shell脚本的 N-API
+ * 
+ */
+Napi::Value ExecShell(const Napi::CallbackInfo &info)
+{
+    Napi::Env env = info.Env();
+    if (info.Length() < 1 || !info[0].IsString())
+    {
+        Napi::TypeError::New(env, "String expected").ThrowAsJavaScriptException();
+        return env.Null();
+    }
+
+    const std::string shell = info[0].As<Napi::String>().Utf8Value();
+    std::string result = "";
+    std::array<char, 128> buffer;
+    FILE *pipe = _popen(shell.c_str(), "r");
+    if (!pipe)
+    {
+        return Napi::String::New(env, "ERROR");
+    }
+    while (fgets(buffer.data(), buffer.size(), pipe) != nullptr)
+    {
+        result += buffer.data();
+    }
+    _pclose(pipe);
+    return Napi::String::New(env, result);
+}
+
+
 /**
  * 初始化模块
  */
@@ -232,6 +263,7 @@ Napi::Object Init(Napi::Env env, Napi::Object exports)
     exports.Set(Napi::String::New(env, "setEnvVar"), Napi::Function::New(env, SetEnvVar));
     exports.Set(Napi::String::New(env, "getPathEnvVar"), Napi::Function::New(env, GetPathEnvVar));
     exports.Set(Napi::String::New(env, "setPathEnvVar"), Napi::Function::New(env, SetPathEnvVar));
+    exports.Set(Napi::String::New(env, "execShell"), Napi::Function::New(env, ExecShell));
     return exports;
 }
 
