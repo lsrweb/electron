@@ -225,7 +225,7 @@ Napi::Value SetPathEnvVar(const Napi::CallbackInfo &info)
 
 /**
  * 执行传入shell脚本的 N-API
- * 
+ * @example
  */
 Napi::Value ExecShell(const Napi::CallbackInfo &info)
 {
@@ -239,7 +239,9 @@ Napi::Value ExecShell(const Napi::CallbackInfo &info)
     const std::string shell = info[0].As<Napi::String>().Utf8Value();
     std::string result = "";
     std::array<char, 128> buffer;
-    FILE *pipe = _popen(shell.c_str(), "r");
+    // 使用 "2>&1" 将标准错误流重定向到标准输出流
+    FILE *pipe = _popen((shell + " 2>&1").c_str(), "r");
+
     if (!pipe)
     {
         return Napi::String::New(env, "ERROR");
@@ -249,9 +251,13 @@ Napi::Value ExecShell(const Napi::CallbackInfo &info)
         result += buffer.data();
     }
     _pclose(pipe);
+
+    // 去掉结果中的换行符
+    result.erase(std::remove(result.begin(), result.end(), '\n'), result.end());
+    result.erase(std::remove(result.begin(), result.end(), '\r'), result.end());
+
     return Napi::String::New(env, result);
 }
-
 
 /**
  * 初始化模块

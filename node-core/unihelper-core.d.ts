@@ -38,4 +38,11 @@ declare module 'unihelper-core' {
    * @returns 返回一个字符串，表示操作结果。
    */
   export function setPathEnvVar(value: string, overwrite?: boolean, type?: string): string;
+
+  /**
+   * 执行指定的命令。
+   * @param shell 要执行的命令。
+   * @returns 返回命令执行的结果。
+   */
+  export function execShell(shell: string): string;
 }
