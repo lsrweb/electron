@@ -1,21 +1,11 @@
 {
-  "compilerOptions": {
-    "target": "ESNext",
-    "module": "commonjs",
-    "allowJs": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "noImplicitAny": true,
-    "sourceMap": true,
-    "baseUrl": ".",
-    "outDir": "dist",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-
-    "paths": {
-      "@/m*": ["src/main/*"],
-      "@r/*": ["src/render/*"],
+  "files": [],
+  "references": [
+    {
+      "path": "./tsconfig.render.json"
     },
-  },
-  "exclude": ["node_modules", "dist", "public", "tests", ".vite"]
+    {
+      "path": "./tsconfig.main.json"
+    }
+  ]
 }

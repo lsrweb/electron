@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import NavigationHeader from "./components/NavigationHeader.vue";
+import NavigationHeader from "@r/views/components/NavigationHeader.vue";
 </script>
 
 <style lang="scss" scoped></style>

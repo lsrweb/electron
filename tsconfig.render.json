@@ -1,0 +1,19 @@
+{
+  "include": [
+    "src/render/**/*",
+    "src/render/**/*.vue",
+    "src/render/**/*.ts",
+    "src/render/**/*.tsx",
+    "src/render/**/*.jsx",
+    "src/render/**/*.d.ts"
+  ],
+  "exclude": ["src/**/__tests__/*"],
+  "compilerOptions": {
+    "composite": true,
+    "baseUrl": ".",
+    "paths": {
+      "@r/*": ["src/render/*"]
+    },
+    "moduleResolution": "Node"
+  }
+}

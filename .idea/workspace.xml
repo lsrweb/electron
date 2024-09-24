@@ -4,17 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="19210d22-18c0-460f-a4ce-a93c2f384d32" name="更改" comment="">
-      <change beforePath="$PROJECT_DIR$/.eslintrc.cjs" beforeDir="false" afterPath="$PROJECT_DIR$/.eslintrc.cjs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/components.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shell/keytools-gen.ps1" beforeDir="false" afterPath="$PROJECT_DIR$/shell/keytools-gen.ps1" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main_/controller/StoreController.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main_/controller/StoreController.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main_/utils/cache.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main_/utils/cache.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main_/utils/exec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main_/utils/exec.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/render_/pages/tools/children/secret-key-create.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/render_/pages/tools/children/secret-key-create.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/render_/pages/tools/children/secret-key.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/render_/pages/tools/children/secret-key.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/render_/pages/tools/utils/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/render_/pages/tools/utils/index.ts" afterDir="false" />
+    <list default="true" id="19210d22-18c0-460f-a4ce-a93c2f384d32" name="更改" comment="add">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/forge.env.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/forge.env.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/render/views/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/render/views/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,12 +33,22 @@
     &quot;assignee&quot;: &quot;lsrweb&quot;
   }
 }</component>
+  <component name="GithubProjectSettings">
+    <option name="branchProtectionPatterns">
+      <list>
+        <option value="master" />
+      </list>
+    </option>
+  </component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/lsrweb/electron.git&quot;,
     &quot;accountId&quot;: &quot;50678d2a-7b64-4470-b15d-6aa552c5ec7f&quot;
   }
 }</component>
+  <component name="PackageJsonUpdateNotifier">
+    <dismissed value="$PROJECT_DIR$/node-core/package.json" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 3
 }</component>
@@ -57,7 +63,8 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master",
+    "git-widget-placeholder": "rewrite",
+    "ignore.virus.scanning.warn.message": "true",
     "javascript.nodejs.core.library.configured.version": "21.4.0",
     "javascript.nodejs.core.library.typings.version": "22.4.1",
     "last_opened_file_path": "D:/Code___/Electorn/my-new-app",
@@ -101,7 +108,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-7c0b70fcd90d-JavaScript-WS-242.21829.149" />
+        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-WS-242.22855.79" />
       </set>
     </attachedChunks>
   </component>
@@ -119,6 +126,7 @@
       <workItem from="1725181632741" duration="39000" />
       <workItem from="1725377617684" duration="275000" />
       <workItem from="1725377901334" duration="468000" />
+      <workItem from="1727190197702" duration="77000" />
     </task>
     <task id="LOCAL-00001" summary="add">
       <option name="closed" value="true" />
