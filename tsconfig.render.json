@@ -5,7 +5,10 @@
     "src/render/**/*.ts",
     "src/render/**/*.tsx",
     "src/render/**/*.jsx",
-    "src/render/**/*.d.ts"
+    "src/render/**/*.d.ts",
+    "vite.renderer.config.ts",
+    "forge.env.d.ts",
+    "vite.base.config.ts"
   ],
   "exclude": ["src/**/__tests__/*"],
   "compilerOptions": {

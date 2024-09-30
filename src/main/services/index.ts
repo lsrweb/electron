@@ -1,6 +1,7 @@
 import type { BrowserWindow } from "electron";
 import { app, ipcMain } from "electron";
 import { IpcMainBaseController } from "./base";
+import { SystemManager } from "./modules/system.manager";
 
 export const enumControllerMethods = <T extends IpcMainBaseController>(
   clsInstance: T
@@ -27,6 +28,9 @@ export const enumControllerMethods = <T extends IpcMainBaseController>(
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const registerMainHandlers = (mainWindow: BrowserWindow) => {
   // 渲染端控制器
+  const systemController = new SystemManager();
+
+  enumControllerMethods(systemController);
 
   // 抛出获取系统信息的方法
   ipcMain.handle("getSystemInfo", () => {

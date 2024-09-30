@@ -11,12 +11,18 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "jsxImportSource": "vue",
-
     "baseUrl": ".",
     "paths": {
       "@m/*": ["src/main/*"]
     }
   },
-  "include": ["src/main/**/*", "src/main/**/*.ts", "forge.env.d.ts"],
+  "include": [
+    "src/main/**/*.ts",
+    "src/main/package/**/*.ts",
+    "src/main/**/*.d.ts",
+    "forge.env.d.ts",
+    "vite.base.config.ts",
+    "vite.main.config.ts"
+  ],
   "exclude": ["node_modules", "dist", "public", "tests", ".vite"]
 }

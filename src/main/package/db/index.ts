@@ -3,6 +3,86 @@ import path from "path";
 import { app } from "electron";
 import { existsSync, mkdirSync } from "fs";
 
+/**
+ * 使用文档
+ *
+ * 该 ORM 类提供了一个简单的接口来与 SQLite 数据库进行交互。以下是如何使用该类的一些示例。
+ *
+ * 初始化 ORM 实例：
+ *
+ * ```typescript
+ * import ORM from './index';
+ *
+ * const orm = new ORM();
+ * ```
+ *
+ * 创建表：
+ *
+ * ```typescript
+ * orm.createTable('users', {
+ *   id: 'INTEGER PRIMARY KEY AUTOINCREMENT',
+ *   name: 'TEXT',
+ *   email: 'TEXT'
+ * }).execute((err) => {
+ *   if (err) {
+ *     console.error('创建表失败', err);
+ *   } else {
+ *     console.log('创建表成功');
+ *   }
+ * });
+ * ```
+ *
+ * 插入数据：
+ *
+ * ```typescript
+ * orm.insert('users', {
+ *   name: 'John Doe',
+ *   email: 'john.doe@example.com'
+ * }).execute((err) => {
+ *   if (err) {
+ *     console.error('插入数据失败', err);
+ *   } else {
+ *     console.log('插入数据成功');
+ *   }
+ * });
+ * ```
+ *
+ * 更新数据：
+ *
+ * ```typescript
+ * orm.update('users', { name: 'Jane Doe' }, 'id = ?', [1]).execute((err) => {
+ *   if (err) {
+ *     console.error('更新数据失败', err);
+ *   } else {
+ *     console.log('更新数据成功');
+ *   }
+ * });
+ * ```
+ *
+ * 删除数据：
+ *
+ * ```typescript
+ * orm.delete('users', 'id = ?', [1]).execute((err) => {
+ *   if (err) {
+ *     console.error('删除数据失败', err);
+ *   } else {
+ *     console.log('删除数据成功');
+ *   }
+ * });
+ * ```
+ *
+ * 查询数据：
+ *
+ * ```typescript
+ * orm.select('users', ['id', 'name', 'email']).execute((err, rows) => {
+ *   if (err) {
+ *     console.error('查询数据失败', err);
+ *   } else {
+ *     console.log('查询数据成功', rows);
+ *   }
+ * });
+ * ```
+ */
 class ORM {
   private db: sqlite3.Database;
   private query: string;
@@ -17,29 +97,64 @@ class ORM {
 
     let DB_PATH = path.join(app.getAppPath(), "/config/config.db");
     if (app.isPackaged) {
-      DB_PATH = path.join(path.dirname(app.getPath("exe")), "/config/config.db");
+      DB_PATH = path.join(
+        path.dirname(app.getPath("exe")),
+        "/config/config.db"
+      );
     }
     this.db = new sqlite3.Database(DB_PATH, (err: { message: string }) => {
       if (err) {
-        console.error("连接数据库错误：" + err.message);
+        console.error("connect db error", err.message);
       } else {
-        console.log("连接数据库成功");
+        console.log("connect db success");
       }
     });
     this.query = "";
     this.params = [];
   }
 
-  createTable(table: string, columns: { [key: string]: string }): ORM {
-    const columnsDef = Object.entries(columns)
-      .map(([column, type]) => `${column} ${type}`)
-      .join(", ");
-    this.query = `CREATE TABLE IF NOT EXISTS ${table} (${columnsDef})`;
-    this.params = [];
-    return this;
+  private autoExecute(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      if (this.query.startsWith("SELECT")) {
+        this.db.all(this.query, this.params, (err, rows) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(rows);
+          }
+        });
+      } else {
+        this.db.run(this.query, this.params, function (err: Error | null) {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(this);
+          }
+        });
+      }
+    });
   }
 
-  insert(table: string, data: object): ORM {
+  private async executeQuery(): Promise<any> {
+    const result = await this.autoExecute();
+    this.query = "";
+    this.params = [];
+    return result;
+  }
+
+  async createTable(
+    table: string,
+    columns: { [key: string]: string }
+  ): Promise<any> {
+    const columnsDef = Object.entries(columns)
+      .map(([column, type]) => `${column} ${type}`)
+      .join(",");
+    this.query = `CREATE TABLE IF NOT EXISTS ${table} (${columnsDef})`;
+    this.params = [];
+    return this.executeQuery();
+  }
+
+  async insert(table: string, data: object): Promise<any> {
     const columns = Object.keys(data).join(", ");
     const placeholders = Object.keys(data)
       .map(() => "?")
@@ -47,43 +162,43 @@ class ORM {
     const values = Object.values(data);
     this.query = `INSERT INTO ${table} (${columns}) VALUES (${placeholders})`;
     this.params = values;
-    return this;
+    return this.executeQuery();
   }
 
-  delete(table: string, condition: string, params: any[]): ORM {
+  async delete(table: string, condition: string, params: any[]): Promise<any> {
     this.query = `DELETE FROM ${table} WHERE ${condition}`;
     this.params = params;
-    return this;
+    return this.executeQuery();
   }
 
-  update(table: string, data: object, condition: string, params: any[]): ORM {
+  async update(
+    table: string,
+    data: object,
+    condition: string,
+    params: any[]
+  ): Promise<any> {
     const setClause = Object.keys(data)
       .map((key) => `${key} = ?`)
       .join(", ");
     const values = Object.values(data);
     this.query = `UPDATE ${table} SET ${setClause} WHERE ${condition}`;
     this.params = [...values, ...params];
-    return this;
+    return this.executeQuery();
   }
 
-  select(table: string, columns: string[] = ["*"], condition = "", params: any[] = []): ORM {
+  async select(
+    table: string,
+    columns: string[] = ["*"],
+    condition = "",
+    params: any[] = []
+  ): Promise<any> {
     const columnsStr = columns.join(", ");
     this.query = `SELECT ${columnsStr} FROM ${table}`;
     if (condition) {
       this.query += ` WHERE ${condition}`;
     }
     this.params = params;
-    return this;
-  }
-
-  execute(callback: (err: Error | null, result?: any) => void): void {
-    if (this.query.startsWith("SELECT")) {
-      this.db.all(this.query, this.params, callback);
-    } else {
-      this.db.run(this.query, this.params, function (err: Error | null) {
-        callback(err, this);
-      });
-    }
+    return this.executeQuery();
   }
 }
 
