@@ -5,5 +5,8 @@
   "scss.lint.argumentsInColorFunction": "ignore",
   "editor.formatOnSave": true,
   "files.encoding": "utf8",
-  "C_Cpp.errorSquiggles": "disabled"
+  "C_Cpp.errorSquiggles": "disabled",
+  "files.exclude": {
+    "node-core": true
+  }
 }
