@@ -1,13 +1,11 @@
-import type { ConfigEnv, UserConfig } from 'vite';
-import { defineConfig } from 'vite';
-import { pluginExposeRenderer } from './vite.base.config';
+import type { ConfigEnv, UserConfig } from "vite";
+import { defineConfig } from "vite";
+import { pluginExposeRenderer } from "./vite.base.config";
 import { resolve } from "path";
-
 
 import vue from "@vitejs/plugin-vue";
 import vueJsx from "@vitejs/plugin-vue-jsx";
-import AutoImport from "unplugin-auto-import"
- 
+import AutoImport from "unplugin-auto-import";
 
 const pathResolve = (dir: string) => {
   return resolve(__dirname, ".", dir);
@@ -15,14 +13,14 @@ const pathResolve = (dir: string) => {
 
 // https://vitejs.dev/config
 export default defineConfig((env) => {
-  const forgeEnv = env as ConfigEnv<'renderer'>;
+  const forgeEnv = env as ConfigEnv<"renderer">;
   const { root, mode, forgeConfigSelf } = forgeEnv;
-  const name = forgeConfigSelf.name ?? '';
+  const name = forgeConfigSelf.name ?? "";
 
   return {
     root,
     mode,
-    base: './',
+    base: "./",
     build: {
       outDir: `.vite/renderer/${name}`,
       emptyOutDir: true,
@@ -35,18 +33,14 @@ export default defineConfig((env) => {
         },
       },
 
-      minify: 'terser',
+      minify: "terser",
 
       sourcemap: true,
       brotliSize: false,
       chunkSizeWarningLimit: 1024,
-
-      
-      
-      
-
     },
-    plugins: [pluginExposeRenderer(name),
+    plugins: [
+      pluginExposeRenderer(name),
       vue(),
       vueJsx(),
       AutoImport.vite({
@@ -55,7 +49,6 @@ export default defineConfig((env) => {
           enabled: true,
         },
       }),
-
     ],
     resolve: {
       preserveSymlinks: true,

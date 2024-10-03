@@ -10,7 +10,6 @@
     "outDir": "dist",
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "jsxImportSource": "vue",
     "baseUrl": ".",
     "paths": {
       "@m/*": ["src/main/*"]

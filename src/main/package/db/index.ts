@@ -175,7 +175,7 @@ class ORM {
     table: string,
     data: object,
     condition: string,
-    params: any[]
+    params?: any[]
   ): Promise<any> {
     const setClause = Object.keys(data)
       .map((key) => `${key} = ?`)
@@ -188,9 +188,9 @@ class ORM {
 
   async select(
     table: string,
-    columns: string[] = ["*"],
     condition = "",
-    params: any[] = []
+    params: any[] = [],
+    columns: string[] = ["*"]
   ): Promise<any> {
     const columnsStr = columns.join(", ");
     this.query = `SELECT ${columnsStr} FROM ${table}`;
@@ -199,6 +199,36 @@ class ORM {
     }
     this.params = params;
     return this.executeQuery();
+  }
+
+  async selectOne(
+    table: string,
+    condition = "",
+    params: any[] = [],
+    columns: string[] = ["*"]
+  ): Promise<any> {
+    const result = await this.select(table, condition, params, columns);
+    return result[0];
+  }
+
+  // 判断是否存在某个表
+  async hasTable(table: string): Promise<boolean> {
+    this.query = `SELECT name FROM sqlite_master WHERE type='table' AND name='${table}'`;
+    this.params = [];
+    const result = await this.executeQuery();
+    return result.length > 0;
+  }
+
+  async dropTable(table: string): Promise<any> {
+    this.query = `DROP TABLE ${table}`;
+    this.params = [];
+    return this.executeQuery();
+  }
+
+  // 判断是否第一次初始化
+  async isFirstInit(): Promise<boolean> {
+    const result = await this.hasTable("system");
+    return !result;
   }
 }
 

@@ -19,6 +19,7 @@ export const enumControllerMethods = <T extends IpcMainBaseController>(
     if (typeof serviceFunction === "function") {
       const channel = clsInstance.getChannelName(key);
       ipcMain.handle(channel, serviceFunction.bind(clsInstance));
+
       result[channel] = serviceFunction;
     }
   });

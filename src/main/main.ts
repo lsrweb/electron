@@ -25,7 +25,7 @@ const installExtensions = async () => {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const devtools = require("electron-devtools-installer");
   const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
-  const extensions = ["REACT_DEVELOPER_TOOLS"];
+  const extensions = ["VUEJS_DEVTOOLS"];
 
   return devtools
     .default(
@@ -56,17 +56,16 @@ const createWindow = async (code?: number) => {
     return join(RESOURCES_PATH, ...paths);
   };
 
-
   mainWindow = new BrowserWindow({
     show: false,
     frame: false,
     title: "unisdk-builder",
-    width: 1024,
-    maxWidth: 1024,
-    minWidth: 1024,
-    height: 728,
-    maxHeight: 728,
-    minHeight: 728,
+    width: isDebug ? 1920 : 1024,
+    // maxWidth:  1024,
+    // minWidth: 1024,
+    height: isDebug ? 1080 : 728,
+    // maxHeight: 728,
+    // minHeight: 728,
     center: true,
     resizable: false,
     icon: getAssetPath("icon.png"),
@@ -79,7 +78,7 @@ const createWindow = async (code?: number) => {
     backgroundColor: nativeTheme.shouldUseDarkColors ? "#121212" : "#f0f0f0",
     webPreferences: {
       nodeIntegration: true,
-      contextIsolation: false,
+      contextIsolation: true,
       preload: join(__dirname, "preload.js"),
       sandbox: false,
       spellcheck: false,
@@ -94,7 +93,7 @@ const createWindow = async (code?: number) => {
     );
   }
 
-  if (isDebug) mainWindow.webContents.openDevTools({ mode: "undocked" });
+  // if (isDebug) mainWindow.webContents.openDevTools({ mode: "right" });
 
   mainWindow.on("ready-to-show", () => {
     if (!mainWindow) {
@@ -113,9 +112,6 @@ const createWindow = async (code?: number) => {
         }, 800);
       }
     }
-
-
-    registerMainHandlers(mainWindow);
   });
 
   mainWindow.on("closed", () => {
@@ -149,6 +145,8 @@ if (!gotTheLock) {
         if (mainWindow === null || BrowserWindow.getAllWindows().length === 0)
           createWindow();
       });
+
+      registerMainHandlers(mainWindow);
     })
     .catch(console.log);
 }

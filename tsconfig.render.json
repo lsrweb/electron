@@ -1,5 +1,7 @@
 {
   "include": [
+    "*.d.ts",
+    "*.ts",
     "src/render/**/*",
     "src/render/**/*.vue",
     "src/render/**/*.ts",
@@ -8,15 +10,20 @@
     "src/render/**/*.d.ts",
     "vite.renderer.config.ts",
     "forge.env.d.ts",
-    "vite.base.config.ts"
+    "vite.base.config.ts",
+    "auto-imports.d.ts"
   ],
   "exclude": ["src/**/__tests__/*"],
   "compilerOptions": {
     "composite": true,
-    "baseUrl": ".",
+    "baseUrl": "./src/render",
     "paths": {
-      "@r/*": ["src/render/*"]
+      "@re/*": ["./*"]
     },
-    "moduleResolution": "Node"
+    "moduleResolution": "Node",
+    "resolveJsonModule": true,
+    "jsx": "preserve",
+    "sourceMap": true,
+    "allowJs": true
   }
 }

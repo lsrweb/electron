@@ -2,10 +2,17 @@
   "files": [],
   "references": [
     {
-      "path": "./tsconfig.render.json"
+      "path": "./tsconfig.main.json"
     },
     {
-      "path": "./tsconfig.main.json"
+      "path": "./tsconfig.render.json"
     }
-  ]
+  ],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@r/*": ["src/render/*"],
+      "@m/*": ["src/main/*"]
+    }
+  }
 }
